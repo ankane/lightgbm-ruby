@@ -58,6 +58,8 @@ booster = LightGBM::Booster.new(model_str: "tree...")
 
 # dump to json
 booster.to_json
+
+booster.current_iteration
 ```
 
 ### Dataset

@@ -43,4 +43,9 @@ class BoosterTest < Minitest::Test
     model = LightGBM::Booster.new(model_file: "test/support/model.txt")
     assert JSON.parse(model.to_json)
   end
+
+  def test_current_iteration
+    model = LightGBM::Booster.new(model_file: "test/support/model.txt")
+    assert_equal 100, model.current_iteration
+  end
 end

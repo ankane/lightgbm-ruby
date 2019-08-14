@@ -78,6 +78,12 @@ module LightGBM
       out.read_int
     end
 
+    def current_iteration
+      out = ::FFI::MemoryPointer.new(:int)
+      check_result FFI::LGBM_BoosterGetCurrentIteration(handle_pointer, out)
+      out.read_int
+    end
+
     # TODO fix
     def best_iteration
       -1
