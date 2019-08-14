@@ -30,15 +30,15 @@ class TrainTest < Minitest::Test
   private
 
   def train_set
-    train_test_sets[0]
+    @train_set ||= LightGBM::Dataset.new(dataset.data[0...300], label: dataset.label[0...300])
   end
 
   def test_set
-    train_test_sets[1]
+    @test_set ||= LightGBM::Dataset.new(dataset.data[300..-1], label: dataset.label[300..-1])
   end
 
-  def train_test_sets
-    @train_test_sets ||= begin
+  def dataset
+    @dataset ||= begin
       x = []
       y = []
       CSV.foreach("test/support/boston.csv", headers: true).each do |row|
@@ -46,9 +46,7 @@ class TrainTest < Minitest::Test
         x << row[0...13]
         y << row[13]
       end
-      train_set = LightGBM::Dataset.new(x[0...300], label: y[0...300])
-      test_set = LightGBM::Dataset.new(x[300..-1], label: y[300..-1])
-      [train_set, test_set]
+      LightGBM::Dataset.new(x, label: y)
     end
   end
 
