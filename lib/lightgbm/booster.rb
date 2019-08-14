@@ -31,6 +31,10 @@ module LightGBM
       singular ? out : out.first
     end
 
+    def save_model(filename)
+      check_result FFI.LGBM_BoosterSaveModel(handle_pointer, 0, 0, filename)
+    end
+
     private
 
     def check_result(err)

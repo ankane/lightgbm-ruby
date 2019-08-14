@@ -9,5 +9,6 @@ module LightGBM
     attach_function :LGBM_BoosterCreateFromModelfile, %i[string pointer pointer], :int
     attach_function :LGBM_BoosterFree, %i[pointer], :int
     attach_function :LGBM_BoosterPredictForMat, %i[pointer pointer int int32 int32 int int int string pointer pointer], :int
+    attach_function :LGBM_BoosterSaveModel, %i[pointer int int string], :int
   end
 end

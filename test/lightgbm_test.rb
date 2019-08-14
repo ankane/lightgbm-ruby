@@ -11,5 +11,11 @@ class LightGBMTest < Minitest::Test
     preds = model.predict(x_test)
     assert_in_delta 28.29122797, preds[0]
     assert_in_delta 25.87936514, preds[1]
+
+    model.save_model("/tmp/model.txt")
+    model = LightGBM::Booster.new(model_file: "/tmp/model.txt")
+    preds = model.predict(x_test)
+    assert_in_delta 28.29122797, preds[0]
+    assert_in_delta 25.87936514, preds[1]
   end
 end

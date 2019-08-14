@@ -26,6 +26,12 @@ Predict
 booster.predict([[1, 2], [3, 4]])
 ```
 
+Save [master]
+
+```ruby
+booster.save_model("model.txt")
+```
+
 ## Credits
 
 Thanks to the [xgboost](https://github.com/PairOnAir/xgboost-ruby) gem for serving as an initial reference.
