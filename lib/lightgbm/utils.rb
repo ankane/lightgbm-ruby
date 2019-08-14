@@ -16,9 +16,10 @@ module LightGBM
       v
     end
 
-    def set_verbosity(params, silent)
+    # change default verbosity
+    def set_verbosity(params)
       params_keys = params.keys.map(&:to_s)
-      if silent && !params_keys.include?("verbosity")
+      unless params_keys.include?("verbosity")
         params["verbosity"] = -1
       end
     end
