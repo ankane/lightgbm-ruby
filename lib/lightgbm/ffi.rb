@@ -8,6 +8,7 @@ module LightGBM
     attach_function :LGBM_BoosterCreate, %i[pointer string pointer], :int
     attach_function :LGBM_BoosterCreateFromModelfile, %i[string pointer pointer], :int
     attach_function :LGBM_BoosterFree, %i[pointer], :int
+    attach_function :LGBM_DatasetFree, %i[pointer], :int
     attach_function :LGBM_BoosterUpdateOneIter, %i[pointer pointer], :int
     attach_function :LGBM_DatasetCreateFromMat, %i[pointer int int32 int32 int string pointer pointer], :int
     attach_function :LGBM_DatasetSetField, %i[pointer string pointer int int], :int
