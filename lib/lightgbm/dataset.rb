@@ -1,10 +1,11 @@
 module LightGBM
   class Dataset
-    attr_reader :data, :label
+    attr_reader :data, :label, :weight
 
-    def initialize(data, label: nil)
+    def initialize(data, label: nil, weight: nil)
       @data = data
       @label = label
+      @weight = weight
 
       # prepare data
       c_data = ::FFI::MemoryPointer.new(:float, data.count * data.first.count)
@@ -20,6 +21,12 @@ module LightGBM
         c_label = ::FFI::MemoryPointer.new(:float, label.count)
         c_label.put_array_of_float(0, label)
         check_result FFI.LGBM_DatasetSetField(handle_pointer, "label", c_label, label.count, 0)
+      end
+
+      if weight
+        c_weight = ::FFI::MemoryPointer.new(:float, weight.count)
+        c_weight.put_array_of_float(0, weight)
+        check_result FFI.LGBM_DatasetSetField(handle_pointer, "weight", c_weight, weight.count, 0)
       end
     end
 
