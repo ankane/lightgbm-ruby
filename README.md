@@ -25,7 +25,7 @@ model = LightGBM::Booster.new(params: params, train_set: train_set)
 Predict
 
 ```ruby
-booster.predict([[1, 2], [3, 4]])
+booster.predict(x_test)
 ```
 
 Save [master]
