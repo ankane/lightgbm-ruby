@@ -6,10 +6,12 @@ module LightGBM
       @data = data
       @label = label
 
-      @handle = ::FFI::MemoryPointer.new(:pointer)
-
+      # prepare data
       c_data = ::FFI::MemoryPointer.new(:float, data.count * data.first.count)
       c_data.put_array_of_float(0, data.flatten)
+
+      # create dataset
+      @handle = ::FFI::MemoryPointer.new(:pointer)
       check_result FFI.LGBM_DatasetCreateFromMat(c_data, 0, data.count, data.first.count, 1, "", nil, @handle)
       ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer))
 
