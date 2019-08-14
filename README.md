@@ -1,6 +1,6 @@
 # LightGBM
 
-LightGBM for Ruby
+[LightGBM](https://github.com/microsoft/LightGBM) for Ruby
 
 :fire: Uses the C API for blazing performance
 
