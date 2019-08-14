@@ -2,18 +2,8 @@ require_relative "test_helper"
 
 class TrainTest < Minitest::Test
   def test_train
-    x = []
-    y = []
-    CSV.foreach("test/support/boston.csv", headers: true).each do |row|
-      row = row.to_a.map { |_, v| v.to_f }
-      x << row[0...13]
-      y << row[13]
-    end
-    x_train = x[0...300]
-    y_train = y[0...300]
-    x_test = x[300..-1]
-    y_test = y[300..-1]
-    train_set = LightGBM::Dataset.new(x_train, label: y_train)
+    x_test = test_set.data
+    y_test = test_set.label
 
     params = {objective: "regression", verbosity: -1}
     model = LightGBM.train(params, train_set, valid_sets: [train_set], valid_names: ["train"])
@@ -40,9 +30,26 @@ class TrainTest < Minitest::Test
   private
 
   def train_set
-    x = (1..100).map { |i| [i] }
-    y = x.map { |v| 2 * v[0]  }
-    LightGBM::Dataset.new(x, label: y)
+    train_test_sets[0]
+  end
+
+  def test_set
+    train_test_sets[1]
+  end
+
+  def train_test_sets
+    @train_test_sets ||= begin
+      x = []
+      y = []
+      CSV.foreach("test/support/boston.csv", headers: true).each do |row|
+        row = row.to_a.map { |_, v| v.to_f }
+        x << row[0...13]
+        y << row[13]
+      end
+      train_set = LightGBM::Dataset.new(x[0...300], label: y[0...300])
+      test_set = LightGBM::Dataset.new(x[300..-1], label: y[300..-1])
+      [train_set, test_set]
+    end
   end
 
   def rsme(y_true, y_pred)
