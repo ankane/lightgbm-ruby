@@ -6,7 +6,7 @@ class TrainTest < Minitest::Test
     y_test = test_set.label
 
     params = {objective: "regression", verbosity: -1, metric: "mse"}
-    model = LightGBM.train(params, train_set, valid_sets: [train_set, test_set]) #, valid_names: ["train", "test"])
+    model = LightGBM.train(params, train_set)
     y_pred = model.predict(x_test)
     assert_operator rsme(y_test, y_pred), :<=, 6
 
@@ -17,21 +17,26 @@ class TrainTest < Minitest::Test
   end
 
   def test_early_stopping_early
-    params = {objective: "regression", metric: "mse"}
-    model = LightGBM.train(params, train_set, valid_sets: [train_set, test_set], early_stopping_rounds: 5)
+    model = nil
+    stdout, _ = capture_io do
+      model = LightGBM.train(default_params, train_set, valid_sets: [train_set, test_set], early_stopping_rounds: 5)
+    end
     assert_equal 55, model.best_iteration
+    assert_includes stdout, "Early stopping, best iteration is:\n[55]\ttraining: 2.18872\tvalid_1: 35.6151"
   end
 
   def test_early_stopping_not_early
-    params = {objective: "regression", metric: "mse"}
-    model = LightGBM.train(params, train_set, valid_sets: [train_set, test_set], early_stopping_rounds: 500)
+    model = nil
+    stdout, _ = capture_io do
+      model = LightGBM.train(default_params, train_set, valid_sets: [train_set, test_set], early_stopping_rounds: 500)
+    end
     assert_equal 71, model.best_iteration
+    assert_includes stdout, "Best iteration is: [71]\ttraining: 1.69138\tvalid_1: 35.2563"
   end
 
   def test_verbose_eval_false
     stdout, _ = capture_io do
-      params = {objective: "regression", metric: "mse"}
-      LightGBM.train(params, train_set, valid_sets: [train_set, test_set], early_stopping_rounds: 5, verbose_eval: false)
+      LightGBM.train(default_params, train_set, valid_sets: [train_set, test_set], early_stopping_rounds: 5, verbose_eval: false)
     end
     assert_empty stdout
   end
@@ -44,6 +49,10 @@ class TrainTest < Minitest::Test
   end
 
   private
+
+  def default_params
+    {objective: "regression", metric: "mse"}
+  end
 
   def rsme(y_true, y_pred)
     Math.sqrt(y_true.zip(y_pred).map { |a, b| (a - b)**2 }.sum / y_true.size.to_f)
