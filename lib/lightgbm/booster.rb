@@ -89,6 +89,20 @@ module LightGBM
       -1
     end
 
+    def model_to_string(num_iteration: nil, start_iteration: 0)
+      num_iteration ||= best_iteration
+      buffer_len = 1 << 20
+      out_len = ::FFI::MemoryPointer.new(:int64)
+      out_str = ::FFI::MemoryPointer.new(:string, buffer_len)
+      check_result FFI.LGBM_BoosterSaveModelToString(handle_pointer, start_iteration, num_iteration, buffer_len, out_len, out_str)
+      actual_len = out_len.read_int64
+      if actual_len > buffer_len
+        out_str = ::FFI::MemoryPointer.new(:string, actual_len)
+        check_result FFI.LGBM_BoosterSaveModelToString(handle_pointer, start_iteration, num_iteration, actual_len, out_len, out_str)
+      end
+      out_str.read_string
+    end
+
     def to_json(num_iteration: nil, start_iteration: 0)
       num_iteration ||= best_iteration
       buffer_len = 1 << 20

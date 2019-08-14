@@ -53,12 +53,9 @@ booster.feature_importance
 ### Booster
 
 ```ruby
-# load from a string
 booster = LightGBM::Booster.new(model_str: "tree...")
-
-# dump to json
 booster.to_json
-
+booster.model_to_string
 booster.current_iteration
 ```
 

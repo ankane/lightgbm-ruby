@@ -39,6 +39,11 @@ class BoosterTest < Minitest::Test
     assert_includes error.message, "Unknown importance type"
   end
 
+  def test_model_to_string
+    model = LightGBM::Booster.new(model_file: "test/support/model.txt")
+    assert model.model_to_string
+  end
+
   def test_to_json
     model = LightGBM::Booster.new(model_file: "test/support/model.txt")
     assert JSON.parse(model.to_json)
