@@ -34,4 +34,9 @@ class DatasetTest < Minitest::Test
     dataset.save_binary("/tmp/train.bin")
     assert File.exist?("/tmp/train.bin")
   end
+
+  def test_dump_text
+    dataset.dump_text("/tmp/train.txt")
+    assert File.exist?("/tmp/train.txt")
+  end
 end

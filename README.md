@@ -66,6 +66,7 @@ dataset = LightGBM::Dataset.new(data, label: label, weight: weight, params: para
 dataset.num_data
 dataset.num_feature
 dataset.save_binary("train.bin")
+dataset.dump_text("train.txt")
 ```
 
 ## Credits

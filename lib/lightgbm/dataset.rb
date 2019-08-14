@@ -44,6 +44,10 @@ module LightGBM
       check_result FFI.LGBM_DatasetSaveBinary(handle_pointer, filename)
     end
 
+    def dump_text(filename)
+      check_result FFI.LGBM_DatasetDumpText(handle_pointer, filename)
+    end
+
     def self.finalize(pointer)
       -> { FFI.LGBM_DatasetFree(pointer) }
     end
