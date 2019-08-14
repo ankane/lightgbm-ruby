@@ -5,6 +5,7 @@ class DatasetTest < Minitest::Test
     dataset = LightGBM::Dataset.new("test/support/boston.csv", params: {header: true, label_column: "name:medv"})
     assert_equal 506, dataset.num_data
     assert_equal 13, dataset.num_feature
+    assert_equal 506, dataset.label.size
   end
 
   def test_label

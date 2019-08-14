@@ -1,11 +1,9 @@
 module LightGBM
   class Dataset
-    attr_reader :data, :label, :weight, :params
+    attr_reader :data, :params
 
     def initialize(data, label: nil, weight: nil, params: nil)
       @data = data
-      @label = label
-      @weight = weight
 
       @handle = ::FFI::MemoryPointer.new(:pointer)
       if data.is_a?(String)
@@ -18,17 +16,16 @@ module LightGBM
       # causes "Stack consistency error"
       # ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer))
 
-      if label
-        c_label = ::FFI::MemoryPointer.new(:float, label.count)
-        c_label.put_array_of_float(0, label)
-        check_result FFI.LGBM_DatasetSetField(handle_pointer, "label", c_label, label.count, 0)
-      end
+      set_field("label", label) if label
+      set_field("weight", weight) if weight
+    end
 
-      if weight
-        c_weight = ::FFI::MemoryPointer.new(:float, weight.count)
-        c_weight.put_array_of_float(0, weight)
-        check_result FFI.LGBM_DatasetSetField(handle_pointer, "weight", c_weight, weight.count, 0)
-      end
+    def label
+      field("label")
+    end
+
+    def weight
+      field("weight")
     end
 
     def num_data
@@ -53,6 +50,23 @@ module LightGBM
 
     def handle_pointer
       @handle.read_pointer
+    end
+
+    private
+
+    def field(field_name)
+      num_data = self.num_data
+      out_len = ::FFI::MemoryPointer.new(:int)
+      out_ptr = ::FFI::MemoryPointer.new(:float, num_data)
+      out_type = ::FFI::MemoryPointer.new(:int)
+      check_result FFI.LGBM_DatasetGetField(handle_pointer, field_name, out_len, out_ptr, out_type)
+      out_ptr.read_pointer.read_array_of_float(num_data)
+    end
+
+    def set_field(field_name, data)
+      c_data = ::FFI::MemoryPointer.new(:float, data.count)
+      c_data.put_array_of_float(0, data)
+      check_result FFI.LGBM_DatasetSetField(handle_pointer, field_name, c_data, data.count, 0)
     end
 
     include Utils
