@@ -24,6 +24,89 @@ module LightGBM
       self # consistent with Python API
     end
 
+    # TODO fix
+    def best_iteration
+      -1
+    end
+
+    def current_iteration
+      out = ::FFI::MemoryPointer.new(:int)
+      check_result FFI::LGBM_BoosterGetCurrentIteration(handle_pointer, out)
+      out.read_int
+    end
+
+    def dump_model(num_iteration: nil, start_iteration: 0)
+      num_iteration ||= best_iteration
+      buffer_len = 1 << 20
+      out_len = ::FFI::MemoryPointer.new(:int64)
+      out_str = ::FFI::MemoryPointer.new(:string, buffer_len)
+      check_result FFI.LGBM_BoosterDumpModel(handle_pointer, start_iteration, num_iteration, buffer_len, out_len, out_str)
+      actual_len = out_len.read_int64
+      if actual_len > buffer_len
+        out_str = ::FFI::MemoryPointer.new(:string, actual_len)
+        check_result FFI.LGBM_BoosterDumpModel(handle_pointer, start_iteration, num_iteration, actual_len, out_len, out_str)
+      end
+      out_str.read_string
+    end
+    alias_method :to_json, :dump_model
+
+    def feature_importance(iteration: nil, importance_type: "split")
+      iteration ||= best_iteration
+      importance_type =
+        case importance_type
+        when "split"
+          0
+        when "gain"
+          1
+        else
+          -1
+        end
+
+      num_feature = self.num_feature
+      out_result = ::FFI::MemoryPointer.new(:double, num_feature)
+      check_result FFI.LGBM_BoosterFeatureImportance(handle_pointer, iteration, importance_type, out_result)
+      out_result.read_array_of_double(num_feature)
+    end
+
+    def model_from_string(model_str)
+      out_num_iterations = ::FFI::MemoryPointer.new(:int)
+      check_result FFI.LGBM_BoosterLoadModelFromString(model_str, out_num_iterations, @handle)
+      self
+    end
+
+    def model_to_string(num_iteration: nil, start_iteration: 0)
+      num_iteration ||= best_iteration
+      buffer_len = 1 << 20
+      out_len = ::FFI::MemoryPointer.new(:int64)
+      out_str = ::FFI::MemoryPointer.new(:string, buffer_len)
+      check_result FFI.LGBM_BoosterSaveModelToString(handle_pointer, start_iteration, num_iteration, buffer_len, out_len, out_str)
+      actual_len = out_len.read_int64
+      if actual_len > buffer_len
+        out_str = ::FFI::MemoryPointer.new(:string, actual_len)
+        check_result FFI.LGBM_BoosterSaveModelToString(handle_pointer, start_iteration, num_iteration, actual_len, out_len, out_str)
+      end
+      out_str.read_string
+    end
+
+    def num_feature
+      out = ::FFI::MemoryPointer.new(:int)
+      check_result FFI.LGBM_BoosterGetNumFeature(handle_pointer, out)
+      out.read_int
+    end
+    alias_method :num_features, :num_feature # legacy typo
+
+    def num_model_per_iteration
+      out = ::FFI::MemoryPointer.new(:int)
+      check_result FFI::LGBM_BoosterNumModelPerIteration(handle_pointer, out)
+      out.read_int
+    end
+
+    def num_trees
+      out = ::FFI::MemoryPointer.new(:int)
+      check_result FFI::LGBM_BoosterNumberOfTotalModel(handle_pointer, out)
+      out.read_int
+    end
+
     def predict(input)
       raise TypeError unless input.is_a?(Array)
 
@@ -53,89 +136,6 @@ module LightGBM
       check_result FFI.LGBM_BoosterUpdateOneIter(handle_pointer, finished)
       finished.read_int == 1
     end
-
-    def feature_importance(iteration: nil, importance_type: "split")
-      iteration ||= best_iteration
-      importance_type =
-        case importance_type
-        when "split"
-          0
-        when "gain"
-          1
-        else
-          -1
-        end
-
-      num_feature = self.num_feature
-      out_result = ::FFI::MemoryPointer.new(:double, num_feature)
-      check_result FFI.LGBM_BoosterFeatureImportance(handle_pointer, iteration, importance_type, out_result)
-      out_result.read_array_of_double(num_feature)
-    end
-
-    def num_feature
-      out = ::FFI::MemoryPointer.new(:int)
-      check_result FFI.LGBM_BoosterGetNumFeature(handle_pointer, out)
-      out.read_int
-    end
-    alias_method :num_features, :num_feature # legacy typo
-
-    def current_iteration
-      out = ::FFI::MemoryPointer.new(:int)
-      check_result FFI::LGBM_BoosterGetCurrentIteration(handle_pointer, out)
-      out.read_int
-    end
-
-    def num_model_per_iteration
-      out = ::FFI::MemoryPointer.new(:int)
-      check_result FFI::LGBM_BoosterNumModelPerIteration(handle_pointer, out)
-      out.read_int
-    end
-
-    def num_trees
-      out = ::FFI::MemoryPointer.new(:int)
-      check_result FFI::LGBM_BoosterNumberOfTotalModel(handle_pointer, out)
-      out.read_int
-    end
-
-    # TODO fix
-    def best_iteration
-      -1
-    end
-
-    def model_from_string(model_str)
-      out_num_iterations = ::FFI::MemoryPointer.new(:int)
-      check_result FFI.LGBM_BoosterLoadModelFromString(model_str, out_num_iterations, @handle)
-      self
-    end
-
-    def model_to_string(num_iteration: nil, start_iteration: 0)
-      num_iteration ||= best_iteration
-      buffer_len = 1 << 20
-      out_len = ::FFI::MemoryPointer.new(:int64)
-      out_str = ::FFI::MemoryPointer.new(:string, buffer_len)
-      check_result FFI.LGBM_BoosterSaveModelToString(handle_pointer, start_iteration, num_iteration, buffer_len, out_len, out_str)
-      actual_len = out_len.read_int64
-      if actual_len > buffer_len
-        out_str = ::FFI::MemoryPointer.new(:string, actual_len)
-        check_result FFI.LGBM_BoosterSaveModelToString(handle_pointer, start_iteration, num_iteration, actual_len, out_len, out_str)
-      end
-      out_str.read_string
-    end
-
-    def dump_model(num_iteration: nil, start_iteration: 0)
-      num_iteration ||= best_iteration
-      buffer_len = 1 << 20
-      out_len = ::FFI::MemoryPointer.new(:int64)
-      out_str = ::FFI::MemoryPointer.new(:string, buffer_len)
-      check_result FFI.LGBM_BoosterDumpModel(handle_pointer, start_iteration, num_iteration, buffer_len, out_len, out_str)
-      actual_len = out_len.read_int64
-      if actual_len > buffer_len
-        out_str = ::FFI::MemoryPointer.new(:string, actual_len)
-        check_result FFI.LGBM_BoosterDumpModel(handle_pointer, start_iteration, num_iteration, actual_len, out_len, out_str)
-      end
-      out_str.read_string
-    end
-    alias_method :to_json, :dump_model
 
     private
 
