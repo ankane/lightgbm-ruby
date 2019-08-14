@@ -8,7 +8,7 @@ module LightGBM
       else
         check_result FFI.LGBM_BoosterCreate(train_set.handle_pointer, params_str(params), @handle)
       end
-      ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer))
+      # ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer))
     end
 
     def self.finalize(pointer)
