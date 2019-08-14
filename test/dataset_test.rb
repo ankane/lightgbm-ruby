@@ -1,6 +1,12 @@
 require_relative "test_helper"
 
 class DatasetTest < Minitest::Test
+  def test_data_string
+    dataset = LightGBM::Dataset.new("test/support/boston.csv", params: {header: true, label_column: "name:medv"})
+    assert_equal 506, dataset.num_data
+    assert_equal 13, dataset.num_feature
+  end
+
   def test_label
     data = [[1, 2], [3, 4]]
     label = [1, 2]

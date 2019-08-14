@@ -7,13 +7,14 @@ module LightGBM
       @label = label
       @weight = weight
 
-      # prepare data
-      c_data = ::FFI::MemoryPointer.new(:float, data.count * data.first.count)
-      c_data.put_array_of_float(0, data.flatten)
-
-      # create dataset
       @handle = ::FFI::MemoryPointer.new(:pointer)
-      check_result FFI.LGBM_DatasetCreateFromMat(c_data, 0, data.count, data.first.count, 1, params_str(params), nil, @handle)
+      if data.is_a?(String)
+        check_result FFI.LGBM_DatasetCreateFromFile(data, params_str(params), nil, @handle)
+      else
+        c_data = ::FFI::MemoryPointer.new(:float, data.count * data.first.count)
+        c_data.put_array_of_float(0, data.flatten)
+        check_result FFI.LGBM_DatasetCreateFromMat(c_data, 0, data.count, data.first.count, 1, params_str(params), nil, @handle)
+      end
       # causes "Stack consistency error"
       # ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer))
 
