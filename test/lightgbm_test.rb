@@ -12,7 +12,7 @@ class LightGBMTest < Minitest::Test
     assert_in_delta 28.29122797, y_pred[0]
     assert_in_delta 25.87936514, y_pred[1]
 
-    expected = [98.0, 16.0, 66.0, 0.0, 40.0, 201.0, 109.0, 108.0, 24.0, 77.0, 74.0, 100.0, 162.0]
+    expected = [98, 16, 66, 0, 40, 201, 109, 108, 24, 77, 74, 100, 162]
     assert_equal expected, model.feature_importance
   end
 
