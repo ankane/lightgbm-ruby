@@ -4,6 +4,9 @@ module LightGBM
     ffi_lib ["lightgbm", "lib_lightgbm.so"]
 
     # https://github.com/microsoft/LightGBM/blob/master/include/LightGBM/c_api.h
+    # keep same order
+
+    # error
     attach_function :LGBM_GetLastError, %i[], :string
 
     # dataset
