@@ -43,8 +43,9 @@ module LightGBM
       singular ? out : out.first
     end
 
-    def save_model(filename)
-      check_result FFI.LGBM_BoosterSaveModel(handle_pointer, 0, 0, filename)
+    def save_model(filename, num_iteration: nil, start_iteration: 0)
+      num_iteration ||= best_iteration
+      check_result FFI.LGBM_BoosterSaveModel(handle_pointer, start_iteration, num_iteration, filename)
       self # consistent with Python API
     end
 
