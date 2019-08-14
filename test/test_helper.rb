@@ -11,7 +11,7 @@ class Minitest::Test
   end
 
   def test_set
-    @test_set ||= LightGBM::Dataset.new(dataset.data[300..-1], label: dataset.label[300..-1])
+    @test_set ||= LightGBM::Dataset.new(dataset.data[300..-1], label: dataset.label[300..-1], reference: train_set)
   end
 
   def dataset

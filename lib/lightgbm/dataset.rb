@@ -2,16 +2,17 @@ module LightGBM
   class Dataset
     attr_reader :data, :params
 
-    def initialize(data, label: nil, weight: nil, params: nil)
+    def initialize(data, label: nil, weight: nil, params: nil, reference: nil)
       @data = data
 
       @handle = ::FFI::MemoryPointer.new(:pointer)
+      reference = reference.handle_pointer if reference
       if data.is_a?(String)
-        check_result FFI.LGBM_DatasetCreateFromFile(data, params_str(params), nil, @handle)
+        check_result FFI.LGBM_DatasetCreateFromFile(data, params_str(params), reference, @handle)
       else
         c_data = ::FFI::MemoryPointer.new(:float, data.count * data.first.count)
         c_data.put_array_of_float(0, data.flatten)
-        check_result FFI.LGBM_DatasetCreateFromMat(c_data, 0, data.count, data.first.count, 1, params_str(params), nil, @handle)
+        check_result FFI.LGBM_DatasetCreateFromMat(c_data, 0, data.count, data.first.count, 1, params_str(params), reference, @handle)
       end
       # causes "Stack consistency error"
       # ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer))
