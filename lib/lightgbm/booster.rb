@@ -2,7 +2,7 @@ module LightGBM
   class Booster
     attr_accessor :best_iteration, :train_data_name
 
-    def initialize(params: nil, train_set: nil, model_file: nil, model_str: nil)
+    def initialize(params: nil, train_set: nil, model_file: nil, model_str: nil, silent: true)
       @handle = ::FFI::MemoryPointer.new(:pointer)
       if model_str
         model_from_string(model_str)
@@ -10,6 +10,8 @@ module LightGBM
         out_num_iterations = ::FFI::MemoryPointer.new(:int)
         check_result FFI.LGBM_BoosterCreateFromModelfile(model_file, out_num_iterations, @handle)
       else
+        params ||= {}
+        set_verbosity(params, silent)
         check_result FFI.LGBM_BoosterCreate(train_set.handle_pointer, params_str(params), @handle)
       end
       # causes "Stack consistency error"

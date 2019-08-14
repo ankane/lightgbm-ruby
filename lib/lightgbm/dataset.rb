@@ -2,8 +2,11 @@ module LightGBM
   class Dataset
     attr_reader :data, :params
 
-    def initialize(data, label: nil, weight: nil, params: nil, reference: nil)
+    def initialize(data, label: nil, weight: nil, params: nil, reference: nil, silent: true)
       @data = data
+
+      params ||= {}
+      set_verbosity(params, silent)
 
       @handle = ::FFI::MemoryPointer.new(:pointer)
       reference = reference.handle_pointer if reference

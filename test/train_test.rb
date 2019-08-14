@@ -16,6 +16,18 @@ class TrainTest < Minitest::Test
     assert_operator rsme(y_test, y_pred), :<=, 6
   end
 
+  def test_early_stopping_early
+    params = {objective: "regression", metric: "mse"}
+    model = LightGBM.train(params, train_set, valid_sets: [train_set, test_set], early_stopping_rounds: 5)
+    assert_equal 55, model.best_iteration
+  end
+
+  def test_early_stopping_not_early
+    params = {objective: "regression", metric: "mse"}
+    model = LightGBM.train(params, train_set, valid_sets: [train_set, test_set], early_stopping_rounds: 500)
+    assert_equal 71, model.best_iteration
+  end
+
   def test_bad_params
     params = {objective: "regression verbosity=1"}
     assert_raises ArgumentError do

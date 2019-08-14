@@ -50,6 +50,12 @@ Get feature importance
 booster.feature_importance
 ```
 
+## Early Stopping [master]
+
+```ruby
+LightGBM.train(params, train_set, valid_set: [train_set, test_set], early_stopping_rounds: 5)
+```
+
 ## Reference
 
 This library follows the [Data Structure and Training APIs](https://lightgbm.readthedocs.io/en/latest/Python-API.html) for the Python library. However, some features may be missing at the moment. PRs welcome!

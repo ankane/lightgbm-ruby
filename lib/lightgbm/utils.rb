@@ -8,12 +8,19 @@ module LightGBM
 
     # remove spaces in keys and values to prevent injection
     def params_str(params)
-      (params || {}).map { |k, v| [check_param(k.to_s), check_param(v.to_s)].join("=") }.join(" ")
+      params.map { |k, v| [check_param(k.to_s), check_param(v.to_s)].join("=") }.join(" ")
     end
 
     def check_param(v)
       raise ArgumentError, "Invalid parameter" if /[[:space:]]/.match(v)
       v
+    end
+
+    def set_verbosity(params, silent)
+      params_keys = params.keys.map(&:to_s)
+      if silent && !params_keys.include?("verbosity")
+        params["verbosity"] = -1
+      end
     end
   end
 end
