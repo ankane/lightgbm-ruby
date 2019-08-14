@@ -14,4 +14,17 @@ class DatasetTest < Minitest::Test
     dataset = LightGBM::Dataset.new(data, weight: weight)
     assert weight, dataset.weight
   end
+
+  def test_num_data
+    assert_equal 506, dataset.num_data
+  end
+
+  def test_num_feature
+    assert_equal 13, dataset.num_feature
+  end
+
+  def test_save_binary
+    dataset.save_binary("/tmp/train.bin")
+    assert File.exist?("/tmp/train.bin")
+  end
 end
