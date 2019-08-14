@@ -1,10 +1,31 @@
 module LightGBM
   class Booster
-    def initialize(model_file:)
+    def initialize(model_file: nil, params: nil, train_set: nil)
       @handle = ::FFI::MemoryPointer.new(:pointer)
       if model_file
         out_num_iterations = ::FFI::MemoryPointer.new(:int)
         check_result FFI.LGBM_BoosterCreateFromModelfile(model_file, out_num_iterations, @handle)
+      else
+        train_data = ::FFI::MemoryPointer.new(:pointer)
+
+        # populate train_data: data
+        input = train_set.data
+        data = ::FFI::MemoryPointer.new(:float, input.count * input.first.count)
+        data.put_array_of_float(0, input.flatten)
+        check_result FFI.LGBM_DatasetCreateFromMat(data, 0, input.count, input.first.count, 1, "", nil, train_data)
+
+        # populate train_data: label
+        label = train_set.label
+        label_data = ::FFI::MemoryPointer.new(:float, label.count)
+        label_data.put_array_of_float(0, label)
+        check_result FFI.LGBM_DatasetSetField(train_data.read_pointer, "label", label_data, label.count, 0)
+
+        check_result FFI.LGBM_BoosterCreate(train_data.read_pointer, params_str(params), @handle)
+        finished = ::FFI::MemoryPointer.new(:int)
+        100.times do
+          check_result FFI.LGBM_BoosterUpdateOneIter(handle_pointer, finished)
+          # break if finished.read_int != 1
+        end
       end
       ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer))
     end
@@ -45,6 +66,11 @@ module LightGBM
 
     def handle_pointer
       @handle.read_pointer
+    end
+
+    # remove spaces in keys and values to prevent injection
+    def params_str(params)
+      params.map { |k, v| [k.to_s.gsub(/[[:space:]]/, ""), v.to_s.gsub(/[[:space:]]/, "")].join("=") }.join(" ")
     end
   end
 end

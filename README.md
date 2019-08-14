@@ -14,10 +14,12 @@ Add this line to your application’s Gemfile:
 gem 'lightgbm'
 ```
 
-Load a model
+Train a model [master]
 
 ```ruby
-booster = LightGBM::Booster.new(model_file: "model.txt")
+params = {objective: "regression"}
+train_set = LightGBM::Dataset.new(x_train, label: y_train)
+model = LightGBM::Booster.new(params: params, train_set: train_set)
 ```
 
 Predict
@@ -32,9 +34,15 @@ Save [master]
 booster.save_model("model.txt")
 ```
 
+Load a model
+
+```ruby
+booster = LightGBM::Booster.new(model_file: "model.txt")
+```
+
 ## Credits
 
-Thanks to the [xgboost](https://github.com/PairOnAir/xgboost-ruby) gem for serving as an initial reference.
+Thanks to the [xgboost](https://github.com/PairOnAir/xgboost-ruby) gem for serving as an initial reference, and Selva Prabhakaran for the [test datasets](https://github.com/selva86/datasets).
 
 ## History
 
