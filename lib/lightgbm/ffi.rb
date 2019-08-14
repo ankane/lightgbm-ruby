@@ -7,6 +7,7 @@ module LightGBM
     attach_function :LGBM_GetLastError, %i[], :string
     attach_function :LGBM_BoosterCreate, %i[pointer string pointer], :int
     attach_function :LGBM_BoosterCreateFromModelfile, %i[string pointer pointer], :int
+    attach_function :LGBM_BoosterLoadModelFromString, %i[string pointer pointer], :int
     attach_function :LGBM_BoosterFree, %i[pointer], :int
     attach_function :LGBM_DatasetFree, %i[pointer], :int
     attach_function :LGBM_BoosterUpdateOneIter, %i[pointer pointer], :int

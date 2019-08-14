@@ -1,8 +1,11 @@
 module LightGBM
   class Booster
-    def initialize(model_file: nil, params: nil, train_set: nil)
+    def initialize(params: nil, train_set: nil, model_file: nil, model_str: nil)
       @handle = ::FFI::MemoryPointer.new(:pointer)
-      if model_file
+      if model_str
+        out_num_iterations = ::FFI::MemoryPointer.new(:int)
+        check_result FFI.LGBM_BoosterLoadModelFromString(model_str, out_num_iterations, @handle)
+      elsif model_file
         out_num_iterations = ::FFI::MemoryPointer.new(:int)
         check_result FFI.LGBM_BoosterCreateFromModelfile(model_file, out_num_iterations, @handle)
       else
