@@ -30,6 +30,18 @@ module LightGBM
       end
     end
 
+    def num_data
+      out = ::FFI::MemoryPointer.new(:int)
+      check_result FFI.LGBM_DatasetGetNumData(handle_pointer, out)
+      out.read_int
+    end
+
+    def num_feature
+      out = ::FFI::MemoryPointer.new(:int)
+      check_result FFI.LGBM_DatasetGetNumFeature(handle_pointer, out)
+      out.read_int
+    end
+
     def self.finalize(pointer)
       -> { FFI.LGBM_DatasetFree(pointer) }
     end

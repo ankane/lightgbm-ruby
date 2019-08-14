@@ -19,5 +19,7 @@ module LightGBM
     attach_function :LGBM_BoosterGetNumFeature, %i[pointer pointer], :int
     attach_function :LGBM_BoosterDumpModel, %i[pointer int int int64 pointer pointer], :int
     attach_function :LGBM_BoosterAddValidData, %i[pointer pointer], :int
+    attach_function :LGBM_DatasetGetNumData, %i[pointer pointer], :int
+    attach_function :LGBM_DatasetGetNumFeature, %i[pointer pointer], :int
   end
 end

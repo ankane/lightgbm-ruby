@@ -16,6 +16,11 @@ class TrainTest < Minitest::Test
     assert_operator rsme(y_test, y_pred), :<=, 6
   end
 
+  def test_cv
+    params = {objective: "regression"} #, verbosity: -1}
+    model = LightGBM.cv(params, dataset)
+  end
+
   def test_predict
     # LightGBM.train({}, train_set).predict([[20], [50]])
   end
@@ -25,6 +30,16 @@ class TrainTest < Minitest::Test
     assert_raises ArgumentError do
       LightGBM.train(params, train_set)
     end
+  end
+
+  # TODO move to dataset test
+  def test_num_data
+    assert_equal 506, dataset.num_data
+  end
+
+  # TODO move to dataset test
+  def test_num_feature
+    assert_equal 13, dataset.num_feature
   end
 
   private

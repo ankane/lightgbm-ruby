@@ -21,4 +21,10 @@ module LightGBM
     end
     booster
   end
+
+  def self.cv(params, train_set, num_boost_round: 100, nfold: 5, seed: 0, shuffle: true)
+    rand_idx = (0...train_set.num_data).to_a
+    rand_idx.shuffle!(random: Random.new(seed)) if shuffle
+    p rand_idx
+  end
 end
