@@ -45,6 +45,10 @@ class BoosterTest < Minitest::Test
     assert JSON.parse(booster.to_json)
   end
 
+  def test_dump_model
+    assert JSON.parse(booster.dump_model)
+  end
+
   def test_current_iteration
     assert_equal 100, booster.current_iteration
   end

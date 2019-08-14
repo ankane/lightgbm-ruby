@@ -104,7 +104,7 @@ module LightGBM
       out_str.read_string
     end
 
-    def to_json(num_iteration: nil, start_iteration: 0)
+    def dump_model(num_iteration: nil, start_iteration: 0)
       num_iteration ||= best_iteration
       buffer_len = 1 << 20
       out_len = ::FFI::MemoryPointer.new(:int64)
@@ -117,6 +117,7 @@ module LightGBM
       end
       out_str.read_string
     end
+    alias_method :to_json, :dump_model
 
     private
 
