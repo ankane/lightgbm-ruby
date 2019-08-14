@@ -1,8 +1,8 @@
 module LightGBM
   class Dataset
-    attr_reader :data, :label, :weight
+    attr_reader :data, :label, :weight, :params
 
-    def initialize(data, label: nil, weight: nil)
+    def initialize(data, label: nil, weight: nil, params: nil)
       @data = data
       @label = label
       @weight = weight
@@ -13,7 +13,7 @@ module LightGBM
 
       # create dataset
       @handle = ::FFI::MemoryPointer.new(:pointer)
-      check_result FFI.LGBM_DatasetCreateFromMat(c_data, 0, data.count, data.first.count, 1, "", nil, @handle)
+      check_result FFI.LGBM_DatasetCreateFromMat(c_data, 0, data.count, data.first.count, 1, params_str(params), nil, @handle)
       # causes "Stack consistency error"
       # ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer))
 
@@ -38,10 +38,6 @@ module LightGBM
       @handle.read_pointer
     end
 
-    private
-
-    def check_result(err)
-      raise LightGBM::Error, FFI.LGBM_GetLastError if err != 0
-    end
+    include Utils
   end
 end

@@ -2,6 +2,7 @@
 require "ffi"
 
 # modules
+require "lightgbm/utils"
 require "lightgbm/booster"
 require "lightgbm/dataset"
 require "lightgbm/ffi"
