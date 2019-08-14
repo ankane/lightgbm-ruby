@@ -19,6 +19,11 @@ module LightGBM
       -> { FFI.LGBM_BoosterFree(pointer) }
     end
 
+    # TODO handle name
+    def add_valid(data, name)
+      check_result FFI.LGBM_BoosterAddValidData(handle_pointer, data.handle_pointer)
+    end
+
     def predict(input)
       raise TypeError unless input.is_a?(Array)
 

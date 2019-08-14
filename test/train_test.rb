@@ -16,7 +16,7 @@ class TrainTest < Minitest::Test
 
     params = {objective: "regression", verbosity: -1}
     train_set = LightGBM::Dataset.new(x_train, label: y_train)
-    model = LightGBM.train(params, train_set)
+    model = LightGBM.train(params, train_set, valid_sets: [train_set], valid_names: ["train"])
     y_pred = model.predict(x_test)
     assert_operator rsme(y_test, y_pred), :<=, 6
 
