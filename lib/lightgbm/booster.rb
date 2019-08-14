@@ -66,17 +66,18 @@ module LightGBM
           -1
         end
 
-      num_features = self.num_features
-      out_result = ::FFI::MemoryPointer.new(:double, num_features)
+      num_feature = self.num_feature
+      out_result = ::FFI::MemoryPointer.new(:double, num_feature)
       check_result FFI.LGBM_BoosterFeatureImportance(handle_pointer, iteration, importance_type, out_result)
-      out_result.read_array_of_double(num_features)
+      out_result.read_array_of_double(num_feature)
     end
 
-    def num_features
+    def num_feature
       out = ::FFI::MemoryPointer.new(:int)
       check_result FFI.LGBM_BoosterGetNumFeature(handle_pointer, out)
       out.read_int
     end
+    alias_method :num_features, :num_feature # legacy typo
 
     def current_iteration
       out = ::FFI::MemoryPointer.new(:int)
