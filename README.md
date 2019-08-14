@@ -66,6 +66,7 @@ dataset = LightGBM::Dataset.new(data, label: label, weight: weight, params: para
 dataset.num_data
 dataset.num_feature
 
+# note: only works with unquoted CSVs
 dataset = LightGBM::Dataset.new("data.csv", params: {headers: true, label: "name:label"})
 dataset.save_binary("train.bin")
 dataset.dump_text("train.txt")
