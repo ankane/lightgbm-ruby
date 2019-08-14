@@ -23,11 +23,6 @@ module LightGBM
         check_result FFI.LGBM_DatasetSetField(train_data.read_pointer, "label", label_data, label.count, 0)
 
         check_result FFI.LGBM_BoosterCreate(train_data.read_pointer, params_str(params), @handle)
-        finished = ::FFI::MemoryPointer.new(:int)
-        100.times do
-          check_result FFI.LGBM_BoosterUpdateOneIter(handle_pointer, finished)
-          # break if finished.read_int != 1
-        end
       end
     end
 
@@ -55,6 +50,12 @@ module LightGBM
 
     def save_model(filename)
       check_result FFI.LGBM_BoosterSaveModel(handle_pointer, 0, 0, filename)
+    end
+
+    def update
+      finished = ::FFI::MemoryPointer.new(:int)
+      check_result FFI.LGBM_BoosterUpdateOneIter(handle_pointer, finished)
+      finished.read_int == 1
     end
 
     private

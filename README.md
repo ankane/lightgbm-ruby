@@ -19,7 +19,7 @@ Train a model [master]
 ```ruby
 params = {objective: "regression"}
 train_set = LightGBM::Dataset.new(x_train, label: y_train)
-model = LightGBM::Booster.new(params: params, train_set: train_set)
+booster = LightGBM.train(params, train_set)
 ```
 
 Predict
