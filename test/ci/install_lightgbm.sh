@@ -5,7 +5,7 @@ set -e
 CACHE_DIR=$HOME/lightgbm/$LIGHTGBM_VERSION
 
 if [ ! -d "$CACHE_DIR" ]; then
-  git clone --recursive https://github.com/microsoft/LightGBM
+  git clone --recursive --branch v$LIGHTGBM_VERSION https://github.com/microsoft/LightGBM
   mv LightGBM $CACHE_DIR
   cd $CACHE_DIR
   mkdir build
