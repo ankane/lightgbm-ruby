@@ -36,10 +36,16 @@ Save [master]
 booster.save_model("model.txt")
 ```
 
-Load a model
+Load a model from a file
 
 ```ruby
 booster = LightGBM::Booster.new(model_file: "model.txt")
+```
+
+Load a model from a string [master]
+
+```ruby
+booster = LightGBM::Booster.new(model_str: "tree...")
 ```
 
 Get feature importance [master]
