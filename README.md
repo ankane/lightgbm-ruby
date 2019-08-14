@@ -32,13 +32,13 @@ Predict
 booster.predict(x_test)
 ```
 
-Save the model
+Save the model to a file
 
 ```ruby
 booster.save_model("model.txt")
 ```
 
-Load a model from a file
+Load the model from a file
 
 ```ruby
 booster = LightGBM::Booster.new(model_file: "model.txt")
