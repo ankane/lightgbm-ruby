@@ -16,10 +16,6 @@ class TrainTest < Minitest::Test
     assert_operator rsme(y_test, y_pred), :<=, 6
   end
 
-  def test_predict
-    # LightGBM.train({}, train_set).predict([[20], [50]])
-  end
-
   def test_bad_params
     params = {objective: "regression verbosity=1"}
     assert_raises ArgumentError do
