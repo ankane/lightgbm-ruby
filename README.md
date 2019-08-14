@@ -4,7 +4,7 @@ LightGBM for Ruby
 
 ## Installation
 
-First, [install LightGBM](https://lightgbm.readthedocs.io/en/latest/Installation-Guide.html).
+First, [install LightGBM](https://lightgbm.readthedocs.io/en/latest/Installation-Guide.html). On Mac, copy `lib_lightgbm.so` to `/usr/local/lib`.
 
 Add this line to your application’s Gemfile:
 
