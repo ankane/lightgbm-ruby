@@ -48,18 +48,25 @@ Get feature importance [master]
 booster.feature_importance
 ```
 
-## Reference
+## Reference [master]
 
-Load a model from a string [master]
+### Booster
 
 ```ruby
-LightGBM::Booster.new(model_str: "tree...")
+# load from a string
+booster = LightGBM::Booster.new(model_str: "tree...")
+
+# dump to json
+booster.to_json
 ```
 
-Dump a model as JSON [master]
+### Dataset
 
 ```ruby
-booster.to_json
+dataset = LightGBM::Dataset.new(data, label: label, weight: weight, params: params)
+dataset.num_data
+dataset.num_feature
+dataset.save_binary("train.bin")
 ```
 
 ## Credits
