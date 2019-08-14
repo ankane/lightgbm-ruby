@@ -56,7 +56,7 @@ Load a model from a string [master]
 LightGBM::Booster.new(model_str: "tree...")
 ```
 
-Convert a model to JSON
+Dump a model as JSON [master]
 
 ```ruby
 booster.to_json
