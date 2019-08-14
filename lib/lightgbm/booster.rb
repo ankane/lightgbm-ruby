@@ -22,6 +22,7 @@ module LightGBM
     # TODO handle name
     def add_valid(data, name)
       check_result FFI.LGBM_BoosterAddValidData(handle_pointer, data.handle_pointer)
+      self # consistent with Python API
     end
 
     def predict(input)
@@ -44,6 +45,7 @@ module LightGBM
 
     def save_model(filename)
       check_result FFI.LGBM_BoosterSaveModel(handle_pointer, 0, 0, filename)
+      self # consistent with Python API
     end
 
     def update
