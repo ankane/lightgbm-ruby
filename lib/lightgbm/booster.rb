@@ -3,8 +3,7 @@ module LightGBM
     def initialize(params: nil, train_set: nil, model_file: nil, model_str: nil)
       @handle = ::FFI::MemoryPointer.new(:pointer)
       if model_str
-        out_num_iterations = ::FFI::MemoryPointer.new(:int)
-        check_result FFI.LGBM_BoosterLoadModelFromString(model_str, out_num_iterations, @handle)
+        model_from_string(model_str)
       elsif model_file
         out_num_iterations = ::FFI::MemoryPointer.new(:int)
         check_result FFI.LGBM_BoosterCreateFromModelfile(model_file, out_num_iterations, @handle)
@@ -89,6 +88,12 @@ module LightGBM
     # TODO fix
     def best_iteration
       -1
+    end
+
+    def model_from_string(model_str)
+      out_num_iterations = ::FFI::MemoryPointer.new(:int)
+      check_result FFI.LGBM_BoosterLoadModelFromString(model_str, out_num_iterations, @handle)
+      self
     end
 
     def model_to_string(num_iteration: nil, start_iteration: 0)
