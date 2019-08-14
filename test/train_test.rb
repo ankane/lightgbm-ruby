@@ -13,9 +13,9 @@ class TrainTest < Minitest::Test
     y_train = y[0...300]
     x_test = x[300..-1]
     y_test = y[300..-1]
+    train_set = LightGBM::Dataset.new(x_train, label: y_train)
 
     params = {objective: "regression", verbosity: -1}
-    train_set = LightGBM::Dataset.new(x_train, label: y_train)
     model = LightGBM.train(params, train_set, valid_sets: [train_set], valid_names: ["train"])
     y_pred = model.predict(x_test)
     assert_operator rsme(y_test, y_pred), :<=, 6
@@ -26,7 +26,18 @@ class TrainTest < Minitest::Test
     assert_operator rsme(y_test, y_pred), :<=, 6
   end
 
+  def test_bad_params
+    params = {objective: "regression verbosity=1"}
+    assert_raises ArgumentError do
+      LightGBM.train(params, train_set)
+    end
+  end
+
   private
+
+  def train_set
+    LightGBM::Dataset.new((1...10).map { |i| [i] }, label: 1...10)
+  end
 
   def rsme(y_true, y_pred)
     Math.sqrt(y_true.zip(y_pred).map { |a, b| (a - b)**2 }.sum / y_true.size.to_f)
