@@ -65,6 +65,8 @@ booster.current_iteration
 dataset = LightGBM::Dataset.new(data, label: label, weight: weight, params: params)
 dataset.num_data
 dataset.num_feature
+
+dataset = LightGBM::Dataset.new("data.csv", params: {headers: true, label: "name:label"})
 dataset.save_binary("train.bin")
 dataset.dump_text("train.txt")
 ```
