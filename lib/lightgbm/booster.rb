@@ -2,14 +2,13 @@ module LightGBM
   class Booster
     def initialize(model_file: nil, params: nil, train_set: nil)
       @handle = ::FFI::MemoryPointer.new(:pointer)
-      ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer))
-
       if model_file
         out_num_iterations = ::FFI::MemoryPointer.new(:int)
         check_result FFI.LGBM_BoosterCreateFromModelfile(model_file, out_num_iterations, @handle)
       else
         check_result FFI.LGBM_BoosterCreate(train_set.handle_pointer, params_str(params), @handle)
       end
+      ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer))
     end
 
     def self.finalize(pointer)
