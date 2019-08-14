@@ -8,6 +8,7 @@ module LightGBM
       else
         check_result FFI.LGBM_BoosterCreate(train_set.handle_pointer, params_str(params), @handle)
       end
+      # causes "Stack consistency error"
       # ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer))
     end
 
