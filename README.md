@@ -2,6 +2,8 @@
 
 LightGBM for Ruby
 
+:fire: Uses the C API for blazing performance
+
 [![Build Status](https://travis-ci.org/ankane/lightgbm.svg?branch=master)](https://travis-ci.org/ankane/lightgbm)
 
 ## Installation
