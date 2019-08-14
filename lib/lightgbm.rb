@@ -13,12 +13,38 @@ module LightGBM
 
   def self.train(params, train_set, num_boost_round: 100, valid_sets: [], valid_names: [])
     booster = Booster.new(params: params, train_set: train_set)
-    valid_sets.zip(valid_names) do |data, name|
-      booster.add_valid(data, name)
+
+    valid_contain_train = false
+    valid_sets.zip(valid_names).each_with_index do |(data, name), i|
+      if data == train_set
+        booster.train_data_name = name || "training"
+        valid_contain_train = true
+      else
+        booster.add_valid(data, name || "valid_#{i}")
+      end
     end
-    num_boost_round.times do
+
+    booster.best_iteration = 0
+
+    num_boost_round.times do |i|
       booster.update
+
+      if valid_sets.any?
+        # print results
+        messages = []
+
+        if valid_contain_train
+          messages << "#{booster.train_data_name}: #{booster.eval_train}"
+        end
+
+        booster.name_valid_sets.zip(booster.eval_valid).each do |(name, score)|
+          messages << "#{name}: #{score}"
+        end
+
+        puts "[#{i}]\t#{messages.join("\t")}"
+      end
     end
+
     booster
   end
 end

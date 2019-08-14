@@ -1,5 +1,8 @@
 module LightGBM
   class Booster
+    attr_accessor :best_iteration, :train_data_name
+    attr_reader :name_valid_sets
+
     def initialize(params: nil, train_set: nil, model_file: nil, model_str: nil)
       @handle = ::FFI::MemoryPointer.new(:pointer)
       if model_str
@@ -12,21 +15,21 @@ module LightGBM
       end
       # causes "Stack consistency error"
       # ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer))
+
+      self.best_iteration = -1
+
+      # TODO get names when loaded from file
+      @name_valid_sets = []
     end
 
     def self.finalize(pointer)
       -> { FFI.LGBM_BoosterFree(pointer) }
     end
 
-    # TODO handle name
     def add_valid(data, name)
       check_result FFI.LGBM_BoosterAddValidData(handle_pointer, data.handle_pointer)
+      @name_valid_sets << name
       self # consistent with Python API
-    end
-
-    # TODO fix
-    def best_iteration
-      -1
     end
 
     def current_iteration
@@ -49,6 +52,15 @@ module LightGBM
       out_str.read_string
     end
     alias_method :to_json, :dump_model
+
+    # TODO confirm return format is correct
+    def eval_valid
+      @name_valid_sets.each_with_index.map { |n, i| inner_eval(n, i + 1) }
+    end
+
+    def eval_train
+      inner_eval(train_data_name, 0)
+    end
 
     def feature_importance(iteration: nil, importance_type: "split")
       iteration ||= best_iteration
@@ -141,6 +153,14 @@ module LightGBM
 
     def handle_pointer
       @handle.read_pointer
+    end
+
+    # TODO use out_len to read multiple metrics
+    def inner_eval(name, i)
+      out_len = ::FFI::MemoryPointer.new(:int)
+      out_results = ::FFI::MemoryPointer.new(:double)
+      check_result FFI.LGBM_BoosterGetEval(handle_pointer, i, out_len, out_results)
+      out_results.read_double
     end
 
     include Utils
