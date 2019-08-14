@@ -16,6 +16,8 @@ Add this line to your application’s Gemfile:
 gem 'lightgbm'
 ```
 
+## Getting Started
+
 Train a model
 
 ```ruby
@@ -50,27 +52,7 @@ booster.feature_importance
 
 ## Reference
 
-### Booster
-
-```ruby
-booster = LightGBM::Booster.new(model_str: "tree...")
-booster.to_json
-booster.model_to_string
-booster.current_iteration
-```
-
-### Dataset
-
-```ruby
-dataset = LightGBM::Dataset.new(data, label: label, weight: weight, params: params)
-dataset.num_data
-dataset.num_feature
-
-# note: only works with unquoted CSVs
-dataset = LightGBM::Dataset.new("data.csv", params: {headers: true, label: "name:label"})
-dataset.save_binary("train.bin")
-dataset.dump_text("train.txt")
-```
+This library follows the [Data Structure and Training APIs](https://lightgbm.readthedocs.io/en/latest/Python-API.html) for the Python library. However, some features may be missing at the moment. PRs welcome!
 
 ## Credits
 
