@@ -11,7 +11,7 @@ require "lightgbm/version"
 module LightGBM
   class Error < StandardError; end
 
-  def self.train(params, train_set, num_boost_round: 100, valid_sets: [], valid_names: [], early_stopping_rounds: nil)
+  def self.train(params, train_set,num_boost_round: 100, valid_sets: [], valid_names: [], early_stopping_rounds: nil, verbose_eval: true)
     booster = Booster.new(params: params, train_set: train_set)
 
     valid_contain_train = false
@@ -31,7 +31,7 @@ module LightGBM
       best_iter = []
       best_message = []
 
-      puts "Training until validation scores don't improve for #{early_stopping_rounds.to_i} rounds."
+      puts "Training until validation scores don't improve for #{early_stopping_rounds.to_i} rounds." if verbose_eval
     end
 
     num_boost_round.times do |iteration|
@@ -53,7 +53,7 @@ module LightGBM
 
         message = "[#{iteration + 1}]\t#{messages.join("\t")}"
 
-        puts message
+        puts message if verbose_eval
 
         if early_stopping_rounds
           stop_early = false
@@ -64,8 +64,7 @@ module LightGBM
               best_message[i] = message
             elsif iteration - best_iter[i] >= early_stopping_rounds
               booster.best_iteration = best_iter[i] + 1
-              puts "Early stopping, best iteration is:"
-              puts best_message[i]
+              puts "Early stopping, best iteration is:\n#{best_message[i]}" if verbose_eval
               stop_early = true
               break
             end
@@ -75,8 +74,7 @@ module LightGBM
 
           if iteration == num_boost_round - 1
             booster.best_iteration = best_iter[0] + 1
-            puts "Did not meet early stopping. Best iteration is:"
-            puts best_message[0]
+            puts "Did not meet early stopping. Best iteration is: #{best_message[0]}" if verbose_eval
           end
         end
       end

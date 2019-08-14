@@ -28,6 +28,14 @@ class TrainTest < Minitest::Test
     assert_equal 71, model.best_iteration
   end
 
+  def test_verbose_eval_false
+    stdout, _ = capture_io do
+      params = {objective: "regression", metric: "mse"}
+      LightGBM.train(params, train_set, valid_sets: [train_set, test_set], early_stopping_rounds: 5, verbose_eval: false)
+    end
+    assert_empty stdout
+  end
+
   def test_bad_params
     params = {objective: "regression verbosity=1"}
     assert_raises ArgumentError do
