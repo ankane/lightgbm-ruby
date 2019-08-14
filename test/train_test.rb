@@ -32,38 +32,7 @@ class TrainTest < Minitest::Test
     end
   end
 
-  # TODO move to dataset test
-  def test_num_data
-    assert_equal 506, dataset.num_data
-  end
-
-  # TODO move to dataset test
-  def test_num_feature
-    assert_equal 13, dataset.num_feature
-  end
-
   private
-
-  def train_set
-    @train_set ||= LightGBM::Dataset.new(dataset.data[0...300], label: dataset.label[0...300])
-  end
-
-  def test_set
-    @test_set ||= LightGBM::Dataset.new(dataset.data[300..-1], label: dataset.label[300..-1])
-  end
-
-  def dataset
-    @dataset ||= begin
-      x = []
-      y = []
-      CSV.foreach("test/support/boston.csv", headers: true).each do |row|
-        row = row.to_a.map { |_, v| v.to_f }
-        x << row[0...13]
-        y << row[13]
-      end
-      LightGBM::Dataset.new(x, label: y)
-    end
-  end
 
   def rsme(y_true, y_pred)
     Math.sqrt(y_true.zip(y_pred).map { |a, b| (a - b)**2 }.sum / y_true.size.to_f)
