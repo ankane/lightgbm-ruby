@@ -34,7 +34,7 @@ module LightGBM
       puts "Training until validation scores don't improve for #{early_stopping_rounds.to_i} rounds."
     end
 
-    (1..num_boost_round).each do |iteration|
+    num_boost_round.times do |iteration|
       booster.update
 
       if valid_sets.any?
@@ -51,7 +51,7 @@ module LightGBM
           messages << "%s: %g" % [res[0], res[2]]
         end
 
-        message = "[#{iteration}]\t#{messages.join("\t")}"
+        message = "[#{iteration + 1}]\t#{messages.join("\t")}"
 
         puts message
 
@@ -63,7 +63,7 @@ module LightGBM
               best_iter[i] = iteration
               best_message[i] = message
             elsif iteration - best_iter[i] >= early_stopping_rounds
-              booster.best_iteration = best_iter[i]
+              booster.best_iteration = best_iter[i] + 1
               puts "Early stopping, best iteration is:"
               puts best_message[i]
               stop_early = true
@@ -73,8 +73,8 @@ module LightGBM
 
           break if stop_early
 
-          if iteration == num_boost_round
-            booster.best_iteration = best_iter[0]
+          if iteration == num_boost_round - 1
+            booster.best_iteration = best_iter[0] + 1
             puts "Did not meet early stopping. Best iteration is:"
             puts best_message[0]
           end
