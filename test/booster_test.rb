@@ -7,8 +7,8 @@ class BoosterTest < Minitest::Test
       [0.03537, 34.0, 6.09, 0, 0.433, 6.590, 40.4, 5.4917, 7, 329, 16.1, 395.75, 9.50]
     ]
 
-    model = LightGBM::Booster.new(model_file: "test/support/model.txt")
-    y_pred = model.predict(x_test)
+    booster = LightGBM::Booster.new(model_file: "test/support/model.txt")
+    y_pred = booster.predict(x_test)
     assert_in_delta 28.29122797, y_pred[0]
     assert_in_delta 25.87936514, y_pred[1]
   end
@@ -19,38 +19,39 @@ class BoosterTest < Minitest::Test
       [0.03537, 34.0, 6.09, 0, 0.433, 6.590, 40.4, 5.4917, 7, 329, 16.1, 395.75, 9.50]
     ]
 
-    model = LightGBM::Booster.new(model_str: File.read("test/support/model.txt"))
-    y_pred = model.predict(x_test)
+    booster = LightGBM::Booster.new(model_str: File.read("test/support/model.txt"))
+    y_pred = booster.predict(x_test)
     assert_in_delta 28.29122797, y_pred[0]
     assert_in_delta 25.87936514, y_pred[1]
   end
 
   def test_feature_importance
-    model = LightGBM::Booster.new(model_file: "test/support/model.txt")
     expected = [98, 16, 66, 0, 40, 201, 109, 108, 24, 77, 74, 100, 162]
-    assert_equal expected, model.feature_importance
+    assert_equal expected, booster.feature_importance
   end
 
   def test_feature_importance_bad_importance_type
-    model = LightGBM::Booster.new(model_file: "test/support/model.txt")
     error = assert_raises LightGBM::Error do
-      model.feature_importance(importance_type: "bad")
+      booster.feature_importance(importance_type: "bad")
     end
     assert_includes error.message, "Unknown importance type"
   end
 
   def test_model_to_string
-    model = LightGBM::Booster.new(model_file: "test/support/model.txt")
-    assert model.model_to_string
+    assert booster.model_to_string
   end
 
   def test_to_json
-    model = LightGBM::Booster.new(model_file: "test/support/model.txt")
-    assert JSON.parse(model.to_json)
+    assert JSON.parse(booster.to_json)
   end
 
   def test_current_iteration
-    model = LightGBM::Booster.new(model_file: "test/support/model.txt")
-    assert_equal 100, model.current_iteration
+    assert_equal 100, booster.current_iteration
+  end
+
+  private
+
+  def booster
+    @booster ||= LightGBM::Booster.new(model_file: "test/support/model.txt")
   end
 end
