@@ -42,16 +42,24 @@ Load a model from a file
 booster = LightGBM::Booster.new(model_file: "model.txt")
 ```
 
-Load a model from a string [master]
-
-```ruby
-booster = LightGBM::Booster.new(model_str: "tree...")
-```
-
 Get feature importance [master]
 
 ```ruby
 booster.feature_importance
+```
+
+## Reference
+
+Load a model from a string [master]
+
+```ruby
+LightGBM::Booster.new(model_str: "tree...")
+```
+
+Convert a model to JSON
+
+```ruby
+booster.to_json
 ```
 
 ## Credits
