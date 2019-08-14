@@ -33,7 +33,7 @@ module LightGBM
     private
 
     def check_result(err)
-      raise FFI.LGBM_GetLastError if err != 0
+      raise LightGBM::Error, FFI.LGBM_GetLastError if err != 0
     end
   end
 end

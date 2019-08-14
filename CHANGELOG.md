@@ -2,6 +2,7 @@
 
 - Added training API
 - Added `save_model` method
+- Added `feature_importance` method
 
 ## 0.1.0
 

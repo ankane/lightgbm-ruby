@@ -14,5 +14,7 @@ module LightGBM
     attach_function :LGBM_DatasetSetField, %i[pointer string pointer int int], :int
     attach_function :LGBM_BoosterPredictForMat, %i[pointer pointer int int32 int32 int int int string pointer pointer], :int
     attach_function :LGBM_BoosterSaveModel, %i[pointer int int string], :int
+    attach_function :LGBM_BoosterFeatureImportance, %i[pointer int int pointer], :int
+    attach_function :LGBM_BoosterGetNumFeature, %i[pointer pointer], :int
   end
 end

@@ -11,6 +11,17 @@ class LightGBMTest < Minitest::Test
     y_pred = model.predict(x_test)
     assert_in_delta 28.29122797, y_pred[0]
     assert_in_delta 25.87936514, y_pred[1]
+
+    expected = [98.0, 16.0, 66.0, 0.0, 40.0, 201.0, 109.0, 108.0, 24.0, 77.0, 74.0, 100.0, 162.0]
+    assert_equal expected, model.feature_importance
+  end
+
+  def test_feature_importance_bad_importance_type
+    model = LightGBM::Booster.new(model_file: "test/support/model.txt")
+    error = assert_raises LightGBM::Error do
+      model.feature_importance(importance_type: "bad")
+    end
+    assert_includes error.message, "Unknown importance type"
   end
 
   def test_train

@@ -43,10 +43,39 @@ module LightGBM
       finished.read_int == 1
     end
 
+    def feature_importance(iteration: nil, importance_type: "split")
+      iteration ||= best_iteration
+      importance_type =
+        case importance_type
+        when "split"
+          0
+        when "gain"
+          1
+        else
+          -1
+        end
+
+      num_features = self.num_features
+      out_result = ::FFI::MemoryPointer.new(:double, num_features)
+      check_result FFI.LGBM_BoosterFeatureImportance(handle_pointer, iteration, importance_type, out_result)
+      out_result.read_array_of_double(num_features)
+    end
+
+    def num_features
+      out = ::FFI::MemoryPointer.new(:int)
+      check_result FFI.LGBM_BoosterGetNumFeature(handle_pointer, out)
+      out.read_int
+    end
+
+    # TODO fix
+    def best_iteration
+      -1
+    end
+
     private
 
     def check_result(err)
-      raise FFI.LGBM_GetLastError if err != 0
+      raise LightGBM::Error, FFI.LGBM_GetLastError if err != 0
     end
 
     def handle_pointer
