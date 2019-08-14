@@ -1,7 +1,6 @@
 module LightGBM
   class Booster
     attr_accessor :best_iteration, :train_data_name
-    attr_reader :name_valid_sets
 
     def initialize(params: nil, train_set: nil, model_file: nil, model_str: nil)
       @handle = ::FFI::MemoryPointer.new(:pointer)
@@ -53,7 +52,6 @@ module LightGBM
     end
     alias_method :to_json, :dump_model
 
-    # TODO confirm return format is correct
     def eval_valid
       @name_valid_sets.each_with_index.map { |n, i| inner_eval(n, i + 1) }
     end
@@ -160,7 +158,7 @@ module LightGBM
       out_len = ::FFI::MemoryPointer.new(:int)
       out_results = ::FFI::MemoryPointer.new(:double)
       check_result FFI.LGBM_BoosterGetEval(handle_pointer, i, out_len, out_results)
-      out_results.read_double
+      [name, "todo", out_results.read_double, false]
     end
 
     include Utils

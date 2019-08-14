@@ -34,11 +34,12 @@ module LightGBM
         messages = []
 
         if valid_contain_train
-          messages << "%s: %g" % [booster.train_data_name, booster.eval_train]
+          res = booster.eval_train
+          messages << "%s: %g" % [res[0], res[2]]
         end
 
-        booster.name_valid_sets.zip(booster.eval_valid).each do |(name, score)|
-          messages << "%s: %g" % [name, score]
+        booster.eval_valid.each do |res|
+          messages << "%s: %g" % [res[0], res[2]]
         end
 
         puts "[#{i}]\t#{messages.join("\t")}"
