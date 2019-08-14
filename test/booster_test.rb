@@ -53,6 +53,14 @@ class BoosterTest < Minitest::Test
     assert_equal 100, booster.current_iteration
   end
 
+  def test_num_model_per_iteration
+    assert_equal 1, booster.num_model_per_iteration
+  end
+
+  def test_num_trees
+    assert_equal 100, booster.num_trees
+  end
+
   private
 
   def booster

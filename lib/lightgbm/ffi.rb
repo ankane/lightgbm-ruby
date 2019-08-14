@@ -28,6 +28,8 @@ module LightGBM
     attach_function :LGBM_BoosterAddValidData, %i[pointer pointer], :int
     attach_function :LGBM_BoosterUpdateOneIter, %i[pointer pointer], :int
     attach_function :LGBM_BoosterGetCurrentIteration, %i[pointer pointer], :int
+    attach_function :LGBM_BoosterNumModelPerIteration, %i[pointer pointer], :int
+    attach_function :LGBM_BoosterNumberOfTotalModel, %i[pointer pointer], :int
     attach_function :LGBM_BoosterGetNumFeature, %i[pointer pointer], :int
     attach_function :LGBM_BoosterPredictForMat, %i[pointer pointer int int32 int32 int int int string pointer pointer], :int
     attach_function :LGBM_BoosterSaveModel, %i[pointer int int string], :int

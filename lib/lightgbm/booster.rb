@@ -85,6 +85,18 @@ module LightGBM
       out.read_int
     end
 
+    def num_model_per_iteration
+      out = ::FFI::MemoryPointer.new(:int)
+      check_result FFI::LGBM_BoosterNumModelPerIteration(handle_pointer, out)
+      out.read_int
+    end
+
+    def num_trees
+      out = ::FFI::MemoryPointer.new(:int)
+      check_result FFI::LGBM_BoosterNumberOfTotalModel(handle_pointer, out)
+      out.read_int
+    end
+
     # TODO fix
     def best_iteration
       -1
