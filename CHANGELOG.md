@@ -1,8 +1,7 @@
-## 0.1.1 [unreleased]
+## 0.1.1
 
 - Added training API
-- Added `save_model` method
-- Added `feature_importance` method
+- Added many methods
 
 ## 0.1.0
 

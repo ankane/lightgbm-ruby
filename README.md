@@ -16,7 +16,7 @@ Add this line to your application’s Gemfile:
 gem 'lightgbm'
 ```
 
-Train a model [master]
+Train a model
 
 ```ruby
 params = {objective: "regression"}
@@ -30,7 +30,7 @@ Predict
 booster.predict(x_test)
 ```
 
-Save [master]
+Save the model
 
 ```ruby
 booster.save_model("model.txt")
@@ -42,13 +42,13 @@ Load a model from a file
 booster = LightGBM::Booster.new(model_file: "model.txt")
 ```
 
-Get feature importance [master]
+Get feature importance
 
 ```ruby
 booster.feature_importance
 ```
 
-## Reference [master]
+## Reference
 
 ### Booster
 
