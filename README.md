@@ -71,6 +71,11 @@ This library follows the [Data Structure and Training APIs](https://lightgbm.rea
 
 Some methods and options are also missing at the moment. PRs welcome!
 
+## Helpful Resources
+
+- [Parameters](https://lightgbm.readthedocs.io/en/latest/Parameters.html)
+- [Parameter Tuning](https://lightgbm.readthedocs.io/en/latest/Parameters-Tuning.html)
+
 ## Credits
 
 Thanks to the [xgboost](https://github.com/PairOnAir/xgboost-ruby) gem for serving as an initial reference, and Selva Prabhakaran for the [test datasets](https://github.com/selva86/datasets).
