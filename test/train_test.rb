@@ -49,7 +49,7 @@ class TrainTest < Minitest::Test
   end
 
   def test_cv
-    eval_hist = LightGBM.cv(default_params, dataset, shuffle: false)
+    eval_hist = LightGBM.cv(default_params, dataset, shuffle: false, verbose_eval: true)
     assert_in_delta 82.33637413467392, eval_hist["l2-mean"].first
     assert_in_delta 22.55870116923647, eval_hist["l2-mean"].last
     assert_in_delta 35.018415375374886, eval_hist["l2-stdv"].first

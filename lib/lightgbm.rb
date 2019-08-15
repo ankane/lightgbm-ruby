@@ -84,7 +84,7 @@ module LightGBM
       booster
     end
 
-    def cv(params, train_set, num_boost_round: 100, nfold: 5, seed: 0, shuffle: true, verbose_eval: nil)
+    def cv(params, train_set, num_boost_round: 100, nfold: 5, seed: 0, shuffle: true, verbose_eval: nil, show_stdv: true)
       rand_idx = (0...train_set.num_data).to_a
       rand_idx.shuffle!(random: Random.new(seed)) if shuffle
 
@@ -119,7 +119,13 @@ module LightGBM
         eval_hist["l2-mean"] << mean
         eval_hist["l2-stdv"] << stdev
 
-        puts "[#{iteration + 1}]\tcv_agg's l2: %g + %g" % [mean, stdev] if verbose_eval
+        if verbose_eval
+          if show_stdv
+            puts "[#{iteration + 1}]\tcv_agg's l2: %g + %g" % [mean, stdev]
+          else
+            puts "[#{iteration + 1}]\tcv_agg's l2: %g" % [mean]
+          end
+        end
       end
 
       eval_hist
