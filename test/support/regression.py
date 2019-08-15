@@ -27,5 +27,5 @@ param['metric'] = ['l1', 'l2', 'rmse']
 # bst = lgb.train(param, train_data, valid_sets=[train_data, test_data])
 # print(bst.predict(X_test)[:1])
 
-eval_dict = lgb.cv(param, dataset, shuffle=False, stratified=False, verbose_eval=True)
+eval_dict = lgb.cv(param, dataset, shuffle=False, stratified=False, verbose_eval=True, early_stopping_rounds=5)
 # print(eval_dict)
