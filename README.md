@@ -64,7 +64,7 @@ LightGBM.cv(params, train_set, nfold: 5, verbose_eval: true)
 
 ## Reference
 
-This library follows the [Data Structure and Training APIs](https://lightgbm.readthedocs.io/en/latest/Python-API.html) for the Python library. A few differences are:
+This library follows the [Data Structure and Training APIs](https://lightgbm.readthedocs.io/en/latest/Python-API.html) of the Python library. A few differences are:
 
 - The default verbosity is `-1`
 - With the `cv` method, `stratified` is set to `false`
