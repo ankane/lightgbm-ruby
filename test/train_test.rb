@@ -30,6 +30,11 @@ class TrainTest < Minitest::Test
     assert_in_delta 3.91608299e-04, y_pred[0]
     assert_in_delta 3.81933551e-01, y_pred[1]
     assert_in_delta 6.17674841e-01, y_pred[2]
+
+    y_pred = model.predict(iris_test.data)
+    # ensure reshaped
+    assert_equal 50, y_pred.size
+    assert_equal 3, y_pred.first.size
   end
 
   def test_early_stopping_early
