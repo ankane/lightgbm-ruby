@@ -8,7 +8,7 @@ module LightGBM
 
     # remove spaces in keys and values to prevent injection
     def params_str(params)
-      params.map { |k, v| [check_param(k.to_s), check_param(v.to_s)].join("=") }.join(" ")
+      params.map { |k, v| [check_param(k.to_s), check_param(Array(v).join(",").to_s)].join("=") }.join(" ")
     end
 
     def check_param(v)
