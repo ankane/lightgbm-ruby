@@ -16,10 +16,20 @@ class TrainTest < Minitest::Test
     assert_operator rsme(y_test, y_pred), :<=, 6
   end
 
-  def test_train_classification
+  def test_train_classification_binary
+    params = {objective: "binary"}
+    model = LightGBM.train(params, iris_train, valid_sets: [iris_train, iris_test], verbose_eval: false)
+    y_pred = model.predict([6.3, 2.7, 4.9, 1.8])
+    assert_in_delta 0.99998366, y_pred
+  end
+
+  def test_train_classification_multiclass
     params = {objective: "multiclass", num_class: 3}
-    model = LightGBM.train(params, iris_train, valid_sets: [iris_train, iris_test])
-    p model.predict(iris_test.data)
+    model = LightGBM.train(params, iris_train, valid_sets: [iris_train, iris_test], verbose_eval: false)
+    y_pred = model.predict([6.3, 2.7, 4.9, 1.8])
+    assert_in_delta 3.91608299e-04, y_pred[0]
+    assert_in_delta 3.81933551e-01, y_pred[1]
+    assert_in_delta 6.17674841e-01, y_pred[2]
   end
 
   def test_early_stopping_early

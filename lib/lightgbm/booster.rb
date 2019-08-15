@@ -123,10 +123,11 @@ module LightGBM
     def predict(input, num_iteration: nil, **params)
       raise TypeError unless input.is_a?(Array)
 
-      singular = input.first.is_a?(Array)
-      input = [input] unless singular
+      singular = !input.first.is_a?(Array)
+      input = [input] if singular
 
       num_iteration ||= best_iteration
+      num_class ||= send(:num_class)
 
       data = ::FFI::MemoryPointer.new(:float, input.count * input.first.count)
       data.put_array_of_float(0, input.flatten)
@@ -135,8 +136,9 @@ module LightGBM
       out_result = ::FFI::MemoryPointer.new(:double, num_class * input.count)
       check_result FFI.LGBM_BoosterPredictForMat(handle_pointer, data, 0, input.count, input.first.count, 1, 0, num_iteration, params_str(params), out_len, out_result)
       out = out_result.read_array_of_double(out_len.read_int64)
+      out = out.each_slice(num_class).to_a if num_class > 1
 
-      singular ? out : out.first
+      singular ? out.first : out
     end
 
     def save_model(filename, num_iteration: nil, start_iteration: 0)
