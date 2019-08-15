@@ -107,6 +107,8 @@ module LightGBM
         boosters << booster
       end
 
+      eval_hist = {"l2-mean" => [], "l2-stdv" => []}
+
       num_boost_round.times do |iteration|
         boosters.each(&:update)
 
@@ -114,10 +116,12 @@ module LightGBM
         mean = mean(scores)
         stdev = stdev(scores)
 
+        eval_hist["l2-mean"] << mean
+        eval_hist["l2-stdv"] << stdev
+
         puts "[#{iteration + 1}]\tcv_agg: %g + %g" % [mean, stdev]
       end
 
-      eval_hist = {}
       eval_hist
     end
 
