@@ -23,20 +23,20 @@ class DatasetTest < Minitest::Test
   end
 
   def test_num_data
-    assert_equal 506, dataset.num_data
+    assert_equal 506, boston.num_data
   end
 
   def test_num_feature
-    assert_equal 13, dataset.num_feature
+    assert_equal 13, boston.num_feature
   end
 
   def test_save_binary
-    dataset.save_binary("/tmp/train.bin")
+    boston.save_binary("/tmp/train.bin")
     assert File.exist?("/tmp/train.bin")
   end
 
   def test_dump_text
-    dataset.dump_text("/tmp/train.txt")
+    boston.dump_text("/tmp/train.txt")
     assert File.exist?("/tmp/train.txt")
   end
 end
