@@ -24,8 +24,8 @@ param = {}
 param['verbosity'] = -1
 param['metric'] = ['l1', 'l2', 'rmse']
 
-bst = lgb.train(param, train_data, valid_sets=[train_data, test_data, test_data])
+bst = lgb.train(param, train_data, valid_sets=[train_data, test_data])
 # print(bst.predict(X_test)[:1])
 
-eval_dict = lgb.cv(param, dataset, shuffle=False, stratified=False)
+# eval_dict = lgb.cv(param, dataset, shuffle=False, stratified=False)
 # print(eval_dict)
