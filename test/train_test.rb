@@ -134,13 +134,14 @@ class TrainTest < Minitest::Test
   def test_train_multiple_metrics
     params = regression_params.dup
     params[:metric] = ["l1", "l2", "rmse"]
-    LightGBM.train(params, boston_train, valid_sets: [boston_train, boston_test], early_stopping_rounds: 5)
+    LightGBM.train(params, boston_train, valid_sets: [boston_train, boston_test], verbose_eval: false, early_stopping_rounds: 5)
   end
 
   def test_cv_multiple_metrics
     params = regression_params.dup
     params[:metric] = ["l1", "l2", "rmse"]
-    eval_hist = LightGBM.cv(params, boston, shuffle: false, verbose_eval: true, early_stopping_rounds: 5)
+    eval_hist = LightGBM.cv(params, boston, shuffle: false, early_stopping_rounds: 5)
+    assert_equal ["rmse-mean", "rmse-stdv", "l2-mean", "l2-stdv", "l1-mean", "l1-stdv"], eval_hist.keys
   end
 
   private
