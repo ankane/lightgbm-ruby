@@ -107,7 +107,7 @@ module LightGBM
         boosters << booster
       end
 
-      eval_hist = {"l2-mean" => [], "l2-stdv" => []}
+      eval_hist = {}
 
       if early_stopping_rounds
         best_score = nil
@@ -117,12 +117,17 @@ module LightGBM
       num_boost_round.times do |iteration|
         boosters.each(&:update)
 
-        scores = boosters.map(&:eval_valid).map { |r| r[0][2] }
+        scores = []
+        eval_name = nil
+        boosters.map(&:eval_valid).each do |r|
+          eval_name = r[0][1]
+          scores << r[0][2]
+        end
         mean = mean(scores)
         stdev = stdev(scores)
 
-        eval_hist["l2-mean"] << mean
-        eval_hist["l2-stdv"] << stdev
+        (eval_hist["#{eval_name}-mean"] ||= []) << mean
+        (eval_hist["#{eval_name}-stdv"] ||= []) << stdev
 
         if verbose_eval
           if show_stdv

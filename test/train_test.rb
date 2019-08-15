@@ -89,13 +89,21 @@ class TrainTest < Minitest::Test
   end
 
   def test_cv_classification_binary
+    # need to set stratified=False in Python
     eval_hist = LightGBM.cv(binary_params, iris, shuffle: false)
-    p eval_hist
+    assert_in_delta 0.5523814945253853, eval_hist["binary_logloss-mean"].first
+    assert_in_delta 0.0702413393927758, eval_hist["binary_logloss-mean"].last
+    assert_in_delta 0.04849276982520402, eval_hist["binary_logloss-stdv"].first
+    assert_in_delta 0.14004060158158324, eval_hist["binary_logloss-stdv"].last
   end
 
   def test_cv_classification_multiclass
+    # need to set stratified=False in Python
     eval_hist = LightGBM.cv(multiclass_params, iris, shuffle: false)
-    p eval_hist
+    assert_in_delta 0.9968127754694314, eval_hist["multi_logloss-mean"].first
+    assert_in_delta 0.23619145913652034, eval_hist["multi_logloss-mean"].last
+    assert_in_delta 0.017988535469258864, eval_hist["multi_logloss-stdv"].first
+    assert_in_delta 0.19730616941199997, eval_hist["multi_logloss-stdv"].last
   end
 
   def test_cv_early_stopping_early
