@@ -59,7 +59,7 @@ LightGBM.train(params, train_set, valid_set: [train_set, test_set], early_stoppi
 ## CV [master]
 
 ```ruby
-LightGBM.cv(params, train_set, nfold: 5)
+LightGBM.cv(params, train_set, nfold: 5, verbose_eval: true)
 ```
 
 ## Reference
