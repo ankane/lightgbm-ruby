@@ -1,5 +1,6 @@
 ## 0.1.2 [unreleased]
 
+- Added `cv` method
 - Added early stopping
 
 ## 0.1.1
