@@ -57,17 +57,21 @@ class TrainTest < Minitest::Test
   end
 
   def test_cv_early_stopping_early
+    eval_hist = nil
     stdout, _ = capture_io do
-      LightGBM.cv(default_params, dataset, shuffle: false, verbose_eval: true, early_stopping_rounds: 5)
+      eval_hist = LightGBM.cv(default_params, dataset, shuffle: false, verbose_eval: true, early_stopping_rounds: 5)
     end
+    assert_equal 49, eval_hist["l2-mean"].size
     assert_includes stdout, "[49]\tcv_agg's l2: 21.6348 + 12.0872"
     refute_includes stdout, "[50]"
   end
 
   def test_cv_early_stopping_not_early
+    eval_hist = nil
     stdout, _ = capture_io do
-      LightGBM.cv(default_params, dataset, shuffle: false, verbose_eval: true, early_stopping_rounds: 500)
+      eval_hist = LightGBM.cv(default_params, dataset, shuffle: false, verbose_eval: true, early_stopping_rounds: 500)
     end
+    assert_equal 100, eval_hist["l2-mean"].size
     assert_includes stdout, "[100]\tcv_agg's l2: 22.5587 + 11.6055"
   end
 
