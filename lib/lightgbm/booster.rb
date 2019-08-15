@@ -175,7 +175,6 @@ module LightGBM
       str_ptrs.map(&:read_string)
     end
 
-    # TODO use out_len to read multiple metrics
     def inner_eval(name, i)
       eval_names ||= eval_names()
 
