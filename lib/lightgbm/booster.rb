@@ -119,6 +119,7 @@ module LightGBM
       out.read_int
     end
 
+    # TODO support different prediction types
     def predict(input, num_iteration: nil, **params)
       raise TypeError unless input.is_a?(Array)
 
