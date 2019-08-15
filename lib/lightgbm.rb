@@ -120,36 +120,38 @@ module LightGBM
       num_boost_round.times do |iteration|
         boosters.each(&:update)
 
-        scores = []
-        eval_name = nil
-        p boosters.map(&:eval_valid)
-        boosters.map(&:eval_valid).each do |r|
-          eval_name = r[0][1]
-          scores << r[0][2]
+        scores = {}
+        boosters.map(&:eval_valid).map(&:reverse).flatten(1).each do |r|
+          (scores[r[1]] ||= []) << r[2]
         end
-        mean = mean(scores)
-        stdev = stdev(scores)
 
-        (eval_hist["#{eval_name}-mean"] ||= []) << mean
-        (eval_hist["#{eval_name}-stdv"] ||= []) << stdev
+        message_parts = ["[#{iteration + 1}]"]
 
-        if verbose_eval
+        scores.each do |eval_name, vals|
+          mean = mean(vals)
+          stdev = stdev(vals)
+
+          (eval_hist["#{eval_name}-mean"] ||= []) << mean
+          (eval_hist["#{eval_name}-stdv"] ||= []) << stdev
+
           if show_stdv
-            puts "[#{iteration + 1}]\tcv_agg's l2: %g + %g" % [mean, stdev]
+            message_parts << "cv_agg's %s: %g + %g" % [eval_name, mean, stdev]
           else
-            puts "[#{iteration + 1}]\tcv_agg's l2: %g" % [mean]
+            message_parts << "cv_agg's %s: %g" % [eval_name, mean]
           end
         end
 
-        if early_stopping_rounds
-          score = mean
-          if best_score.nil? || score < best_score
-            best_score = score
-            best_iter = iteration
-          elsif iteration - best_iter >= early_stopping_rounds
-            break
-          end
-        end
+        puts message_parts.join("\t") if verbose_eval
+
+        # if early_stopping_rounds
+        #   score = mean
+        #   if best_score.nil? || score < best_score
+        #     best_score = score
+        #     best_iter = iteration
+        #   elsif iteration - best_iter >= early_stopping_rounds
+        #     break
+        #   end
+        # end
       end
 
       eval_hist

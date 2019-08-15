@@ -127,7 +127,7 @@ module LightGBM
       input = [input] if singular
 
       num_iteration ||= best_iteration
-      num_class ||= send(:num_class)
+      num_class ||= num_class()
 
       data = ::FFI::MemoryPointer.new(:float, input.count * input.first.count)
       data.put_array_of_float(0, input.flatten)
@@ -166,7 +166,7 @@ module LightGBM
     end
 
     def eval_names
-      eval_counts ||= send(:eval_counts)
+      eval_counts ||= eval_counts()
       out_len = ::FFI::MemoryPointer.new(:int)
       out_strs = ::FFI::MemoryPointer.new(:pointer, eval_counts)
       str_ptrs = eval_counts.times.map { ::FFI::MemoryPointer.new(:string, 255) }
@@ -177,7 +177,7 @@ module LightGBM
 
     # TODO use out_len to read multiple metrics
     def inner_eval(name, i)
-      eval_names ||= send(:eval_names)
+      eval_names ||= eval_names()
 
       out_len = ::FFI::MemoryPointer.new(:int)
       out_results = ::FFI::MemoryPointer.new(:double, eval_names.count)
