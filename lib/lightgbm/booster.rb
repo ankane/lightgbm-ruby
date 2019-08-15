@@ -119,19 +119,21 @@ module LightGBM
       out.read_int
     end
 
-    def predict(input)
+    def predict(input, num_iteration: nil)
       raise TypeError unless input.is_a?(Array)
 
       singular = input.first.is_a?(Array)
       input = [input] unless singular
+
+      num_iteration ||= best_iteration
 
       data = ::FFI::MemoryPointer.new(:float, input.count * input.first.count)
       data.put_array_of_float(0, input.flatten)
 
       out_len = ::FFI::MemoryPointer.new(:int64)
       out_result = ::FFI::MemoryPointer.new(:double, num_class * input.count)
-      parameter = ""
-      check_result FFI.LGBM_BoosterPredictForMat(handle_pointer, data, 0, input.count, input.first.count, 1, 0, 0, parameter, out_len, out_result)
+      parameter = "" # TODO use **params once all others are implemented
+      check_result FFI.LGBM_BoosterPredictForMat(handle_pointer, data, 0, input.count, input.first.count, 1, 0, num_iteration, parameter, out_len, out_result)
       out = out_result.read_array_of_double(out_len.read_int64)
 
       singular ? out : out.first
