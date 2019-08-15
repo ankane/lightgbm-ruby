@@ -76,6 +76,11 @@ Some methods and options are also missing at the moment. PRs welcome!
 - [Parameters](https://lightgbm.readthedocs.io/en/latest/Parameters.html)
 - [Parameter Tuning](https://lightgbm.readthedocs.io/en/latest/Parameters-Tuning.html)
 
+## Related Projects
+
+- [Xgb](https://github.com/ankane/xgb) - XGBoost for Ruby
+- [Eps](https://github.com/ankane/eps) - Machine Learning for Ruby
+
 ## Credits
 
 Thanks to the [xgboost](https://github.com/PairOnAir/xgboost-ruby) gem for serving as an initial reference, and Selva Prabhakaran for the [test datasets](https://github.com/selva86/datasets).
