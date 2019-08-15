@@ -15,14 +15,16 @@ y_train = y[:300]
 X_test = X[300:]
 y_test = y[300:]
 
-train_data = lgb.Dataset(X_train, label=y_train)
-test_data = lgb.Dataset(X_test, label=y_test)
-dataset = lgb.Dataset(X, label=y)
+categorical_feature = [5]
+train_data = lgb.Dataset(X_train, label=y_train, categorical_feature=categorical_feature)
+test_data = lgb.Dataset(X_test, label=y_test, categorical_feature=categorical_feature)
+dataset = lgb.Dataset(X, label=y, categorical_feature=categorical_feature)
 
 param = {}
 param['verbosity'] = -1
 
 bst = lgb.train(param, train_data, valid_sets=[train_data, test_data])
+print(bst.predict(X_test)[:1])
 
 eval_dict = lgb.cv(param, dataset, shuffle=False, stratified=False)
 # print(eval_dict)

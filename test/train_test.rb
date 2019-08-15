@@ -125,6 +125,12 @@ class TrainTest < Minitest::Test
     assert_includes stdout, "[100]\tcv_agg's l2: 22.5587 + 11.6055"
   end
 
+  def test_train_categorical_feature
+    train_set = LightGBM::Dataset.new(boston_train.data, label: boston_train.label, categorical_feature: [5])
+    model = LightGBM.train(regression_params, train_set)
+    assert_in_delta 22.33155937, model.predict(boston_test.data[0])
+  end
+
   private
 
   def regression_params

@@ -2,10 +2,12 @@ module LightGBM
   class Dataset
     attr_reader :data, :params
 
-    def initialize(data, label: nil, weight: nil, params: nil, reference: nil, used_indices: nil)
+    def initialize(data, label: nil, weight: nil, params: nil, reference: nil, used_indices: nil, categorical_feature: "auto")
       @data = data
 
+      # TODO stringify params
       params ||= {}
+      params["categorical_feature"] ||= categorical_feature.join(",") if categorical_feature != "auto"
       set_verbosity(params)
 
       @handle = ::FFI::MemoryPointer.new(:pointer)
@@ -58,8 +60,13 @@ module LightGBM
     end
 
     def subset(used_indices, params: nil)
+      # categorical_feature passed via params
       params ||= self.params
-      Dataset.new(nil, params: params, reference: self, used_indices: used_indices)
+      Dataset.new(nil,
+        params: params,
+        reference: self,
+        used_indices: used_indices
+      )
     end
 
     def self.finalize(pointer)
