@@ -12,6 +12,7 @@ module LightGBM
     # dataset
     attach_function :LGBM_DatasetCreateFromFile, %i[string string pointer pointer], :int
     attach_function :LGBM_DatasetCreateFromMat, %i[pointer int int32 int32 int string pointer pointer], :int
+    attach_function :LGBM_DatasetGetSubset, %i[pointer pointer int32 string pointer], :int
     attach_function :LGBM_DatasetFree, %i[pointer], :int
     attach_function :LGBM_DatasetSaveBinary, %i[pointer string], :int
     attach_function :LGBM_DatasetDumpText, %i[pointer string], :int

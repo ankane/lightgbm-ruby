@@ -2,20 +2,25 @@ module LightGBM
   class Dataset
     attr_reader :data, :params
 
-    def initialize(data, label: nil, weight: nil, params: nil, reference: nil)
+    def initialize(data, label: nil, weight: nil, params: nil, reference: nil, used_indices: nil)
       @data = data
 
       params ||= {}
       set_verbosity(params)
 
       @handle = ::FFI::MemoryPointer.new(:pointer)
+      parameters = params_str(params)
       reference = reference.handle_pointer if reference
       if data.is_a?(String)
-        check_result FFI.LGBM_DatasetCreateFromFile(data, params_str(params), reference, @handle)
+        check_result FFI.LGBM_DatasetCreateFromFile(data, parameters, reference, @handle)
+      elsif used_indices
+        used_row_indices = ::FFI::MemoryPointer.new(:int32, used_indices.count)
+        used_row_indices.put_array_of_int32(0, used_indices)
+        check_result FFI.LGBM_DatasetGetSubset(reference, used_row_indices, used_indices.count, parameters, @handle)
       else
         c_data = ::FFI::MemoryPointer.new(:float, data.count * data.first.count)
         c_data.put_array_of_float(0, data.flatten)
-        check_result FFI.LGBM_DatasetCreateFromMat(c_data, 0, data.count, data.first.count, 1, params_str(params), reference, @handle)
+        check_result FFI.LGBM_DatasetCreateFromMat(c_data, 0, data.count, data.first.count, 1, parameters, reference, @handle)
       end
       # causes "Stack consistency error"
       # ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer))
@@ -50,6 +55,11 @@ module LightGBM
 
     def dump_text(filename)
       check_result FFI.LGBM_DatasetDumpText(handle_pointer, filename)
+    end
+
+    def subset(used_indices, params: nil)
+      params ||= self.params
+      Dataset.new(nil, params: params, reference: self, used_indices: used_indices)
     end
 
     def self.finalize(pointer)

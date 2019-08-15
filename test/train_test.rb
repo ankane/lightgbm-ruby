@@ -48,6 +48,11 @@ class TrainTest < Minitest::Test
     end
   end
 
+  def test_cv
+    eval_hist = LightGBM.cv(default_params, dataset, shuffle: false)
+    p eval_hist
+  end
+
   private
 
   def default_params
