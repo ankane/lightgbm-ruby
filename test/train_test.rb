@@ -137,6 +137,12 @@ class TrainTest < Minitest::Test
     LightGBM.train(params, boston_train, valid_sets: [boston_train, boston_test], early_stopping_rounds: 5)
   end
 
+  def test_cv_multiple_metrics
+    params = regression_params.dup
+    params[:metric] = ["l1", "l2", "rmse"]
+    eval_hist = LightGBM.cv(params, boston, shuffle: false, verbose_eval: true, early_stopping_rounds: 5)
+  end
+
   private
 
   def regression_params

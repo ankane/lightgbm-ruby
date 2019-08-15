@@ -122,6 +122,7 @@ module LightGBM
 
         scores = []
         eval_name = nil
+        p boosters.map(&:eval_valid)
         boosters.map(&:eval_valid).each do |r|
           eval_name = r[0][1]
           scores << r[0][2]

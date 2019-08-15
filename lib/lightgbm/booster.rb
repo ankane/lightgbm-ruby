@@ -169,7 +169,7 @@ module LightGBM
       eval_counts ||= send(:eval_counts)
       out_len = ::FFI::MemoryPointer.new(:int)
       out_strs = ::FFI::MemoryPointer.new(:pointer, eval_counts)
-      str_ptrs = eval_counts.times.map { ::FFI::MemoryPointer.new(:string) }
+      str_ptrs = eval_counts.times.map { ::FFI::MemoryPointer.new(:string, 255) }
       out_strs.put_array_of_pointer(0, str_ptrs)
       check_result FFI.LGBM_BoosterGetEvalNames(handle_pointer, out_len, out_strs)
       str_ptrs.map(&:read_string)
