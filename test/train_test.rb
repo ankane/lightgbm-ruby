@@ -5,8 +5,7 @@ class TrainTest < Minitest::Test
     x_test = boston_test.data
     y_test = boston_test.label
 
-    params = {objective: "regression"}
-    model = LightGBM.train(params, boston_train, valid_sets: [boston_train, boston_test], verbose_eval: false)
+    model = LightGBM.train(regression_params, boston_train, valid_sets: [boston_train, boston_test], verbose_eval: false)
     y_pred = model.predict(x_test)
     assert_operator rsme(y_test, y_pred), :<=, 6
 
