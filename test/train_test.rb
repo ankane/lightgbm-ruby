@@ -16,10 +16,10 @@ class TrainTest < Minitest::Test
     assert_operator rsme(y_test, y_pred), :<=, 6
   end
 
-  def test_train_classification_binary
+  def test_train_binary
     model = LightGBM.train(binary_params, iris_train, valid_sets: [iris_train, iris_test], verbose_eval: false)
-    y_pred = model.predict([6.3, 2.7, 4.9, 1.8])
-    assert_in_delta 0.99998366, y_pred
+    y_pred = model.predict(iris_test.data)
+    assert_in_delta 0.99998366, y_pred[0]
 
     y_pred = model.predict(iris_test.data)
     assert_equal 50, y_pred.size
@@ -30,7 +30,7 @@ class TrainTest < Minitest::Test
     assert_equal y_pred, y_pred2
   end
 
-  def test_train_classification_multiclass
+  def test_train_multiclass
     model = LightGBM.train(multiclass_params, iris_train, valid_sets: [iris_train, iris_test], verbose_eval: false)
     y_pred = model.predict([6.3, 2.7, 4.9, 1.8])
     assert_in_delta 3.91608299e-04, y_pred[0]
@@ -152,7 +152,7 @@ class TrainTest < Minitest::Test
   private
 
   def regression_params
-    {objective: "regression", metric: "mse"}
+    {objective: "regression"}
   end
 
   def binary_params
