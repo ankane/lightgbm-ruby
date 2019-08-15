@@ -61,8 +61,9 @@ module LightGBM
 
           if early_stopping_rounds
             stop_early = false
-            eval_valid.each_with_index do |(_, _, score, _), i|
-              if best_score[i].nil? || score < best_score[i]
+            eval_valid.each_with_index do |(_, _, score, higher_better), i|
+              op = higher_better ? :> : :<
+              if best_score[i].nil? || score.send(op, best_score[i])
                 best_score[i] = score
                 best_iter[i] = iteration
                 best_message[i] = message

@@ -66,6 +66,11 @@ class TrainTest < Minitest::Test
     assert_includes stdout, "Best iteration is: [71]\ttraining's l2: 1.69138\tvalid_1's l2: 35.2563"
   end
 
+  def test_early_stopping_early_higher_better
+    model = LightGBM.train(binary_params.merge(metric: 'auc'), iris_train, valid_sets: [iris_train, iris_test], early_stopping_rounds: 5, verbose_eval: false)
+    assert_equal 6, model.best_iteration
+  end
+
   def test_verbose_eval_false
     stdout, _ = capture_io do
       LightGBM.train(regression_params, boston_train, valid_sets: [boston_train, boston_test], early_stopping_rounds: 5, verbose_eval: false)

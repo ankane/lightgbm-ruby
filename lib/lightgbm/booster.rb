@@ -184,7 +184,7 @@ module LightGBM
       vals = out_results.read_array_of_double(out_len.read_int)
 
       eval_names.zip(vals).map do |eval_name, val|
-        higher_better = false # TODO fix
+        higher_better = ["auc", "ndcg@", "map@"].any? { |v| eval_name.start_with?(v) }
         [name, eval_name, val, higher_better]
       end
     end

@@ -19,11 +19,12 @@ train_data = lgb.Dataset(X_train, label=y_train)
 test_data = lgb.Dataset(X_test, label=y_test)
 dataset = lgb.Dataset(X, label=y)
 
-param = {'objective': 'binary'}
+param = {'objective': 'binary', 'metric': 'auc'}
 # param = {'objective', 'multiclass', 'num_class': 3}
 param['verbosity'] = -1
 
-bst = lgb.train(param, train_data, valid_sets=[train_data, test_data])
+bst = lgb.train(param, train_data, valid_sets=[train_data, test_data], early_stopping_rounds=5)
+print(bst.best_iteration)
 
-eval_dict = lgb.cv(param, dataset, shuffle=False, stratified=False)
+# eval_dict = lgb.cv(param, dataset, shuffle=False, stratified=False)
 # print(eval_dict)
