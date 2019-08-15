@@ -2,6 +2,7 @@
 
 - Added `cv` method
 - Added early stopping
+- Fixed multiclass classification
 
 ## 0.1.1
 

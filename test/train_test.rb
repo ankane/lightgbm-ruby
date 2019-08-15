@@ -19,6 +19,7 @@ class TrainTest < Minitest::Test
   def test_train_classification
     params = {objective: "multiclass", num_class: 3}
     model = LightGBM.train(params, iris_train, valid_sets: [iris_train, iris_test])
+    p model.predict(iris_test.data)
   end
 
   def test_early_stopping_early

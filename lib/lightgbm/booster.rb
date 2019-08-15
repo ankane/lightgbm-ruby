@@ -129,7 +129,7 @@ module LightGBM
       data.put_array_of_float(0, input.flatten)
 
       out_len = ::FFI::MemoryPointer.new(:int64)
-      out_result = ::FFI::MemoryPointer.new(:double, input.count)
+      out_result = ::FFI::MemoryPointer.new(:double, num_class * input.count)
       parameter = ""
       check_result FFI.LGBM_BoosterPredictForMat(handle_pointer, data, 0, input.count, input.first.count, 1, 0, 0, parameter, out_len, out_result)
       out = out_result.read_array_of_double(out_len.read_int64)
@@ -164,6 +164,12 @@ module LightGBM
       eval_name =  "l2" # TODO fix
       higher_better = false # TODO fix
       [name, eval_name, val, higher_better]
+    end
+
+    def num_class
+      out = ::FFI::MemoryPointer.new(:int)
+      check_result FFI::LGBM_BoosterGetNumClasses(handle_pointer, out)
+      out.read_int
     end
 
     include Utils
