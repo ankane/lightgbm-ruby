@@ -150,6 +150,7 @@ module LightGBM
         if early_stopping_rounds
           stop_early = false
           means.each do |k, score|
+            # TODO fix higher better
             if best_score[k].nil? || score < best_score[k]
               best_score[k] = score
               best_iter[k] = iteration
