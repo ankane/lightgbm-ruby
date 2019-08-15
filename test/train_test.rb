@@ -16,13 +16,9 @@ class TrainTest < Minitest::Test
     assert_operator rsme(y_test, y_pred), :<=, 6
   end
 
-  def test_train_binary_classification
-    boston_train = iris
-    params = {objective: "binary"}
-    model = LightGBM.train(params, boston_train)
-  end
-
-  def test_train_multiclass_classification
+  def test_train_classification
+    params = {objective: "multiclass", num_class: 3}
+    model = LightGBM.train(params, iris_train, valid_sets: [iris_train, iris_test])
   end
 
   def test_early_stopping_early
