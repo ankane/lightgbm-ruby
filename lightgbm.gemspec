@@ -3,7 +3,7 @@ require_relative "lib/lightgbm/version"
 Gem::Specification.new do |spec|
   spec.name          = "lightgbm"
   spec.version       = LightGBM::VERSION
-  spec.summary       = "LightGBM - the high performance machine learning algorithm - for Ruby"
+  spec.summary       = "LightGBM - the high performance machine learning library - for Ruby"
   spec.homepage      = "https://github.com/ankane/lightgbm"
   spec.license       = "MIT"
 

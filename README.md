@@ -1,6 +1,6 @@
 # LightGBM
 
-[LightGBM](https://github.com/microsoft/LightGBM) - the high performance machine learning algorithm - for Ruby
+[LightGBM](https://github.com/microsoft/LightGBM) - the high performance machine learning library - for Ruby
 
 :fire: Uses the C API for blazing performance
 
