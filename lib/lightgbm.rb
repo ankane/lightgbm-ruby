@@ -84,7 +84,7 @@ module LightGBM
       booster
     end
 
-    def cv(params, train_set, num_boost_round: 100, nfold: 5, seed: 0, shuffle: true, verbose_eval: nil, show_stdv: true)
+    def cv(params, train_set, num_boost_round: 100, nfold: 5, seed: 0, shuffle: true, early_stopping_rounds: nil, verbose_eval: nil, show_stdv: true)
       rand_idx = (0...train_set.num_data).to_a
       rand_idx.shuffle!(random: Random.new(seed)) if shuffle
 
@@ -109,6 +109,11 @@ module LightGBM
 
       eval_hist = {"l2-mean" => [], "l2-stdv" => []}
 
+      if early_stopping_rounds
+        best_score = nil
+        best_iter = nil
+      end
+
       num_boost_round.times do |iteration|
         boosters.each(&:update)
 
@@ -124,6 +129,16 @@ module LightGBM
             puts "[#{iteration + 1}]\tcv_agg's l2: %g + %g" % [mean, stdev]
           else
             puts "[#{iteration + 1}]\tcv_agg's l2: %g" % [mean]
+          end
+        end
+
+        if early_stopping_rounds
+          score = mean
+          if best_score.nil? || score < best_score
+            best_score = score
+            best_iter = iteration
+          elsif iteration - best_iter >= early_stopping_rounds
+            break
           end
         end
       end
