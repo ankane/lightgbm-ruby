@@ -165,7 +165,15 @@ module LightGBM
       out_results = ::FFI::MemoryPointer.new(:double)
       check_result FFI.LGBM_BoosterGetEval(handle_pointer, i, out_len, out_results)
       val = out_results.read_double
-      eval_name =  "l2" # TODO fix
+
+      out_strs_len = ::FFI::MemoryPointer.new(:int)
+      out_strs = ::FFI::MemoryPointer.new(:pointer)
+      str_ptr = ::FFI::MemoryPointer.new(:string)
+      out_strs.put_array_of_pointer(0, [str_ptr])
+      check_result FFI.LGBM_BoosterGetEvalNames(handle_pointer, out_strs_len, out_strs)
+      out_strs.read_array_of_pointer(out_strs_len.read_int)
+
+      eval_name =  out_strs.read_pointer.read_string # TODO fix
       higher_better = false # TODO fix
       [name, eval_name, val, higher_better]
     end
