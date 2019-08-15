@@ -69,7 +69,7 @@ This library follows the [Data Structure and Training APIs](https://lightgbm.rea
 - The default verbosity is `-1`
 - With the `cv` method, `stratified` is set to `false`
 
-Some features are also missing at the moment. PRs welcome!
+Some methods and options are also missing at the moment. PRs welcome!
 
 ## Credits
 
