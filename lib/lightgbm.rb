@@ -44,12 +44,12 @@ module LightGBM
 
           if valid_contain_train
             res = booster.eval_train
-            messages << "%s: %g" % [res[0], res[2]]
+            messages << "%s's %s: %g" % [res[0], res[1], res[2]]
           end
 
           eval_valid = booster.eval_valid
           eval_valid.each do |res|
-            messages << "%s: %g" % [res[0], res[2]]
+            messages << "%s's %s: %g" % [res[0], res[1], res[2]]
           end
 
           message = "[#{iteration + 1}]\t#{messages.join("\t")}"
@@ -119,7 +119,7 @@ module LightGBM
         eval_hist["l2-mean"] << mean
         eval_hist["l2-stdv"] << stdev
 
-        puts "[#{iteration + 1}]\tcv_agg: %g + %g" % [mean, stdev]
+        puts "[#{iteration + 1}]\tcv_agg's l2: %g + %g" % [mean, stdev]
       end
 
       eval_hist

@@ -160,7 +160,10 @@ module LightGBM
       out_len = ::FFI::MemoryPointer.new(:int)
       out_results = ::FFI::MemoryPointer.new(:double)
       check_result FFI.LGBM_BoosterGetEval(handle_pointer, i, out_len, out_results)
-      [name, "todo", out_results.read_double, false]
+      val = out_results.read_double
+      eval_name =  "l2" # TODO fix
+      higher_better = false # TODO fix
+      [name, eval_name, val, higher_better]
     end
 
     include Utils

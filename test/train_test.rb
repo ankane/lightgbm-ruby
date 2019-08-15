@@ -22,7 +22,7 @@ class TrainTest < Minitest::Test
       model = LightGBM.train(default_params, train_set, valid_sets: [train_set, test_set], early_stopping_rounds: 5)
     end
     assert_equal 55, model.best_iteration
-    assert_includes stdout, "Early stopping, best iteration is:\n[55]\ttraining: 2.18872\tvalid_1: 35.6151"
+    assert_includes stdout, "Early stopping, best iteration is:\n[55]\ttraining's l2: 2.18872\tvalid_1's l2: 35.6151"
   end
 
   def test_early_stopping_not_early
@@ -31,7 +31,7 @@ class TrainTest < Minitest::Test
       model = LightGBM.train(default_params, train_set, valid_sets: [train_set, test_set], early_stopping_rounds: 500)
     end
     assert_equal 71, model.best_iteration
-    assert_includes stdout, "Best iteration is: [71]\ttraining: 1.69138\tvalid_1: 35.2563"
+    assert_includes stdout, "Best iteration is: [71]\ttraining's l2: 1.69138\tvalid_1's l2: 35.2563"
   end
 
   def test_verbose_eval_false
