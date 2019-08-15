@@ -159,27 +159,35 @@ module LightGBM
       @handle.read_pointer
     end
 
-    # TODO support multiple
+    def eval_counts
+      out = ::FFI::MemoryPointer.new(:int)
+      check_result FFI::LGBM_BoosterGetEvalCounts(handle_pointer, out)
+      out.read_int
+    end
+
     def eval_names
+      eval_counts ||= send(:eval_counts)
       out_len = ::FFI::MemoryPointer.new(:int)
-      out_strs = ::FFI::MemoryPointer.new(:pointer)
-      str_ptr = ::FFI::MemoryPointer.new(:string)
-      out_strs.put_array_of_pointer(0, [str_ptr])
+      out_strs = ::FFI::MemoryPointer.new(:pointer, eval_counts)
+      str_ptrs = eval_counts.times.map { ::FFI::MemoryPointer.new(:string) }
+      out_strs.put_array_of_pointer(0, str_ptrs)
       check_result FFI.LGBM_BoosterGetEvalNames(handle_pointer, out_len, out_strs)
-      out_strs.read_array_of_pointer(out_len.read_int)
-      [out_strs.read_pointer.read_string]
+      str_ptrs.map(&:read_string)
     end
 
     # TODO use out_len to read multiple metrics
     def inner_eval(name, i)
-      out_len = ::FFI::MemoryPointer.new(:int)
-      out_results = ::FFI::MemoryPointer.new(:double)
-      check_result FFI.LGBM_BoosterGetEval(handle_pointer, i, out_len, out_results)
-      val = out_results.read_double
+      eval_names ||= send(:eval_names)
 
-      eval_name = eval_names.first
-      higher_better = false # TODO fix
-      [[name, eval_name, val, higher_better]]
+      out_len = ::FFI::MemoryPointer.new(:int)
+      out_results = ::FFI::MemoryPointer.new(:double, eval_names.count)
+      check_result FFI.LGBM_BoosterGetEval(handle_pointer, i, out_len, out_results)
+      vals = out_results.read_array_of_double(out_len.read_int)
+
+      eval_names.zip(vals).map do |eval_name, val|
+        higher_better = false # TODO fix
+        [name, eval_name, val, higher_better]
+      end
     end
 
     def num_class

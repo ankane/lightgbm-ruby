@@ -133,7 +133,7 @@ class TrainTest < Minitest::Test
 
   def test_train_multiple_metrics
     params = regression_params.dup
-    params["metric"] = ["l1", "l2", "rmse"]
+    params[:metric] = ["l1", "l2", "rmse"]
     LightGBM.train(params, boston_train, valid_sets: [boston_train, boston_test], early_stopping_rounds: 5)
   end
 
