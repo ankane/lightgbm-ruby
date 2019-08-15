@@ -21,6 +21,14 @@ class TrainTest < Minitest::Test
     model = LightGBM.train(params, iris_train, valid_sets: [iris_train, iris_test], verbose_eval: false)
     y_pred = model.predict([6.3, 2.7, 4.9, 1.8])
     assert_in_delta 0.99998366, y_pred
+
+    y_pred = model.predict(iris_test.data)
+    assert_equal 50, y_pred.size
+
+    model.save_model("/tmp/model.txt")
+    model = LightGBM::Booster.new(model_file: "/tmp/model.txt")
+    y_pred2 = model.predict(iris_test.data)
+    assert_equal y_pred, y_pred2
   end
 
   def test_train_classification_multiclass
@@ -35,6 +43,11 @@ class TrainTest < Minitest::Test
     # ensure reshaped
     assert_equal 50, y_pred.size
     assert_equal 3, y_pred.first.size
+
+    model.save_model("/tmp/model.txt")
+    model = LightGBM::Booster.new(model_file: "/tmp/model.txt")
+    y_pred2 = model.predict(iris_test.data)
+    assert_equal y_pred, y_pred2
   end
 
   def test_early_stopping_early
