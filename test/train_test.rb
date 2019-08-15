@@ -1,7 +1,7 @@
 require_relative "test_helper"
 
 class TrainTest < Minitest::Test
-  def test_train_regression
+  def test_regression
     x_test = boston_test.data
     y_test = boston_test.label
 
@@ -15,7 +15,7 @@ class TrainTest < Minitest::Test
     assert_operator rsme(y_test, y_pred), :<=, 6
   end
 
-  def test_train_binary
+  def test_binary
     model = LightGBM.train(binary_params, iris_train, valid_sets: [iris_train, iris_test], verbose_eval: false)
     y_pred = model.predict(iris_test.data)
     assert_in_delta 0.99998366, y_pred[0]
@@ -29,7 +29,7 @@ class TrainTest < Minitest::Test
     assert_equal y_pred, y_pred2
   end
 
-  def test_train_multiclass
+  def test_multiclass
     model = LightGBM.train(multiclass_params, iris_train, valid_sets: [iris_train, iris_test], verbose_eval: false)
     y_pred = model.predict([6.3, 2.7, 4.9, 1.8])
     assert_in_delta 3.91608299e-04, y_pred[0]
@@ -84,83 +84,19 @@ class TrainTest < Minitest::Test
     end
   end
 
-  def test_cv_regression
-    eval_hist = LightGBM.cv(regression_params, boston, shuffle: false)
-    assert_in_delta 82.33637413467392, eval_hist["l2-mean"].first
-    assert_in_delta 22.55870116923647, eval_hist["l2-mean"].last
-    assert_in_delta 35.018415375374886, eval_hist["l2-stdv"].first
-    assert_in_delta 11.605523321472438, eval_hist["l2-stdv"].last
-  end
-
-  def test_cv_classification_binary
-    # need to set stratified=False in Python
-    eval_hist = LightGBM.cv(binary_params, iris, shuffle: false)
-    assert_in_delta 0.5523814945253853, eval_hist["binary_logloss-mean"].first
-    assert_in_delta 0.0702413393927758, eval_hist["binary_logloss-mean"].last
-    assert_in_delta 0.04849276982520402, eval_hist["binary_logloss-stdv"].first
-    assert_in_delta 0.14004060158158324, eval_hist["binary_logloss-stdv"].last
-  end
-
-  def test_cv_classification_multiclass
-    # need to set stratified=False in Python
-    eval_hist = LightGBM.cv(multiclass_params, iris, shuffle: false)
-    assert_in_delta 0.9968127754694314, eval_hist["multi_logloss-mean"].first
-    assert_in_delta 0.23619145913652034, eval_hist["multi_logloss-mean"].last
-    assert_in_delta 0.017988535469258864, eval_hist["multi_logloss-stdv"].first
-    assert_in_delta 0.19730616941199997, eval_hist["multi_logloss-stdv"].last
-  end
-
-  def test_cv_early_stopping_early
-    eval_hist = nil
-    stdout, _ = capture_io do
-      eval_hist = LightGBM.cv(regression_params, boston, shuffle: false, verbose_eval: true, early_stopping_rounds: 5)
-    end
-    assert_equal 49, eval_hist["l2-mean"].size
-    assert_includes stdout, "[49]\tcv_agg's l2: 21.6348 + 12.0872"
-    refute_includes stdout, "[50]"
-  end
-
-  def test_cv_early_stopping_not_early
-    eval_hist = nil
-    stdout, _ = capture_io do
-      eval_hist = LightGBM.cv(regression_params, boston, shuffle: false, verbose_eval: true, early_stopping_rounds: 500)
-    end
-    assert_equal 100, eval_hist["l2-mean"].size
-    assert_includes stdout, "[100]\tcv_agg's l2: 22.5587 + 11.6055"
-  end
-
-  def test_train_categorical_feature
+  def test_categorical_feature
     train_set = LightGBM::Dataset.new(boston_train.data, label: boston_train.label, categorical_feature: [5])
     model = LightGBM.train(regression_params, train_set)
     assert_in_delta 22.33155937, model.predict(boston_test.data[0])
   end
 
-  def test_train_multiple_metrics
+  def test_multiple_metrics
     params = regression_params.dup
     params[:metric] = ["l1", "l2", "rmse"]
     LightGBM.train(params, boston_train, valid_sets: [boston_train, boston_test], verbose_eval: false, early_stopping_rounds: 5)
   end
 
-  def test_cv_multiple_metrics
-    params = regression_params.dup
-    params[:metric] = ["l1", "l2", "rmse"]
-    eval_hist = LightGBM.cv(params, boston, shuffle: false, early_stopping_rounds: 5)
-    assert_equal ["rmse-mean", "rmse-stdv", "l2-mean", "l2-stdv", "l1-mean", "l1-stdv"], eval_hist.keys
-  end
-
   private
-
-  def regression_params
-    {objective: "regression"}
-  end
-
-  def binary_params
-    {objective: "binary"}
-  end
-
-  def multiclass_params
-    {objective: "multiclass", num_class: 3}
-  end
 
   def rsme(y_true, y_pred)
     Math.sqrt(y_true.zip(y_pred).map { |a, b| (a - b)**2 }.sum / y_true.size.to_f)

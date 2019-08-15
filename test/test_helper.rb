@@ -42,4 +42,16 @@ class Minitest::Test
     end
     LightGBM::Dataset.new(x, label: y)
   end
+
+  def regression_params
+    {objective: "regression"}
+  end
+
+  def binary_params
+    {objective: "binary"}
+  end
+
+  def multiclass_params
+    {objective: "multiclass", num_class: 3}
+  end
 end
