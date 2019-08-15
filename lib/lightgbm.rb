@@ -43,8 +43,9 @@ module LightGBM
           messages = []
 
           if valid_contain_train
-            res = booster.eval_train
-            messages << "%s's %s: %g" % [res[0], res[1], res[2]]
+            booster.eval_train.each do |res|
+              messages << "%s's %s: %g" % [res[0], res[1], res[2]]
+            end
           end
 
           eval_valid = booster.eval_valid

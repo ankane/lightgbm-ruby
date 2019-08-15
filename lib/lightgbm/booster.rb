@@ -55,7 +55,7 @@ module LightGBM
     alias_method :to_json, :dump_model
 
     def eval_valid
-      @name_valid_sets.each_with_index.map { |n, i| inner_eval(n, i + 1) }
+      @name_valid_sets.each_with_index.map { |n, i| inner_eval(n, i + 1) }.flatten(1)
     end
 
     def eval_train
@@ -159,6 +159,17 @@ module LightGBM
       @handle.read_pointer
     end
 
+    # TODO support multiple
+    def eval_names
+      out_len = ::FFI::MemoryPointer.new(:int)
+      out_strs = ::FFI::MemoryPointer.new(:pointer)
+      str_ptr = ::FFI::MemoryPointer.new(:string)
+      out_strs.put_array_of_pointer(0, [str_ptr])
+      check_result FFI.LGBM_BoosterGetEvalNames(handle_pointer, out_len, out_strs)
+      out_strs.read_array_of_pointer(out_len.read_int)
+      [out_strs.read_pointer.read_string]
+    end
+
     # TODO use out_len to read multiple metrics
     def inner_eval(name, i)
       out_len = ::FFI::MemoryPointer.new(:int)
@@ -166,16 +177,9 @@ module LightGBM
       check_result FFI.LGBM_BoosterGetEval(handle_pointer, i, out_len, out_results)
       val = out_results.read_double
 
-      out_strs_len = ::FFI::MemoryPointer.new(:int)
-      out_strs = ::FFI::MemoryPointer.new(:pointer)
-      str_ptr = ::FFI::MemoryPointer.new(:string)
-      out_strs.put_array_of_pointer(0, [str_ptr])
-      check_result FFI.LGBM_BoosterGetEvalNames(handle_pointer, out_strs_len, out_strs)
-      out_strs.read_array_of_pointer(out_strs_len.read_int)
-
-      eval_name =  out_strs.read_pointer.read_string # TODO fix
+      eval_name = eval_names.first
       higher_better = false # TODO fix
-      [name, eval_name, val, higher_better]
+      [[name, eval_name, val, higher_better]]
     end
 
     def num_class
