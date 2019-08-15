@@ -43,13 +43,15 @@ module LightGBM
           messages = []
 
           if valid_contain_train
-            booster.eval_train.each do |res|
+            # not sure why reversed in output
+            booster.eval_train.reverse.each do |res|
               messages << "%s's %s: %g" % [res[0], res[1], res[2]]
             end
           end
 
           eval_valid = booster.eval_valid
-          eval_valid.each do |res|
+          # not sure why reversed in output
+          eval_valid.reverse.each do |res|
             messages << "%s's %s: %g" % [res[0], res[1], res[2]]
           end
 
