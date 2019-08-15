@@ -50,13 +50,13 @@ Get feature importance
 booster.feature_importance
 ```
 
-## Early Stopping [master]
+## Early Stopping
 
 ```ruby
 LightGBM.train(params, train_set, valid_set: [train_set, test_set], early_stopping_rounds: 5)
 ```
 
-## CV [master]
+## CV
 
 ```ruby
 LightGBM.cv(params, train_set, nfold: 5, verbose_eval: true)
