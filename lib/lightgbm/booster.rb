@@ -77,7 +77,7 @@ module LightGBM
       num_feature = self.num_feature
       out_result = ::FFI::MemoryPointer.new(:double, num_feature)
       check_result FFI.LGBM_BoosterFeatureImportance(handle_pointer, iteration, importance_type, out_result)
-      out_result.read_array_of_double(num_feature)
+      out_result.read_array_of_double(num_feature).map(&:to_i)
     end
 
     def model_from_string(model_str)

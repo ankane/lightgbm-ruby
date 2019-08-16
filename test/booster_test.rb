@@ -9,8 +9,7 @@ class BoosterTest < Minitest::Test
 
     booster = LightGBM::Booster.new(model_file: "test/support/model.txt")
     y_pred = booster.predict(x_test)
-    assert_in_delta 28.29122797, y_pred[0]
-    assert_in_delta 25.87936514, y_pred[1]
+    assert_elements_in_delta [28.29122797, 25.87936514], y_pred[0, 2]
   end
 
   def test_model_str
@@ -21,8 +20,7 @@ class BoosterTest < Minitest::Test
 
     booster = LightGBM::Booster.new(model_str: File.read("test/support/model.txt"))
     y_pred = booster.predict(x_test)
-    assert_in_delta 28.29122797, y_pred[0]
-    assert_in_delta 25.87936514, y_pred[1]
+    assert_elements_in_delta [28.29122797, 25.87936514], y_pred[0, 2]
   end
 
   def test_feature_importance

@@ -26,5 +26,9 @@ module LightGBM
     def load_model(fname)
       @booster = Booster.new(params: @params, model_file: fname)
     end
+
+    def feature_importances
+      @booster.feature_importance
+    end
   end
 end

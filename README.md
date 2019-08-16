@@ -100,6 +100,12 @@ Load the model from a file
 model.load_model("model.txt")
 ```
 
+Get feature importance
+
+```ruby
+model.feature_importances
+```
+
 ## Reference
 
 This library follows the [Data Structure, Training, and Scikit-Learn APIs](https://lightgbm.readthedocs.io/en/latest/Python-API.html) of the Python library. A few differences are:
