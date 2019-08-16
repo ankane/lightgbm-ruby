@@ -32,9 +32,8 @@ class TrainTest < Minitest::Test
   def test_multiclass
     model = LightGBM.train(multiclass_params, iris_train, valid_sets: [iris_train, iris_test], verbose_eval: false)
     y_pred = model.predict([6.3, 2.7, 4.9, 1.8])
-    assert_in_delta 3.91608299e-04, y_pred[0]
-    assert_in_delta 3.81933551e-01, y_pred[1]
-    assert_in_delta 6.17674841e-01, y_pred[2]
+    expected = [3.91608299e-04, 3.81933551e-01, 6.17674841e-01]
+    assert_elements_in_delta expected, y_pred
 
     y_pred = model.predict(iris_test.data)
     # ensure reshaped
