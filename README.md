@@ -18,6 +18,16 @@ gem 'lightgbm'
 
 ## Getting Started
 
+This library follows the [Data Structure, Training, and Scikit-Learn APIs](https://lightgbm.readthedocs.io/en/latest/Python-API.html) of the Python library. A few differences are:
+
+- The `_get` prefix is removed from methods
+- The default verbosity is `-1`
+- With the `cv` method, `stratified` is set to `false`
+
+Some methods and options are also missing at the moment. PRs welcome!
+
+## Training API
+
 Train a model
 
 ```ruby
@@ -50,13 +60,13 @@ Get the importance of features
 booster.feature_importance
 ```
 
-## Early Stopping
+Early stopping
 
 ```ruby
 LightGBM.train(params, train_set, valid_set: [train_set, test_set], early_stopping_rounds: 5)
 ```
 
-## CV
+CV
 
 ```ruby
 LightGBM.cv(params, train_set, nfold: 5, verbose_eval: true)
@@ -106,15 +116,25 @@ Get the importance of features
 model.feature_importances
 ```
 
-## Reference
+## Data [master]
 
-This library follows the [Data Structure, Training, and Scikit-Learn APIs](https://lightgbm.readthedocs.io/en/latest/Python-API.html) of the Python library. A few differences are:
+Data can be an array of arrays
 
-- The `_get` prefix is removed from methods
-- The default verbosity is `-1`
-- With the `cv` method, `stratified` is set to `false`
+```ruby
+[[1, 2, 3], [4, 5, 6]]
+```
 
-Some methods and options are also missing at the moment. PRs welcome!
+Or a Daru data frame
+
+```ruby
+Daru::DataFrame.from_csv("houses.csv")
+```
+
+Or a Numo NArray
+
+```ruby
+Numo::DFloat.new(3, 2).seq
+```
 
 ## Helpful Resources
 

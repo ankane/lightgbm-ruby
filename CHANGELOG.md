@@ -1,6 +1,7 @@
 ## 0.1.3 [unreleased]
 
 - Added Scikit-Learn API
+- Added support for Daru and Numo::NArray
 
 ## 0.1.2
 
