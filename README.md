@@ -78,7 +78,7 @@ model = LightGBM::Regressor.new
 model.fit(x, y)
 ```
 
-> For classification, use `Xgb::Classifier`
+> For classification, use `LightGBM::Classifier`
 
 Predict
 
