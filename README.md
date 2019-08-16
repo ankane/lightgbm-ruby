@@ -72,7 +72,7 @@ CV
 LightGBM.cv(params, train_set, nfold: 5, verbose_eval: true)
 ```
 
-## Scikit-Learn API [master]
+## Scikit-Learn API
 
 Prep your data
 
@@ -116,7 +116,7 @@ Get the importance of features
 model.feature_importances
 ```
 
-## Data [master]
+## Data
 
 Data can be an array of arrays
 
