@@ -39,4 +39,23 @@ class DatasetTest < Minitest::Test
     boston.dump_text("/tmp/train.txt")
     assert File.exist?("/tmp/train.txt")
   end
+
+  def test_matrix
+    data = Matrix.build(3, 3) { |row, col| row + col }
+    label = Vector.elements([4, 5, 6])
+    LightGBM::Dataset.new(data, label: label)
+  end
+
+  def test_daru_data_frame
+    data = Daru::DataFrame.from_csv("test/support/boston.csv")
+    label = data["medv"]
+    data = data.delete_vector("medv")
+    LightGBM::Dataset.new(data, label: label)
+  end
+
+  def test_numo_narray
+    data = Numo::DFloat.new(3, 5).seq
+    label = Numo::DFloat.new(3).seq
+    LightGBM::Dataset.new(data, label: label)
+  end
 end
