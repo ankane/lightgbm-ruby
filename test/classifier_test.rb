@@ -57,7 +57,7 @@ class ClassifierTest < Minitest::Test
   end
 
   def test_feature_importances_binary
-    x_train, y_train, x_test, _ = iris_data_binary
+    x_train, y_train, _, _ = iris_data_binary
 
     model = LightGBM::Classifier.new
     model.fit(x_train, y_train)
@@ -67,7 +67,7 @@ class ClassifierTest < Minitest::Test
   end
 
   def test_feature_importances_multiclass
-    x_train, y_train, x_test, _ = iris_data
+    x_train, y_train, _, _ = iris_data
 
     model = LightGBM::Classifier.new
     model.fit(x_train, y_train)

@@ -18,7 +18,7 @@ class RegressorTest < Minitest::Test
   end
 
   def test_feature_importances
-    x_train, y_train, x_test, _ = boston_data
+    x_train, y_train, _, _ = boston_data
 
     model = LightGBM::Regressor.new
     model.fit(x_train, y_train)
