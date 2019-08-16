@@ -44,7 +44,7 @@ Load the model from a file
 booster = LightGBM::Booster.new(model_file: "model.txt")
 ```
 
-Get feature importance
+Get the importance of features
 
 ```ruby
 booster.feature_importance
@@ -100,7 +100,7 @@ Load the model from a file
 model.load_model("model.txt")
 ```
 
-Get feature importance
+Get the importance of features
 
 ```ruby
 model.feature_importances
