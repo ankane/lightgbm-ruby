@@ -20,7 +20,7 @@ gem 'lightgbm'
 
 This library follows the [Data Structure, Training, and Scikit-Learn APIs](https://lightgbm.readthedocs.io/en/latest/Python-API.html) of the Python library. A few differences are:
 
-- The `_get` prefix is removed from methods
+- The `get_` prefix is removed from methods
 - The default verbosity is `-1`
 - With the `cv` method, `stratified` is set to `false`
 
