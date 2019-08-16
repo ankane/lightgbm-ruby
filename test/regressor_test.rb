@@ -24,6 +24,6 @@ class RegressorTest < Minitest::Test
     model.fit(x_train, y_train)
 
     expected = [98, 16, 66, 0, 40, 201, 109, 108, 24, 77, 74, 100, 162]
-    assert_elements_in_delta expected, model.feature_importances
+    assert_equal expected, model.feature_importances
   end
 end

@@ -55,4 +55,24 @@ class ClassifierTest < Minitest::Test
     expected = [3.91608299e-04, 3.81933551e-01, 6.17674841e-01]
     assert_elements_in_delta expected, y_pred[0]
   end
+
+  def test_feature_importances_binary
+    x_train, y_train, x_test, _ = iris_data_binary
+
+    model = LightGBM::Classifier.new
+    model.fit(x_train, y_train)
+
+    expected = [28, 112, 94, 62]
+    assert_equal expected, model.feature_importances
+  end
+
+  def test_feature_importances_multiclass
+    x_train, y_train, x_test, _ = iris_data
+
+    model = LightGBM::Classifier.new
+    model.fit(x_train, y_train)
+
+    expected = [93, 281, 277, 220]
+    assert_equal expected, model.feature_importances
+  end
 end
