@@ -3,9 +3,9 @@ module LightGBM
     def initialize(num_leaves: 31, learning_rate: 0.1, n_estimators: 100, objective: nil)
       @params = {
         num_leaves: num_leaves,
-        objective: objective,
         learning_rate: learning_rate
       }
+      @params[:objective] = objective if objective
       @n_estimators = n_estimators
     end
 
@@ -35,6 +35,17 @@ module LightGBM
         end
       else
         y_pred.map { |v| v > 0.5 ? 1 : 0 }
+      end
+    end
+
+    def predict_proba(data)
+      y_pred = @booster.predict(data)
+
+      if y_pred.first.is_a?(Array)
+        # multiple classes
+        y_pred
+      else
+        y_pred.map { |v| [1 - v, v] }
       end
     end
 

@@ -14,4 +14,5 @@ y_test = y[100:]
 
 model = lgb.LGBMClassifier()
 model.fit(X_train, y_train)
-print(model.predict(X_test))
+# print(model.predict(X_test))
+print(model.predict_proba(X_test))
