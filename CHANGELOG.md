@@ -1,3 +1,7 @@
+## 0.1.3 [unreleased]
+
+- Added Scikit-Learn API
+
 ## 0.1.2
 
 - Added `cv` method

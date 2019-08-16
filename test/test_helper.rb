@@ -32,7 +32,28 @@ class Minitest::Test
     @iris_test ||= LightGBM::Dataset.new(iris.data[100..-1], label: iris.label[100..-1], reference: iris_train)
   end
 
-  def load_csv(filename)
+  def boston_data
+    @boston_data ||= begin
+      x, y = load_csv("boston.csv", dataset: false)
+      [x[0...300], y[0...300], x[300..-1], y[300..-1]]
+    end
+  end
+
+  def iris_data
+    @iris_data ||= begin
+      x, y = load_csv("iris.csv", dataset: false)
+      [x[0...100], y[0...100], x[100..-1], y[100..-1]]
+    end
+  end
+
+  def iris_data_binary
+    @iris_data_binary ||= begin
+      x, y = load_csv("iris.csv", binary: true, dataset: false)
+      [x[0...100], y[0...100], x[100..-1], y[100..-1]]
+    end
+  end
+
+  def load_csv(filename, binary: false, dataset: true)
     x = []
     y = []
     CSV.foreach("test/support/#{filename}", headers: true).each do |row|
@@ -40,7 +61,13 @@ class Minitest::Test
       x << row[0..-2]
       y << row[-1]
     end
-    LightGBM::Dataset.new(x, label: y)
+    y = y.map { |v| v > 1 ? 1 : v } if binary
+
+    if dataset
+      LightGBM::Dataset.new(x, label: y)
+    else
+      [x, y]
+    end
   end
 
   def regression_params

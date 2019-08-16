@@ -62,10 +62,47 @@ LightGBM.train(params, train_set, valid_set: [train_set, test_set], early_stoppi
 LightGBM.cv(params, train_set, nfold: 5, verbose_eval: true)
 ```
 
+## Scikit-Learn API [master]
+
+Prep your data
+
+```ruby
+x = [[1, 2], [3, 4], [5, 6], [7, 8]]
+y = [1, 2, 3, 4]
+```
+
+Train a model
+
+```ruby
+model = LightGBM::Regressor.new
+model.fit(x, y)
+```
+
+> For classification, use `Xgb::Classifier`
+
+Predict
+
+```ruby
+model.predict(x)
+```
+
+Save the model to a file
+
+```ruby
+model.save_model("model.txt")
+```
+
+Load the model from a file
+
+```ruby
+model.load_model("model.txt")
+```
+
 ## Reference
 
-This library follows the [Data Structure and Training APIs](https://lightgbm.readthedocs.io/en/latest/Python-API.html) of the Python library. A few differences are:
+This library follows the [Data Structure, Training, and Scikit-Learn APIs](https://lightgbm.readthedocs.io/en/latest/Python-API.html) of the Python library. A few differences are:
 
+- The `_get` prefix is removed from methods
 - The default verbosity is `-1`
 - With the `cv` method, `stratified` is set to `false`
 

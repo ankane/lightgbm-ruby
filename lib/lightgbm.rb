@@ -8,11 +8,15 @@ require "lightgbm/dataset"
 require "lightgbm/ffi"
 require "lightgbm/version"
 
+# scikit-learn API
+require "lightgbm/classifier"
+require "lightgbm/regressor"
+
 module LightGBM
   class Error < StandardError; end
 
   class << self
-    def train(params, train_set,num_boost_round: 100, valid_sets: [], valid_names: [], early_stopping_rounds: nil, verbose_eval: true)
+    def train(params, train_set, num_boost_round: 100, valid_sets: [], valid_names: [], early_stopping_rounds: nil, verbose_eval: true)
       booster = Booster.new(params: params, train_set: train_set)
 
       valid_contain_train = false
