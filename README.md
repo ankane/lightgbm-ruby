@@ -18,7 +18,7 @@ gem 'lightgbm'
 
 ## Getting Started
 
-This library follows the [Data Structure, Training, and Scikit-Learn APIs](https://lightgbm.readthedocs.io/en/latest/Python-API.html) of the Python library. A few differences are:
+This library follows the [Python API](https://lightgbm.readthedocs.io/en/latest/Python-API.html). A few differences are:
 
 - The `get_` prefix is removed from methods
 - The default verbosity is `-1`
