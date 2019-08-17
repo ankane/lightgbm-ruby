@@ -9,8 +9,8 @@ class TrainTest < Minitest::Test
     y_pred = model.predict(x_test)
     assert_operator rsme(y_test, y_pred), :<=, 6
 
-    model.save_model("/tmp/model.txt")
-    model = LightGBM::Booster.new(model_file: "/tmp/model.txt")
+    model.save_model(tempfile)
+    model = LightGBM::Booster.new(model_file: tempfile)
     y_pred = model.predict(x_test)
     assert_operator rsme(y_test, y_pred), :<=, 6
   end
@@ -23,8 +23,8 @@ class TrainTest < Minitest::Test
     y_pred = model.predict(iris_test.data)
     assert_equal 50, y_pred.size
 
-    model.save_model("/tmp/model.txt")
-    model = LightGBM::Booster.new(model_file: "/tmp/model.txt")
+    model.save_model(tempfile)
+    model = LightGBM::Booster.new(model_file: tempfile)
     y_pred2 = model.predict(iris_test.data)
     assert_equal y_pred, y_pred2
   end
@@ -40,8 +40,8 @@ class TrainTest < Minitest::Test
     assert_equal 50, y_pred.size
     assert_equal 3, y_pred.first.size
 
-    model.save_model("/tmp/model.txt")
-    model = LightGBM::Booster.new(model_file: "/tmp/model.txt")
+    model.save_model(tempfile)
+    model = LightGBM::Booster.new(model_file: tempfile)
     y_pred2 = model.predict(iris_test.data)
     assert_equal y_pred, y_pred2
   end

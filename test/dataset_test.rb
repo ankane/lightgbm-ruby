@@ -31,13 +31,13 @@ class DatasetTest < Minitest::Test
   end
 
   def test_save_binary
-    boston.save_binary("/tmp/train.bin")
-    assert File.exist?("/tmp/train.bin")
+    boston.save_binary(tempfile)
+    assert File.exist?(tempfile)
   end
 
   def test_dump_text
-    boston.dump_text("/tmp/train.txt")
-    assert File.exist?("/tmp/train.txt")
+    boston.dump_text(tempfile)
+    assert File.exist?(tempfile)
   end
 
   def test_matrix
