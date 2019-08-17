@@ -4,7 +4,7 @@
 
 :fire: Uses the C API for blazing performance
 
-[![Build Status](https://travis-ci.org/ankane/lightgbm.svg?branch=master)](https://travis-ci.org/ankane/lightgbm)
+[![Build Status](https://travis-ci.org/ankane/lightgbm.svg?branch=master)](https://travis-ci.org/ankane/lightgbm) [![Build status](https://ci.appveyor.com/api/projects/status/h6ftr2up4e253mwm/branch/master?svg=true)](https://ci.appveyor.com/project/ankane/lightgbm/branch/master)
 
 ## Installation
 
