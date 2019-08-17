@@ -50,6 +50,6 @@ class CvTest < Minitest::Test
     params = regression_params.dup
     params[:metric] = ["l1", "l2", "rmse"]
     eval_hist = LightGBM.cv(params, boston, shuffle: false, early_stopping_rounds: 5)
-    assert_equal ["rmse-mean", "rmse-stdv", "l2-mean", "l2-stdv", "l1-mean", "l1-stdv"], eval_hist.keys
+    assert_equal ["l1-mean", "l1-stdv", "l2-mean", "l2-stdv", "rmse-mean", "rmse-stdv"].sort, eval_hist.keys.sort
   end
 end
