@@ -1,3 +1,7 @@
+## 0.1.4 [unreleased]
+
+- Removed unreleased `dump_text` method
+
 ## 0.1.3
 
 - Added Scikit-Learn API
