@@ -1,7 +1,7 @@
 module LightGBM
   module FFI
     extend ::FFI::Library
-    lib_name = "lib_lightgbm.#{FFI::Platform::LIBSUFFIX}")
+    lib_name = "lib_lightgbm.#{::FFI::Platform::LIBSUFFIX}"
     vendor_lib = File.expand_path("../../vendor/#{lib_name}", __dir__)
     ffi_lib ["_lightgbm", "lib_lightgbm.so", vendor_lib]
 
