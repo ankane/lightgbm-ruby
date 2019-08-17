@@ -35,10 +35,11 @@ class DatasetTest < Minitest::Test
     assert File.exist?("/tmp/train.bin")
   end
 
-  def test_dump_text
-    boston.dump_text("/tmp/train.txt")
-    assert File.exist?("/tmp/train.txt")
-  end
+  # not released yet
+  # def test_dump_text
+  #   boston.dump_text("/tmp/train.txt")
+  #   assert File.exist?("/tmp/train.txt")
+  # end
 
   def test_matrix
     data = Matrix.build(3, 3) { |row, col| row + col }

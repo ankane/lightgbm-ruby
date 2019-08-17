@@ -1,7 +1,9 @@
 module LightGBM
   module FFI
     extend ::FFI::Library
-    ffi_lib ["lightgbm", "lib_lightgbm.so"]
+    lib_name = ::FFI.map_library_name("_lightgbm")
+    vendor_lib = File.expand_path("../../vendor/#{lib_name}", __dir__)
+    ffi_lib ["_lightgbm", "lib_lightgbm.so", vendor_lib]
 
     # https://github.com/microsoft/LightGBM/blob/master/include/LightGBM/c_api.h
     # keep same order
@@ -15,7 +17,7 @@ module LightGBM
     attach_function :LGBM_DatasetGetSubset, %i[pointer pointer int32 string pointer], :int
     attach_function :LGBM_DatasetFree, %i[pointer], :int
     attach_function :LGBM_DatasetSaveBinary, %i[pointer string], :int
-    attach_function :LGBM_DatasetDumpText, %i[pointer string], :int
+    # attach_function :LGBM_DatasetDumpText, %i[pointer string], :int
     attach_function :LGBM_DatasetSetField, %i[pointer string pointer int int], :int
     attach_function :LGBM_DatasetGetField, %i[pointer string pointer pointer pointer], :int
     attach_function :LGBM_DatasetGetNumData, %i[pointer pointer], :int

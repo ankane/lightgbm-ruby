@@ -71,9 +71,10 @@ module LightGBM
       check_result FFI.LGBM_DatasetSaveBinary(handle_pointer, filename)
     end
 
-    def dump_text(filename)
-      check_result FFI.LGBM_DatasetDumpText(handle_pointer, filename)
-    end
+    # not released yet
+    # def dump_text(filename)
+    #   check_result FFI.LGBM_DatasetDumpText(handle_pointer, filename)
+    # end
 
     def subset(used_indices, params: nil)
       # categorical_feature passed via params

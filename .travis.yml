@@ -1,13 +1,6 @@
 dist: xenial
 language: ruby
 rvm: 2.6.3
-before_install:
-  - export LIGHTGBM_VERSION=2.2.3
-  - ./test/ci/install_lightgbm.sh
-  - export LD_LIBRARY_PATH=$HOME/lightgbm/$LIGHTGBM_VERSION:$LD_LIBRARY_PATH
-cache:
-  directories:
-    - $HOME/lightgbm
 script: bundle exec rake test
 notifications:
   email:
