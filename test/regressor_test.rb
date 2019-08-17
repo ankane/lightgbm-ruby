@@ -10,10 +10,10 @@ class RegressorTest < Minitest::Test
     expected = [28.29122797, 25.87936514, 24.07423114, 31.56982437, 34.88568656, 30.3112404]
     assert_elements_in_delta expected, y_pred[0, 6]
 
-    model.save_model("/tmp/model.txt")
+    model.save_model(tempfile)
 
     model = LightGBM::Regressor.new
-    model.load_model("/tmp/model.txt")
+    model.load_model(tempfile)
     assert_equal y_pred, model.predict(x_test)
   end
 

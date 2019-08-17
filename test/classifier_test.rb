@@ -10,10 +10,10 @@ class ClassifierTest < Minitest::Test
     expected = [1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1]
     assert_equal expected, y_pred
 
-    model.save_model("/tmp/my.model")
+    model.save_model(tempfile)
 
     model = LightGBM::Classifier.new
-    model.load_model("/tmp/my.model")
+    model.load_model(tempfile)
     assert_equal y_pred, model.predict(x_test)
   end
 
@@ -27,10 +27,10 @@ class ClassifierTest < Minitest::Test
 
     assert_equal expected, y_pred
 
-    model.save_model("/tmp/my.model")
+    model.save_model(tempfile)
 
     model = LightGBM::Classifier.new
-    model.load_model("/tmp/my.model")
+    model.load_model(tempfile)
     assert_equal y_pred, model.predict(x_test)
   end
 

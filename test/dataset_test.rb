@@ -31,8 +31,8 @@ class DatasetTest < Minitest::Test
   end
 
   def test_save_binary
-    boston.save_binary("/tmp/train.bin")
-    assert File.exist?("/tmp/train.bin")
+    boston.save_binary(tempfile)
+    assert File.exist?(tempfile)
   end
 
   # not released yet
