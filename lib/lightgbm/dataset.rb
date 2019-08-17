@@ -13,12 +13,12 @@ module LightGBM
       @handle = ::FFI::MemoryPointer.new(:pointer)
       parameters = params_str(params)
       reference = reference.handle_pointer if reference
-      if data.is_a?(String)
-        check_result FFI.LGBM_DatasetCreateFromFile(data, parameters, reference, @handle)
-      elsif used_indices
+      if used_indices
         used_row_indices = ::FFI::MemoryPointer.new(:int32, used_indices.count)
         used_row_indices.put_array_of_int32(0, used_indices)
         check_result FFI.LGBM_DatasetGetSubset(reference, used_row_indices, used_indices.count, parameters, @handle)
+      elsif data.is_a?(String)
+        check_result FFI.LGBM_DatasetCreateFromFile(data, parameters, reference, @handle)
       else
         if matrix?(data)
           nrow = data.row_count
