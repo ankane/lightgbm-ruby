@@ -14,17 +14,12 @@ module LightGBM
         set_verbosity(params)
         check_result FFI.LGBM_BoosterCreate(train_set.handle_pointer, params_str(params), @handle)
       end
-      # causes "Stack consistency error"
-      # ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer))
+      ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer))
 
       self.best_iteration = -1
 
       # TODO get names when loaded from file
       @name_valid_sets = []
-    end
-
-    def self.finalize(pointer)
-      -> { FFI.LGBM_BoosterFree(pointer) }
     end
 
     def add_valid(data, name)
@@ -151,6 +146,11 @@ module LightGBM
       finished = ::FFI::MemoryPointer.new(:int)
       check_result FFI.LGBM_BoosterUpdateOneIter(handle_pointer, finished)
       finished.read_int == 1
+    end
+
+   def self.finalize(pointer)
+      # must use proc instead of stabby lambda
+      proc { FFI.LGBM_BoosterFree(pointer) }
     end
 
     private

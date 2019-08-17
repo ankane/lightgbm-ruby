@@ -40,8 +40,7 @@ module LightGBM
         c_data.put_array_of_float(0, flat_data)
         check_result FFI.LGBM_DatasetCreateFromMat(c_data, 0, nrow, ncol, 1, parameters, reference, @handle)
       end
-      # causes "Stack consistency error"
-      # ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer))
+      ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer)) unless used_indices
 
       set_field("label", label) if label
       set_field("weight", weight) if weight
@@ -86,12 +85,13 @@ module LightGBM
       )
     end
 
-    def self.finalize(pointer)
-      -> { FFI.LGBM_DatasetFree(pointer) }
-    end
-
     def handle_pointer
       @handle.read_pointer
+    end
+
+    def self.finalize(pointer)
+      # must use proc instead of stabby lambda
+      proc { FFI.LGBM_DatasetFree(pointer) }
     end
 
     private

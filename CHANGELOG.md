@@ -1,5 +1,6 @@
 ## 0.1.4 [unreleased]
 
+- Free memory when objects are destroyed
 - Removed unreleased `dump_text` method
 
 ## 0.1.3
