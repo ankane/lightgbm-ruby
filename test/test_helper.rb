@@ -97,6 +97,10 @@ class Minitest::Test
   end
 
   def tempfile
-    @tempfile ||= Tempfile.new(Time.now.to_f.to_s).path
+    @tempfile ||= "#{tempdir}/#{Time.now.to_f}"
+  end
+
+  def tempdir
+    @tempdir ||= File.dirname(Tempfile.new("lightgbm"))
   end
 end
