@@ -8,6 +8,7 @@ require "lightgbm/dataset"
 require "lightgbm/version"
 
 # scikit-learn API
+require "lightgbm/model"
 require "lightgbm/classifier"
 require "lightgbm/regressor"
 
