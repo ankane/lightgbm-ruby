@@ -42,8 +42,8 @@ module LightGBM
       end
       ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer)) unless used_indices
 
-      set_field("label", label) if label
-      set_field("weight", weight) if weight
+      self.label = label if label
+      self.weight = weight if weight
       self.group = group if group
     end
 
@@ -55,10 +55,16 @@ module LightGBM
       field("weight")
     end
 
+    def label=(label)
+      set_field("label", label)
+    end
+
+    def weight=(weight)
+      set_field("weight", weight)
+    end
+
     def group=(group)
-      c_data = ::FFI::MemoryPointer.new(:int32, group.count)
-      c_data.put_array_of_int32(0, group)
-      check_result FFI.LGBM_DatasetSetField(handle_pointer, "group", c_data, group.count, 2)
+      set_field("group", group, type: :int32)
     end
 
     def num_data
@@ -112,11 +118,17 @@ module LightGBM
       out_ptr.read_pointer.read_array_of_float(num_data)
     end
 
-    def set_field(field_name, data)
+    def set_field(field_name, data, type: :float)
       data = data.to_a unless data.is_a?(Array)
-      c_data = ::FFI::MemoryPointer.new(:float, data.count)
-      c_data.put_array_of_float(0, data)
-      check_result FFI.LGBM_DatasetSetField(handle_pointer, field_name, c_data, data.count, 0)
+      if type == :int32
+        c_data = ::FFI::MemoryPointer.new(:int32, data.count)
+        c_data.put_array_of_int32(0, data)
+        check_result FFI.LGBM_DatasetSetField(handle_pointer, field_name, c_data, data.count, 2)
+      else
+        c_data = ::FFI::MemoryPointer.new(:float, data.count)
+        c_data.put_array_of_float(0, data)
+        check_result FFI.LGBM_DatasetSetField(handle_pointer, field_name, c_data, data.count, 0)
+      end
     end
 
     def matrix?(data)
