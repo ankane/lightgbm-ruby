@@ -12,10 +12,10 @@ require "lightgbm/classifier"
 require "lightgbm/regressor"
 
 module LightGBM
-  # friendlier error messages
-  autoload :FFI, "lightgbm/ffi"
-
   class Error < StandardError; end
+
+  # friendlier error message
+  autoload :FFI, "lightgbm/ffi"
 
   class << self
     def train(params, train_set, num_boost_round: 100, valid_sets: [], valid_names: [], early_stopping_rounds: nil, verbose_eval: true)
