@@ -14,6 +14,12 @@ require "lightgbm/regressor"
 module LightGBM
   class Error < StandardError; end
 
+  class << self
+    attr_accessor :ffi_lib
+  end
+  lib_name = "lib_lightgbm.#{::FFI::Platform::LIBSUFFIX}"
+  self.ffi_lib = [lib_name, "lib_lightgbm.so"]
+
   # friendlier error message
   autoload :FFI, "lightgbm/ffi"
 

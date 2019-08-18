@@ -1,10 +1,9 @@
 module LightGBM
   module FFI
     extend ::FFI::Library
-    lib_name = "lib_lightgbm.#{::FFI::Platform::LIBSUFFIX}"
 
     begin
-      ffi_lib [lib_name, "lib_lightgbm.so"]
+        ffi_lib LightGBM.ffi_lib
     rescue LoadError => e
       raise LoadError, "Could not find LightGBM"
     end
