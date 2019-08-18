@@ -7,7 +7,7 @@ module LightGBM
     begin
       ffi_lib ["_lightgbm", "lib_lightgbm.so", vendor_lib]
     rescue LoadError => e
-      raise LoadError, "Could not find LightGBM\n\n#{e.message}"
+      raise LoadError, "Could not find LightGBM"
     end
 
     # https://github.com/microsoft/LightGBM/blob/master/include/LightGBM/c_api.h
