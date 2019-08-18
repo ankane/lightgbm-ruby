@@ -3,7 +3,12 @@ module LightGBM
     extend ::FFI::Library
     lib_name = "lib_lightgbm.#{::FFI::Platform::LIBSUFFIX}"
     vendor_lib = File.expand_path("../../vendor/#{lib_name}", __dir__)
-    ffi_lib ["_lightgbm", "lib_lightgbm.so", vendor_lib]
+
+    begin
+      ffi_lib ["_lightgbm", "lib_lightgbm.so", vendor_lib]
+    rescue LoadError => e
+      raise LoadError, "Could not find LightGBM\n\n#{e.message}"
+    end
 
     # https://github.com/microsoft/LightGBM/blob/master/include/LightGBM/c_api.h
     # keep same order

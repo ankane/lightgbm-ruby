@@ -5,7 +5,6 @@ require "ffi"
 require "lightgbm/utils"
 require "lightgbm/booster"
 require "lightgbm/dataset"
-require "lightgbm/ffi"
 require "lightgbm/version"
 
 # scikit-learn API
@@ -13,6 +12,9 @@ require "lightgbm/classifier"
 require "lightgbm/regressor"
 
 module LightGBM
+  # friendlier error messages
+  autoload :FFI, "lightgbm/ffi"
+
   class Error < StandardError; end
 
   class << self
