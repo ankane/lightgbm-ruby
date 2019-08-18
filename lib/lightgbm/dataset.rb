@@ -2,7 +2,7 @@ module LightGBM
   class Dataset
     attr_reader :data, :params
 
-    def initialize(data, label: nil, weight: nil, params: nil, reference: nil, used_indices: nil, categorical_feature: "auto")
+    def initialize(data, label: nil, weight: nil, group: nil, params: nil, reference: nil, used_indices: nil, categorical_feature: "auto")
       @data = data
 
       # TODO stringify params
@@ -44,6 +44,7 @@ module LightGBM
 
       set_field("label", label) if label
       set_field("weight", weight) if weight
+      self.group = group if group
     end
 
     def label
@@ -52,6 +53,12 @@ module LightGBM
 
     def weight
       field("weight")
+    end
+
+    def group=(group)
+      c_data = ::FFI::MemoryPointer.new(:int32, group.count)
+      c_data.put_array_of_int32(0, group)
+      check_result FFI.LGBM_DatasetSetField(handle_pointer, "group", c_data, group.count, 2)
     end
 
     def num_data
