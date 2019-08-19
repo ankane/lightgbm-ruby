@@ -10,8 +10,8 @@ module LightGBM
       nil
     end
 
-    def predict(data)
-      @booster.predict(data)
+    def predict(data, num_iteration: nil)
+      @booster.predict(data, num_iteration: num_iteration)
     end
   end
 end

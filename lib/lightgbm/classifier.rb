@@ -20,8 +20,8 @@ module LightGBM
       nil
     end
 
-    def predict(data)
-      y_pred = @booster.predict(data)
+    def predict(data, num_iteration: nil)
+      y_pred = @booster.predict(data, num_iteration: num_iteration)
 
       if y_pred.first.is_a?(Array)
         # multiple classes
@@ -33,8 +33,8 @@ module LightGBM
       end
     end
 
-    def predict_proba(data)
-      y_pred = @booster.predict(data)
+    def predict_proba(data, num_iteration: nil)
+      y_pred = @booster.predict(data, num_iteration: num_iteration)
 
       if y_pred.first.is_a?(Array)
         # multiple classes
