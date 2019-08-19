@@ -12,9 +12,10 @@ y_train = y[:100]
 X_test = X[100:]
 y_test = y[100:]
 
-model = lgb.LGBMClassifier()
-# model.fit(X_train, y_train)
-model.fit(X_train, y_train, eval_set=[(X_test, y_test)], early_stopping_rounds=5, verbose=True)
+group = [20, 80]
+
+model = lgb.LGBMRanker()
+model.fit(X_train, y_train, group=group)
 # print(model.predict(X_test))
 # print(model.predict_proba(X_test))
 print(model.feature_importances_)
