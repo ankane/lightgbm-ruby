@@ -63,7 +63,7 @@ booster.feature_importance
 Early stopping
 
 ```ruby
-LightGBM.train(params, train_set, valid_set: [train_set, test_set], early_stopping_rounds: 5)
+LightGBM.train(params, train_set, valid_sets: [train_set, test_set], early_stopping_rounds: 5)
 ```
 
 CV
@@ -114,6 +114,12 @@ Get the importance of features
 
 ```ruby
 model.feature_importances
+```
+
+Early stopping [master]
+
+```ruby
+model.fit(x, y, eval_set: [[x_test, y_test]], early_stopping_rounds: 5)
 ```
 
 ## Data

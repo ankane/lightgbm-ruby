@@ -2,6 +2,7 @@
 
 - Friendlier message when LightGBM not found
 - Added `Ranker`
+- Added early stopping to Scikit-Learn API
 - Free memory when objects are destroyed
 - Removed unreleased `dump_text` method
 

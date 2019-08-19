@@ -75,4 +75,12 @@ class ClassifierTest < Minitest::Test
     expected = [93, 281, 277, 220]
     assert_equal expected, model.feature_importances
   end
+
+  def test_early_stopping
+    x_train, y_train, x_test, y_test = iris_data
+
+    model = LightGBM::Classifier.new
+    model.fit(x_train, y_train, early_stopping_rounds: 5, eval_set: [[x_test, y_test]], verbose: false)
+    assert_equal 43, model.best_iteration
+  end
 end

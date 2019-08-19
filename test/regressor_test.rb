@@ -26,4 +26,12 @@ class RegressorTest < Minitest::Test
     expected = [98, 16, 66, 0, 40, 201, 109, 108, 24, 77, 74, 100, 162]
     assert_equal expected, model.feature_importances
   end
+
+  def test_early_stopping
+    x_train, y_train, x_test, y_test = boston_data
+
+    model = LightGBM::Regressor.new
+    model.fit(x_train, y_train, early_stopping_rounds: 5, eval_set: [[x_test, y_test]], verbose: false)
+    assert_equal 55, model.best_iteration
+  end
 end
