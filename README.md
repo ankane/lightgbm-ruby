@@ -28,18 +28,25 @@ Some methods and options are also missing at the moment. PRs welcome!
 
 ## Training API
 
+Prep your data
+
+```ruby
+x = [[1, 2], [3, 4], [5, 6], [7, 8]]
+y = [1, 2, 3, 4]
+```
+
 Train a model
 
 ```ruby
 params = {objective: "regression"}
-train_set = LightGBM::Dataset.new(x_train, label: y_train)
+train_set = LightGBM::Dataset.new(x, label: y)
 booster = LightGBM.train(params, train_set)
 ```
 
 Predict
 
 ```ruby
-booster.predict(x_test)
+booster.predict(x)
 ```
 
 Save the model to a file
