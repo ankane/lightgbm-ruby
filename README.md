@@ -14,7 +14,11 @@ Add this line to your application’s Gemfile:
 gem 'lightgbm'
 ```
 
-LightGBM is packaged with the gem, so no need to install it separately.
+LightGBM is packaged with the gem, so no need to install it separately. On Mac, run:
+
+```ruby
+brew install libomp
+```
 
 ## Getting Started
 
