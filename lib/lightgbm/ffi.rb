@@ -3,8 +3,9 @@ module LightGBM
     extend ::FFI::Library
 
     begin
-        ffi_lib LightGBM.ffi_lib
+      ffi_lib LightGBM.ffi_lib
     rescue LoadError => e
+      raise e if ENV["LIGHTGBM_DEBUG"]
       raise LoadError, "Could not find LightGBM"
     end
 
