@@ -1,10 +1,10 @@
 module LightGBM
   class Model
-    def initialize(num_leaves: 31, learning_rate: 0.1, n_estimators: 100, objective: nil)
+    def initialize(num_leaves: 31, learning_rate: 0.1, n_estimators: 100, objective: nil, **options)
       @params = {
         num_leaves: num_leaves,
         learning_rate: learning_rate
-      }
+      }.merge(options)
       @params[:objective] = objective if objective
       @n_estimators = n_estimators
     end

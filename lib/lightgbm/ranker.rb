@@ -1,6 +1,6 @@
 module LightGBM
   class Ranker < Model
-    def initialize(num_leaves: 31, learning_rate: 0.1, n_estimators: 100, objective: "lambdarank")
+    def initialize(num_leaves: 31, learning_rate: 0.1, n_estimators: 100, objective: "lambdarank", **options)
       super
     end
 

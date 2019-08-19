@@ -1,6 +1,6 @@
 module LightGBM
   class Classifier < Model
-    def initialize(num_leaves: 31, learning_rate: 0.1, n_estimators: 100, objective: nil)
+    def initialize(num_leaves: 31, learning_rate: 0.1, n_estimators: 100, objective: nil, **options)
       super
     end
 
