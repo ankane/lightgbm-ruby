@@ -4,9 +4,13 @@ module LightGBM
       super
     end
 
-    def fit(x, y, categorical_feature: "auto")
+    def fit(x, y, categorical_feature: "auto", early_stopping_rounds: nil, verbose: true)
       train_set = Dataset.new(x, label: y, categorical_feature: categorical_feature)
-      @booster = LightGBM.train(@params, train_set, num_boost_round: @n_estimators)
+      @booster = LightGBM.train(@params, train_set,
+        num_boost_round: @n_estimators,
+        early_stopping_rounds: early_stopping_rounds,
+        verbose_eval: verbose
+      )
       nil
     end
 
