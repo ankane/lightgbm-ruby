@@ -65,7 +65,7 @@ class TrainTest < Minitest::Test
   end
 
   def test_early_stopping_early_higher_better
-    model = LightGBM.train(binary_params.merge(metric: 'auc'), iris_train, valid_sets: [iris_train, iris_test], early_stopping_rounds: 5, verbose_eval: false)
+    model = LightGBM.train(binary_params.merge(metric: "auc"), iris_train, valid_sets: [iris_train, iris_test], early_stopping_rounds: 5, verbose_eval: false)
     assert_equal 6, model.best_iteration
   end
 
