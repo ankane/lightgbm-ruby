@@ -4,8 +4,8 @@ module LightGBM
       super
     end
 
-    def fit(x, y, group:)
-      train_set = Dataset.new(x, label: y, group: group)
+    def fit(x, y, group:, categorical_feature: "auto")
+      train_set = Dataset.new(x, label: y, group: group, categorical_feature: categorical_feature)
       @booster = LightGBM.train(@params, train_set, num_boost_round: @n_estimators)
       nil
     end
