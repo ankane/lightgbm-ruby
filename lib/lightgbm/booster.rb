@@ -148,7 +148,7 @@ module LightGBM
       finished.read_int == 1
     end
 
-   def self.finalize(pointer)
+    def self.finalize(pointer)
       # must use proc instead of stabby lambda
       proc { FFI.LGBM_BoosterFree(pointer) }
     end
