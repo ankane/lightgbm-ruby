@@ -34,7 +34,7 @@ module LightGBM
       if y_pred.first.is_a?(Array)
         # multiple classes
         y_pred.map do |v|
-          v.map.with_index.max_by { |v2, i| v2 }.last
+          v.map.with_index.max_by { |v2, _| v2 }.last
         end
       else
         y_pred.map { |v| v > 0.5 ? 1 : 0 }
