@@ -4,7 +4,7 @@ module LightGBM
       super
     end
 
-    def fit(x, y, eval_set: nil, categorical_feature: "auto", early_stopping_rounds: nil, verbose: true)
+    def fit(x, y, eval_set: nil, eval_names: [], categorical_feature: "auto", early_stopping_rounds: nil, verbose: true)
       n_classes = y.uniq.size
 
       params = @params.dup
@@ -22,7 +22,8 @@ module LightGBM
         num_boost_round: @n_estimators,
         early_stopping_rounds: early_stopping_rounds,
         verbose_eval: verbose,
-        valid_sets: valid_sets
+        valid_sets: valid_sets,
+        valid_names: eval_names
       )
       nil
     end
