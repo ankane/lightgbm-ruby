@@ -23,5 +23,17 @@ module LightGBM
         params["verbosity"] = -1
       end
     end
+
+    def matrix?(data)
+      defined?(Matrix) && data.is_a?(Matrix)
+    end
+
+    def daru?(data)
+      defined?(Daru::DataFrame) && data.is_a?(Daru::DataFrame)
+    end
+
+    def narray?(data)
+      defined?(Numo::NArray) && data.is_a?(Numo::NArray)
+    end
   end
 end

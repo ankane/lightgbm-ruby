@@ -116,7 +116,12 @@ module LightGBM
 
     # TODO support different prediction types
     def predict(input, num_iteration: nil, **params)
-      raise TypeError unless input.is_a?(Array)
+      input =
+        if daru?(input)
+          input.map_rows(&:to_a)
+        else
+          input.to_a
+        end
 
       singular = !input.first.is_a?(Array)
       input = [input] if singular

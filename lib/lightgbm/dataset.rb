@@ -26,7 +26,7 @@ module LightGBM
           flat_data = data.to_a.flatten
         elsif daru?(data)
           nrow, ncol = data.shape
-          flat_data = data.each_vector.map(&:to_a).flatten
+          flat_data = data.map_rows(&:to_a).flatten
         elsif narray?(data)
           nrow, ncol = data.shape
           flat_data = data.flatten.to_a
@@ -129,18 +129,6 @@ module LightGBM
         c_data.put_array_of_float(0, data)
         check_result FFI.LGBM_DatasetSetField(handle_pointer, field_name, c_data, data.count, 0)
       end
-    end
-
-    def matrix?(data)
-      defined?(Matrix) && data.is_a?(Matrix)
-    end
-
-    def daru?(data)
-      defined?(Daru::DataFrame) && data.is_a?(Daru::DataFrame)
-    end
-
-    def narray?(data)
-      defined?(Numo::NArray) && data.is_a?(Numo::NArray)
     end
 
     include Utils

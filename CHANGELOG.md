@@ -1,3 +1,8 @@
+## 0.1.5 [unreleased]
+
+- Added support for Daru prediction
+- Fixed Daru training
+
 ## 0.1.4
 
 - Friendlier message when LightGBM not found
