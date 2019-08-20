@@ -2,7 +2,7 @@ module LightGBM
   class Dataset
     attr_reader :data, :params
 
-    def initialize(data, label: nil, weight: nil, group: nil, params: nil, reference: nil, used_indices: nil, categorical_feature: "auto")
+    def initialize(data, label: nil, weight: nil, group: nil, params: nil, reference: nil, used_indices: nil, categorical_feature: "auto", feature_names: nil)
       @data = data
 
       # TODO stringify params
@@ -45,6 +45,7 @@ module LightGBM
       self.label = label if label
       self.weight = weight if weight
       self.group = group if group
+      self.feature_names = feature_names if feature_names
     end
 
     def label
@@ -59,12 +60,25 @@ module LightGBM
       set_field("label", label)
     end
 
+    # TODO fix
+    # def feature_names
+    #   num_feature_names = ::FFI::MemoryPointer.new(:int)
+    #   check_result FFI.LGBM_DatasetGetFeatureNames(handle_pointer, out_result, num_feature_names)
+    #   out_result.read_pointer.get_array_of_string(0, num_feature_names.read_int)
+    # end
+
     def weight=(weight)
       set_field("weight", weight)
     end
 
     def group=(group)
       set_field("group", group, type: :int32)
+    end
+
+    def feature_names=(feature_names)
+      c_feature_names = ::FFI::MemoryPointer.new(:pointer, feature_names.size)
+      c_feature_names.write_array_of_pointer(feature_names.map { |v| ::FFI::MemoryPointer.from_string(v) })
+      check_result FFI.LGBM_DatasetSetFeatureNames(handle_pointer, c_feature_names, feature_names.size)
     end
 
     def num_data
