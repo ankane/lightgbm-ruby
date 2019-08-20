@@ -1,7 +1,6 @@
 ## 0.1.5 [unreleased]
 
-- Added support for Daru prediction
-- Fixed Daru training
+- Fixed Daru training and prediction
 
 ## 0.1.4
 

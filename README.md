@@ -20,7 +20,7 @@ gem 'lightgbm'
 
 This library follows the [Python API](https://lightgbm.readthedocs.io/en/latest/Python-API.html). A few differences are:
 
-- The `get_` prefix is removed from methods
+- The `get_` and `set_` prefixes are removed from methods
 - The default verbosity is `-1`
 - With the `cv` method, `stratified` is set to `false`
 
