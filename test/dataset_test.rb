@@ -25,7 +25,7 @@ class DatasetTest < Minitest::Test
   def test_feature_names
     data = [[1, 2], [3, 4]]
     dataset = LightGBM::Dataset.new(data, feature_names: ["a", "b"])
-    # assert_equal ["a", "b"], dataset.feature_names
+    assert_equal ["a", "b"], dataset.feature_names
   end
 
   def test_num_data
