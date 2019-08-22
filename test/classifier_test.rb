@@ -84,11 +84,14 @@ class ClassifierTest < Minitest::Test
     assert_equal 43, model.best_iteration
   end
 
-  def test_missing
+  def test_missing_numeric
     x_train, y_train, x_test, _ = iris_data
 
-    x_train.each { |x| x[1] = nil if x[1] == 2.8 }
-    x_test.each { |x| x[1] = nil if x[1] == 2.8 }
+    [x_train, x_test].each do |xt|
+      xt.each do |x|
+        x[1] = nil if x[1] == 2.8
+      end
+    end
 
     model = LightGBM::Classifier.new
     model.fit(x_train, y_train)
@@ -98,6 +101,29 @@ class ClassifierTest < Minitest::Test
     assert_equal expected, y_pred
 
     expected = [86, 316, 302, 207]
+    assert_equal expected, model.feature_importances
+  end
+
+  def test_missing_categorical
+    x_train, y_train, x_test, _ = iris_data
+
+    [x_train, x_test].each do |xt|
+      xt.each do |x|
+        x[1] = nil if x[1] == 2.8
+        x[1] = 0 if !x[1].nil? && x[1] < 3
+        x[1] = 1 if !x[1].nil? && x[1] > 1
+        # x[1] = -1 if x[1].nil?
+      end
+    end
+
+    model = LightGBM::Classifier.new
+    model.fit(x_train, y_train, categorical_feature: [1])
+
+    y_pred = model.predict(x_test)
+    expected = [1, 2, 0, 1, 1, 1, 1, 2, 1, 1, 0, 1, 0, 1, 1, 1, 2, 2, 1, 1, 1, 0, 0, 1, 1, 2, 1, 2, 0, 2, 1, 1, 2, 1, 2, 1, 0, 2, 2, 1, 1, 1, 1, 0, 1, 2, 0, 2, 1, 1]
+    assert_equal expected, y_pred
+
+    expected = [165, 96, 308, 286]
     assert_equal expected, model.feature_importances
   end
 end

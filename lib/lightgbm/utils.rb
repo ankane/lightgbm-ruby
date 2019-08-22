@@ -24,7 +24,7 @@ module LightGBM
       end
     end
 
-    # TODO use negative number for categorical data?
+    # for categorical, NaN and negative value are the same
     def handle_missing(data)
       data.map! { |v| v.nil? ? Float::NAN : v }
     end
