@@ -2,12 +2,12 @@ module LightGBM
   class Dataset
     attr_reader :data, :params
 
-    def initialize(data, label: nil, weight: nil, group: nil, params: nil, reference: nil, used_indices: nil, categorical_feature: nil, feature_names: nil)
+    def initialize(data, label: nil, weight: nil, group: nil, params: nil, reference: nil, used_indices: nil, categorical_feature: "auto", feature_names: nil)
       @data = data
 
       # TODO stringify params
       params ||= {}
-      if categorical_feature && categorical_feature.any?
+      if categorical_feature != "auto" && categorical_feature.any?
         params["categorical_feature"] ||= categorical_feature.join(",")
       end
       set_verbosity(params)
