@@ -129,8 +129,10 @@ module LightGBM
       num_iteration ||= best_iteration
       num_class ||= num_class()
 
+      flat_input = input.flatten
+      handle_missing(flat_input)
       data = ::FFI::MemoryPointer.new(:float, input.count * input.first.count)
-      data.put_array_of_float(0, input.flatten)
+      data.put_array_of_float(0, flat_input)
 
       out_len = ::FFI::MemoryPointer.new(:int64)
       out_result = ::FFI::MemoryPointer.new(:double, num_class * input.count)

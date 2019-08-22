@@ -24,6 +24,11 @@ module LightGBM
       end
     end
 
+    # TODO use negative number for categorical data?
+    def handle_missing(data)
+      data.map! { |v| v.nil? ? Float::NAN : v }
+    end
+
     def matrix?(data)
       defined?(Matrix) && data.is_a?(Matrix)
     end

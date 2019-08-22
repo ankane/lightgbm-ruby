@@ -83,4 +83,21 @@ class ClassifierTest < Minitest::Test
     model.fit(x_train, y_train, early_stopping_rounds: 5, eval_set: [[x_test, y_test]], verbose: false)
     assert_equal 43, model.best_iteration
   end
+
+  def test_missing
+    x_train, y_train, x_test, _ = iris_data
+
+    x_train.each { |x| x[1] = nil if x[1] == 2.8 }
+    x_test.each { |x| x[1] = nil if x[1] == 2.8 }
+
+    model = LightGBM::Classifier.new
+    model.fit(x_train, y_train)
+
+    y_pred = model.predict(x_test)
+    expected = [2, 2, 0, 1, 1, 1, 1, 2, 1, 1, 0, 1, 0, 2, 1, 1, 1, 2, 1, 1, 1, 0, 0, 1, 1, 2, 1, 2, 0, 2, 1, 1, 2, 1, 2, 1, 0, 2, 2, 1, 1, 1, 1, 0, 1, 2, 0, 2, 1, 1]
+    assert_equal expected, y_pred
+
+    expected = [86, 316, 302, 207]
+    assert_equal expected, model.feature_importances
+  end
 end

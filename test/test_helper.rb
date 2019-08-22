@@ -67,7 +67,7 @@ class Minitest::Test
     x = []
     y = []
     CSV.foreach("test/support/#{filename}", headers: true).each do |row|
-      row = row.to_a.map { |_, v| v.to_f }
+      row = row.to_a.map { |_, v| v.nil? ? v : v.to_f }
       x << row[0..-2]
       y << row[-1]
     end

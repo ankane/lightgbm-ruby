@@ -38,6 +38,7 @@ module LightGBM
           flat_data = data.flatten
         end
 
+        handle_missing(flat_data)
         c_data = ::FFI::MemoryPointer.new(:float, nrow * ncol)
         c_data.put_array_of_float(0, flat_data)
         check_result FFI.LGBM_DatasetCreateFromMat(c_data, 0, nrow, ncol, 1, parameters, reference, @handle)

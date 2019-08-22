@@ -1,7 +1,8 @@
 ## 0.1.5 [unreleased]
 
-- Fixed Daru training and prediction
+- Added support for missing values
 - Added `feature_names` to datasets
+- Fixed Daru training and prediction
 
 ## 0.1.4
 
