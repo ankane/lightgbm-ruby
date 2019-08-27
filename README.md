@@ -159,6 +159,14 @@ gem 'lightgbm', github: 'ankane/lightgbm', branch: 'vendor'
 
 Please file an issue if it doesn’t work for you.
 
+You can also specify the path to LightGBM in an initializer:
+
+```ruby
+LightGBM.ffi_lib << "/path/to/LightGBM/lib_lightgbm.so"
+```
+
+> Use `lib_lightgbm.dll` for Windows
+
 ## Helpful Resources
 
 - [Parameters](https://lightgbm.readthedocs.io/en/latest/Parameters.html)
