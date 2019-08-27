@@ -34,4 +34,21 @@ class RegressorTest < Minitest::Test
     model.fit(x_train, y_train, early_stopping_rounds: 5, eval_set: [[x_test, y_test]], verbose: false)
     assert_equal 55, model.best_iteration
   end
+
+  def test_daru
+    data = Daru::DataFrame.from_csv("test/support/boston.csv")
+    y = data["medv"]
+    x = data.delete_vector("medv")
+
+    # daru has bug with 0...300
+    x_train = x.row[0..299]
+    y_train = y[0..299]
+    x_test = x.row[300..-1]
+
+    model = LightGBM::Regressor.new
+    model.fit(x_train, y_train)
+    y_pred = model.predict(x_test)
+    expected = [28.29122797, 25.87936514, 24.07423114, 31.56982437, 34.88568656, 30.3112404]
+    assert_elements_in_delta expected, y_pred[0, 6]
+  end
 end

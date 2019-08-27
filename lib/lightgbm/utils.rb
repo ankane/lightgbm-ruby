@@ -23,5 +23,22 @@ module LightGBM
         params["verbosity"] = -1
       end
     end
+
+    # for categorical, NaN and negative value are the same
+    def handle_missing(data)
+      data.map! { |v| v.nil? ? Float::NAN : v }
+    end
+
+    def matrix?(data)
+      defined?(Matrix) && data.is_a?(Matrix)
+    end
+
+    def daru?(data)
+      defined?(Daru::DataFrame) && data.is_a?(Daru::DataFrame)
+    end
+
+    def narray?(data)
+      defined?(Numo::NArray) && data.is_a?(Numo::NArray)
+    end
   end
 end

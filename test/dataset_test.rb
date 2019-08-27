@@ -22,6 +22,12 @@ class DatasetTest < Minitest::Test
     assert weight, dataset.weight
   end
 
+  def test_feature_names
+    data = [[1, 2], [3, 4]]
+    dataset = LightGBM::Dataset.new(data, feature_names: ["a", "b"])
+    assert_equal ["a", "b"], dataset.feature_names
+  end
+
   def test_num_data
     assert_equal 506, boston.num_data
   end

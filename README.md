@@ -24,7 +24,7 @@ brew install libomp
 
 This library follows the [Python API](https://lightgbm.readthedocs.io/en/latest/Python-API.html). A few differences are:
 
-- The `get_` prefix is removed from methods
+- The `get_` and `set_` prefixes are removed from methods
 - The default verbosity is `-1`
 - With the `cv` method, `stratified` is set to `false`
 
@@ -32,18 +32,25 @@ Some methods and options are also missing at the moment. PRs welcome!
 
 ## Training API
 
+Prep your data
+
+```ruby
+x = [[1, 2], [3, 4], [5, 6], [7, 8]]
+y = [1, 2, 3, 4]
+```
+
 Train a model
 
 ```ruby
 params = {objective: "regression"}
-train_set = LightGBM::Dataset.new(x_train, label: y_train)
+train_set = LightGBM::Dataset.new(x, label: y)
 booster = LightGBM.train(params, train_set)
 ```
 
 Predict
 
 ```ruby
-booster.predict(x_test)
+booster.predict(x)
 ```
 
 Save the model to a file
@@ -145,6 +152,24 @@ Or a Numo NArray
 ```ruby
 Numo::DFloat.new(3, 2).seq
 ```
+
+## LightGBM Installation
+
+There’s an experimental branch that includes LightGBM with the gem for easiest installation.
+
+```ruby
+gem 'lightgbm', github: 'ankane/lightgbm', branch: 'vendor'
+```
+
+Please file an issue if it doesn’t work for you.
+
+You can also specify the path to LightGBM in an initializer:
+
+```ruby
+LightGBM.ffi_lib << "/path/to/LightGBM/lib_lightgbm.so"
+```
+
+> Use `lib_lightgbm.dll` for Windows
 
 ## Helpful Resources
 

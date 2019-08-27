@@ -2,12 +2,14 @@ module LightGBM
   class Dataset
     attr_reader :data, :params
 
-    def initialize(data, label: nil, weight: nil, group: nil, params: nil, reference: nil, used_indices: nil, categorical_feature: "auto")
+    def initialize(data, label: nil, weight: nil, group: nil, params: nil, reference: nil, used_indices: nil, categorical_feature: "auto", feature_names: nil)
       @data = data
 
       # TODO stringify params
       params ||= {}
-      params["categorical_feature"] ||= categorical_feature.join(",") if categorical_feature != "auto"
+      if categorical_feature != "auto" && categorical_feature.any?
+        params["categorical_feature"] ||= categorical_feature.join(",")
+      end
       set_verbosity(params)
 
       @handle = ::FFI::MemoryPointer.new(:pointer)
@@ -26,7 +28,7 @@ module LightGBM
           flat_data = data.to_a.flatten
         elsif daru?(data)
           nrow, ncol = data.shape
-          flat_data = data.each_vector.map(&:to_a).flatten
+          flat_data = data.map_rows(&:to_a).flatten
         elsif narray?(data)
           nrow, ncol = data.shape
           flat_data = data.flatten.to_a
@@ -36,6 +38,7 @@ module LightGBM
           flat_data = data.flatten
         end
 
+        handle_missing(flat_data)
         c_data = ::FFI::MemoryPointer.new(:float, nrow * ncol)
         c_data.put_array_of_float(0, flat_data)
         check_result FFI.LGBM_DatasetCreateFromMat(c_data, 0, nrow, ncol, 1, parameters, reference, @handle)
@@ -45,6 +48,7 @@ module LightGBM
       self.label = label if label
       self.weight = weight if weight
       self.group = group if group
+      self.feature_names = feature_names if feature_names
     end
 
     def label
@@ -59,12 +63,28 @@ module LightGBM
       set_field("label", label)
     end
 
+    def feature_names
+      # must preallocate space
+      num_feature_names = ::FFI::MemoryPointer.new(:int)
+      out_strs = ::FFI::MemoryPointer.new(:pointer, 1000)
+      str_ptrs = 1000.times.map { ::FFI::MemoryPointer.new(:string, 255) }
+      out_strs.put_array_of_pointer(0, str_ptrs)
+      check_result FFI.LGBM_DatasetGetFeatureNames(handle_pointer, out_strs, num_feature_names)
+      str_ptrs[0, num_feature_names.read_int].map(&:read_string)
+    end
+
     def weight=(weight)
       set_field("weight", weight)
     end
 
     def group=(group)
       set_field("group", group, type: :int32)
+    end
+
+    def feature_names=(feature_names)
+      c_feature_names = ::FFI::MemoryPointer.new(:pointer, feature_names.size)
+      c_feature_names.write_array_of_pointer(feature_names.map { |v| ::FFI::MemoryPointer.from_string(v) })
+      check_result FFI.LGBM_DatasetSetFeatureNames(handle_pointer, c_feature_names, feature_names.size)
     end
 
     def num_data
@@ -129,18 +149,6 @@ module LightGBM
         c_data.put_array_of_float(0, data)
         check_result FFI.LGBM_DatasetSetField(handle_pointer, field_name, c_data, data.count, 0)
       end
-    end
-
-    def matrix?(data)
-      defined?(Matrix) && data.is_a?(Matrix)
-    end
-
-    def daru?(data)
-      defined?(Daru::DataFrame) && data.is_a?(Daru::DataFrame)
-    end
-
-    def narray?(data)
-      defined?(Numo::NArray) && data.is_a?(Numo::NArray)
     end
 
     include Utils
