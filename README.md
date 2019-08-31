@@ -16,7 +16,7 @@ gem 'lightgbm'
 
 LightGBM is packaged with the gem, so no need to install it separately. On Mac, also run:
 
-```ruby
+```sh
 brew install libomp
 ```
 
