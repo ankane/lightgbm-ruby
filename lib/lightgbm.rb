@@ -39,6 +39,8 @@ module LightGBM
         end
       end
 
+      raise ArgumentError, "For early stopping, at least one validation set is required" if early_stopping_rounds && !valid_sets.any? { |v| v != train_set }
+
       booster.best_iteration = 0
 
       if early_stopping_rounds

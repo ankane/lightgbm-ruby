@@ -83,6 +83,20 @@ class TrainTest < Minitest::Test
     end
   end
 
+  def test_early_stopping_no_valid_set
+    error = assert_raises ArgumentError do
+      LightGBM.train(regression_params, boston_train, valid_sets: [], early_stopping_rounds: 5)
+    end
+    assert_includes error.message, "at least one validation set is required"
+  end
+
+  def test_early_stopping_valid_set_training
+    error = assert_raises ArgumentError do
+      LightGBM.train(regression_params, boston_train, valid_sets: [boston_train], early_stopping_rounds: 5)
+    end
+    assert_includes error.message, "at least one validation set is required"
+  end
+
   def test_categorical_feature
     train_set = LightGBM::Dataset.new(boston_train.data, label: boston_train.label, categorical_feature: [5])
     model = LightGBM.train(regression_params, train_set)
