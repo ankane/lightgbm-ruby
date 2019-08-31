@@ -6,6 +6,9 @@ module LightGBM
       ffi_lib LightGBM.ffi_lib
     rescue LoadError => e
       raise e if ENV["LIGHTGBM_DEBUG"]
+      if e.message.include?("libomp")
+        raise LoadError, "Could not find OpenMP"
+      end
       raise LoadError, "Could not find LightGBM"
     end
 
