@@ -15,8 +15,8 @@ module LightGBM
         params[:objective] ||= "binary"
       end
 
-      train_set = Dataset.new(x, label: y, categorical_feature: categorical_feature)
-      valid_sets = Array(eval_set).map { |v| Dataset.new(v[0], label: v[1], reference: train_set) }
+      train_set = Dataset.new(x, label: y, categorical_feature: categorical_feature, params: params)
+      valid_sets = Array(eval_set).map { |v| Dataset.new(v[0], label: v[1], reference: train_set, params: params) }
 
       @booster = LightGBM.train(params, train_set,
         num_boost_round: @n_estimators,

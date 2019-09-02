@@ -51,4 +51,12 @@ class RegressorTest < Minitest::Test
     expected = [28.29122797, 25.87936514, 24.07423114, 31.56982437, 34.88568656, 30.3112404]
     assert_elements_in_delta expected, y_pred[0, 6]
   end
+
+  def test_trivial
+    x = [[1], [2], [3], [4]]
+    y = [0.1, 0.2, 0.3, 0.4]
+    model = LightGBM::Regressor.new(min_data_in_bin: 1, min_data_in_leaf: 1)
+    model.fit(x, y)
+    assert_elements_in_delta y, model.predict(x)
+  end
 end
