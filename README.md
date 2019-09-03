@@ -14,7 +14,7 @@ Add this line to your application’s Gemfile:
 gem 'lightgbm'
 ```
 
-LightGBM is packaged with the gem, so no need to install it separately. On Mac, also run:
+On Mac, also install OpenMP:
 
 ```sh
 brew install libomp
