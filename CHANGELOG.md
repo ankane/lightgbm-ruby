@@ -1,4 +1,4 @@
-## 0.1.5 [unreleased]
+## 0.1.5
 
 - Packaged LightGBM with gem
 - Added support for missing values
