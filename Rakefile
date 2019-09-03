@@ -7,3 +7,16 @@ Rake::TestTask.new do |t|
   t.pattern = "test/**/*_test.rb"
   t.warning = false
 end
+
+# https://github.com/microsoft/LightGBM/releases
+task :vendor do
+  require "open-uri"
+
+  version = "2.2.3"
+
+  %w(lib_lightgbm.dll lib_lightgbm.dylib lib_lightgbm.so).each do |file|
+    url = "https://github.com/microsoft/LightGBM/releases/download/v#{version}/#{file}"
+    puts "Saving #{file}..."
+    File.binwrite("vendor/#{file}", open(url).read)
+  end
+end

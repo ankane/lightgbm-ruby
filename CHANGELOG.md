@@ -1,5 +1,6 @@
 ## 0.1.5 [unreleased]
 
+- Packaged LightGBM with gem
 - Added support for missing values
 - Added `feature_names` to datasets
 - Fixed Daru training and prediction

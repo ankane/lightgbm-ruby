@@ -4,16 +4,20 @@
 
 :fire: Uses the C API for blazing performance
 
-[![Build Status](https://travis-ci.org/ankane/lightgbm.svg?branch=master)](https://travis-ci.org/ankane/lightgbm)
+[![Build Status](https://travis-ci.org/ankane/lightgbm.svg?branch=master)](https://travis-ci.org/ankane/lightgbm) [![Build status](https://ci.appveyor.com/api/projects/status/h6ftr2up4e253mwm/branch/master?svg=true)](https://ci.appveyor.com/project/ankane/lightgbm/branch/master)
 
 ## Installation
-
-First, [install LightGBM](https://lightgbm.readthedocs.io/en/latest/Installation-Guide.html). On Mac, copy `lib_lightgbm.so` to `/usr/local/lib`.
 
 Add this line to your application’s Gemfile:
 
 ```ruby
 gem 'lightgbm'
+```
+
+LightGBM is packaged with the gem, so no need to install it separately. On Mac, also run:
+
+```sh
+brew install libomp
 ```
 
 ## Getting Started
@@ -148,24 +152,6 @@ Or a Numo NArray
 ```ruby
 Numo::DFloat.new(3, 2).seq
 ```
-
-## LightGBM Installation
-
-There’s an experimental branch that includes LightGBM with the gem for easiest installation.
-
-```ruby
-gem 'lightgbm', github: 'ankane/lightgbm', branch: 'vendor'
-```
-
-Please file an issue if it doesn’t work for you.
-
-You can also specify the path to LightGBM in an initializer:
-
-```ruby
-LightGBM.ffi_lib << "/path/to/LightGBM/lib_lightgbm.so"
-```
-
-> Use `lib_lightgbm.dll` for Windows
 
 ## Helpful Resources
 
