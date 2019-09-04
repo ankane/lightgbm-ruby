@@ -17,6 +17,10 @@ jobs:
       uses: actions/setup-ruby@v1
       with:
         ruby-version: 2.6.x
+    - name: Install OpenMP
+      if: ${{ matrix.os == "macOS-latest" }}
+      run: |
+        brew install libomp
     - name: Build and test with Rake
       run: |
         bundle install --jobs 4 --retry 3
