@@ -61,6 +61,9 @@ class DatasetTest < Minitest::Test
   end
 
   def test_numo_narray
+    skip if RUBY_PLATFORM == "java"
+
+    require "numo/narray"
     data = Numo::DFloat.new(3, 5).seq
     label = Numo::DFloat.new(3).seq
     LightGBM::Dataset.new(data, label: label)

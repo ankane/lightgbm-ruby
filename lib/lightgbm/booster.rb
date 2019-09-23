@@ -40,7 +40,7 @@ module LightGBM
       out_len = ::FFI::MemoryPointer.new(:int64)
       out_str = ::FFI::MemoryPointer.new(:string, buffer_len)
       check_result FFI.LGBM_BoosterDumpModel(handle_pointer, start_iteration, num_iteration, buffer_len, out_len, out_str)
-      actual_len = out_len.read_int64
+      actual_len = out_len.read_long
       if actual_len > buffer_len
         out_str = ::FFI::MemoryPointer.new(:string, actual_len)
         check_result FFI.LGBM_BoosterDumpModel(handle_pointer, start_iteration, num_iteration, actual_len, out_len, out_str)
@@ -87,7 +87,7 @@ module LightGBM
       out_len = ::FFI::MemoryPointer.new(:int64)
       out_str = ::FFI::MemoryPointer.new(:string, buffer_len)
       check_result FFI.LGBM_BoosterSaveModelToString(handle_pointer, start_iteration, num_iteration, buffer_len, out_len, out_str)
-      actual_len = out_len.read_int64
+      actual_len = out_len.read_long
       if actual_len > buffer_len
         out_str = ::FFI::MemoryPointer.new(:string, actual_len)
         check_result FFI.LGBM_BoosterSaveModelToString(handle_pointer, start_iteration, num_iteration, actual_len, out_len, out_str)
@@ -137,7 +137,7 @@ module LightGBM
       out_len = ::FFI::MemoryPointer.new(:int64)
       out_result = ::FFI::MemoryPointer.new(:double, num_class * input.count)
       check_result FFI.LGBM_BoosterPredictForMat(handle_pointer, data, 0, input.count, input.first.count, 1, 0, num_iteration, params_str(params), out_len, out_result)
-      out = out_result.read_array_of_double(out_len.read_int64)
+      out = out_result.read_array_of_double(out_len.read_long)
       out = out.each_slice(num_class).to_a if num_class > 1
 
       singular ? out.first : out
