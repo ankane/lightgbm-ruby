@@ -4,6 +4,7 @@ module LightGBM
 
     def initialize(data, label: nil, weight: nil, group: nil, params: nil, reference: nil, used_indices: nil, categorical_feature: "auto", feature_names: nil)
       @data = data
+      @refs = []
 
       # TODO stringify params
       params ||= {}
@@ -18,6 +19,7 @@ module LightGBM
       if used_indices
         used_row_indices = ::FFI::MemoryPointer.new(:int32, used_indices.count)
         used_row_indices.put_array_of_int32(0, used_indices)
+        @refs << used_row_indices
         check_result FFI.LGBM_DatasetGetSubset(reference, used_row_indices, used_indices.count, parameters, @handle)
       elsif data.is_a?(String)
         check_result FFI.LGBM_DatasetCreateFromFile(data, parameters, reference, @handle)
@@ -43,7 +45,7 @@ module LightGBM
         c_data.put_array_of_float(0, flat_data)
 
         # keep ref
-        @ref = c_data
+        @refs << c_data
 
         check_result FFI.LGBM_DatasetCreateFromMat(c_data, 0, nrow, ncol, 1, parameters, reference, @handle)
       end
@@ -88,6 +90,7 @@ module LightGBM
     def feature_names=(feature_names)
       c_feature_names = ::FFI::MemoryPointer.new(:pointer, feature_names.size)
       c_feature_names.write_array_of_pointer(feature_names.map { |v| ::FFI::MemoryPointer.from_string(v) })
+      @refs << c_feature_names
       check_result FFI.LGBM_DatasetSetFeatureNames(handle_pointer, c_feature_names, feature_names.size)
     end
 
@@ -147,10 +150,12 @@ module LightGBM
       if type == :int32
         c_data = ::FFI::MemoryPointer.new(:int32, data.count)
         c_data.put_array_of_int32(0, data)
+        @refs << c_data
         check_result FFI.LGBM_DatasetSetField(handle_pointer, field_name, c_data, data.count, 2)
       else
         c_data = ::FFI::MemoryPointer.new(:float, data.count)
         c_data.put_array_of_float(0, data)
+        @refs << c_data
         check_result FFI.LGBM_DatasetSetField(handle_pointer, field_name, c_data, data.count, 0)
       end
     end
