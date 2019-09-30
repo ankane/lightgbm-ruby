@@ -26,7 +26,7 @@ module LightGBM
     attach_function :LGBM_DatasetGetFeatureNames, %i[pointer pointer pointer], :int
     attach_function :LGBM_DatasetFree, %i[pointer], :int
     attach_function :LGBM_DatasetSaveBinary, %i[pointer string], :int
-    # attach_function :LGBM_DatasetDumpText, %i[pointer string], :int
+    attach_function :LGBM_DatasetDumpText, %i[pointer string], :int
     attach_function :LGBM_DatasetSetField, %i[pointer string pointer int int], :int
     attach_function :LGBM_DatasetGetField, %i[pointer string pointer pointer pointer], :int
     attach_function :LGBM_DatasetGetNumData, %i[pointer pointer], :int

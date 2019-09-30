@@ -1,6 +1,7 @@
 ## 0.1.6 [unreleased]
 
 - Updated LightGBM to 2.3.0
+- Added `dump_text` method
 - Fixed error with JRuby
 
 ## 0.1.5
