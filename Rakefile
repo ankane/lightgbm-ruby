@@ -12,7 +12,7 @@ end
 task :vendor do
   require "open-uri"
 
-  version = "2.2.3"
+  version = "2.3.0"
 
   %w(lib_lightgbm.dll lib_lightgbm.dylib lib_lightgbm.so).each do |file|
     url = "https://github.com/microsoft/LightGBM/releases/download/v#{version}/#{file}"
