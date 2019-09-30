@@ -8,7 +8,7 @@ class RankerTest < Minitest::Test
     model = LightGBM::Ranker.new
     model.fit(x_train, y_train, group: group)
     y_pred = model.predict(x_test)
-    expected = [0.84250659, 2.52157059, -2.834404, -0.5862299, -0.51153132, -0.78868645]
+    expected = [3.63957802, 8.11121958, -8.93906771, -2.03459015, -1.34105828, -1.56297634]
     assert_elements_in_delta expected, y_pred[0, 6]
 
     model.save_model(tempfile)
@@ -25,7 +25,7 @@ class RankerTest < Minitest::Test
     model = LightGBM::Ranker.new
     model.fit(x_train, y_train, group: group)
 
-    expected = [6, 20, 155, 83]
+    expected = [20, 23, 101, 79]
     assert_equal expected, model.feature_importances
   end
 end
