@@ -1,4 +1,4 @@
-## 0.1.6 [unreleased]
+## 0.1.6
 
 - Updated LightGBM to 2.3.0
 - Fixed error with JRuby
