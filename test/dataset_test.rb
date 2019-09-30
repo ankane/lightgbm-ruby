@@ -42,7 +42,10 @@ class DatasetTest < Minitest::Test
   end
 
   def test_dump_text
-    boston.dump_text(tempfile)
+    # method is private in Python library
+    # https://github.com/microsoft/LightGBM/pull/2434
+    assert !boston.respond_to?(:dump_text)
+    boston.send(:dump_text, tempfile)
     assert File.exist?(tempfile)
   end
 
