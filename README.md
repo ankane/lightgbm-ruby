@@ -165,7 +165,7 @@ Numo::DFloat.new(3, 2).seq
 
 ## Credits
 
-Thanks to the [xgboost](https://github.com/PairOnAir/xgboost-ruby) gem for serving as an initial reference, and Selva Prabhakaran for the [test datasets](https://github.com/selva86/datasets).
+Thanks to the [xgboost](https://github.com/PairOnAir/xgboost-ruby) gem for serving as an initial reference.
 
 ## History
 

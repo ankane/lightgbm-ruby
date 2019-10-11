@@ -1,7 +1,7 @@
 import lightgbm as lgb
 import pandas as pd
 
-df = pd.read_csv('test/support/iris.csv')
+df = pd.read_csv('test/data/iris/iris.csv')
 
 X = df.drop(columns=['Species'])
 y = df['Species']

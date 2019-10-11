@@ -2,7 +2,7 @@ require_relative "test_helper"
 
 class DatasetTest < Minitest::Test
   def test_data_string
-    dataset = LightGBM::Dataset.new("test/support/boston.csv", params: {header: true, label_column: "name:medv"})
+    dataset = LightGBM::Dataset.new("test/data/boston/boston.csv", params: {header: true, label_column: "name:medv"})
     assert_equal 506, dataset.num_data
     assert_equal 13, dataset.num_feature
     assert_equal 506, dataset.label.size
@@ -56,7 +56,7 @@ class DatasetTest < Minitest::Test
   end
 
   def test_daru_data_frame
-    data = Daru::DataFrame.from_csv("test/support/boston.csv")
+    data = Daru::DataFrame.from_csv("test/data/boston/boston.csv")
     label = data["medv"]
     data = data.delete_vector("medv")
     LightGBM::Dataset.new(data, label: label)

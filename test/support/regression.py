@@ -5,7 +5,7 @@ with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     import lightgbm as lgb
 
-df = pd.read_csv('test/support/boston.csv')
+df = pd.read_csv('test/data/boston/boston.csv')
 
 X = df.drop(columns=['medv'])
 y = df['medv']

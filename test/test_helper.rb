@@ -18,7 +18,7 @@ class Minitest::Test
   end
 
   def boston
-    @boston ||= load_csv("boston.csv")
+    @boston ||= load_csv("boston/boston.csv")
   end
 
   def boston_train
@@ -30,7 +30,7 @@ class Minitest::Test
   end
 
   def iris
-    @iris ||= load_csv("iris.csv")
+    @iris ||= load_csv("iris/iris.csv")
   end
 
   def iris_train
@@ -43,21 +43,21 @@ class Minitest::Test
 
   def boston_data
     @boston_data ||= begin
-      x, y = load_csv("boston.csv", dataset: false)
+      x, y = load_csv("boston/boston.csv", dataset: false)
       [x[0...300], y[0...300], x[300..-1], y[300..-1]]
     end
   end
 
   def iris_data
     @iris_data ||= begin
-      x, y = load_csv("iris.csv", dataset: false)
+      x, y = load_csv("iris/iris.csv", dataset: false)
       [x[0...100], y[0...100], x[100..-1], y[100..-1]]
     end
   end
 
   def iris_data_binary
     @iris_data_binary ||= begin
-      x, y = load_csv("iris.csv", binary: true, dataset: false)
+      x, y = load_csv("iris/iris.csv", binary: true, dataset: false)
       [x[0...100], y[0...100], x[100..-1], y[100..-1]]
     end
   end
@@ -65,7 +65,7 @@ class Minitest::Test
   def load_csv(filename, binary: false, dataset: true)
     x = []
     y = []
-    CSV.foreach("test/support/#{filename}", headers: true).each do |row|
+    CSV.foreach("test/data/#{filename}", headers: true).each do |row|
       row = row.to_a.map { |_, v| v.nil? ? v : v.to_f }
       x << row[0..-2]
       y << row[-1]
