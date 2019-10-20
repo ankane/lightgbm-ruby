@@ -42,6 +42,7 @@ module LightGBM
         c_data = ::FFI::MemoryPointer.new(:float, nrow * ncol)
         c_data.put_array_of_float(0, flat_data)
         check_result FFI.LGBM_DatasetCreateFromMat(c_data, 0, nrow, ncol, 1, parameters, reference, @handle)
+        @c_data = c_data
       end
       ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer)) unless used_indices
 
