@@ -132,7 +132,7 @@ module LightGBM
       flat_input = input.flatten
       handle_missing(flat_input)
       data = ::FFI::MemoryPointer.new(:float, input.count * input.first.count)
-      data.put_array_of_float(0, flat_input)
+      data.write_array_of_float(flat_input)
 
       out_len = ::FFI::MemoryPointer.new(:int64)
       out_result = ::FFI::MemoryPointer.new(:double, num_class * input.count)
@@ -177,7 +177,7 @@ module LightGBM
       out_len = ::FFI::MemoryPointer.new(:int)
       out_strs = ::FFI::MemoryPointer.new(:pointer, eval_counts)
       str_ptrs = eval_counts.times.map { ::FFI::MemoryPointer.new(:string, 255) }
-      out_strs.put_array_of_pointer(0, str_ptrs)
+      out_strs.write_array_of_pointer(str_ptrs)
       check_result FFI.LGBM_BoosterGetEvalNames(handle_pointer, out_len, out_strs)
       str_ptrs.map(&:read_string)
     end

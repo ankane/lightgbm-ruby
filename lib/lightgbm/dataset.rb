@@ -17,7 +17,7 @@ module LightGBM
       reference = reference.handle_pointer if reference
       if used_indices
         used_row_indices = ::FFI::MemoryPointer.new(:int32, used_indices.count)
-        used_row_indices.put_array_of_int32(0, used_indices)
+        used_row_indices.write_array_of_int32(used_indices)
         check_result FFI.LGBM_DatasetGetSubset(reference, used_row_indices, used_indices.count, parameters, @handle)
       elsif data.is_a?(String)
         check_result FFI.LGBM_DatasetCreateFromFile(data, parameters, reference, @handle)
@@ -40,7 +40,7 @@ module LightGBM
 
         handle_missing(flat_data)
         c_data = ::FFI::MemoryPointer.new(:float, nrow * ncol)
-        c_data.put_array_of_float(0, flat_data)
+        c_data.write_array_of_float(flat_data)
         check_result FFI.LGBM_DatasetCreateFromMat(c_data, 0, nrow, ncol, 1, parameters, reference, @handle)
       end
       ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer)) unless used_indices
@@ -68,7 +68,7 @@ module LightGBM
       num_feature_names = ::FFI::MemoryPointer.new(:int)
       out_strs = ::FFI::MemoryPointer.new(:pointer, 1000)
       str_ptrs = 1000.times.map { ::FFI::MemoryPointer.new(:string, 255) }
-      out_strs.put_array_of_pointer(0, str_ptrs)
+      out_strs.write_array_of_pointer(str_ptrs)
       check_result FFI.LGBM_DatasetGetFeatureNames(handle_pointer, out_strs, num_feature_names)
       str_ptrs[0, num_feature_names.read_int].map(&:read_string)
     end
@@ -141,11 +141,11 @@ module LightGBM
       data = data.to_a unless data.is_a?(Array)
       if type == :int32
         c_data = ::FFI::MemoryPointer.new(:int32, data.count)
-        c_data.put_array_of_int32(0, data)
+        c_data.write_array_of_int32(data)
         check_result FFI.LGBM_DatasetSetField(handle_pointer, field_name, c_data, data.count, 2)
       else
         c_data = ::FFI::MemoryPointer.new(:float, data.count)
-        c_data.put_array_of_float(0, data)
+        c_data.write_array_of_float(data)
         check_result FFI.LGBM_DatasetSetField(handle_pointer, field_name, c_data, data.count, 0)
       end
     end
