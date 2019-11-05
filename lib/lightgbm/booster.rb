@@ -30,7 +30,7 @@ module LightGBM
 
     def current_iteration
       out = ::FFI::MemoryPointer.new(:int)
-      check_result FFI::LGBM_BoosterGetCurrentIteration(handle_pointer, out)
+      check_result FFI.LGBM_BoosterGetCurrentIteration(handle_pointer, out)
       out.read_int
     end
 
@@ -104,13 +104,13 @@ module LightGBM
 
     def num_model_per_iteration
       out = ::FFI::MemoryPointer.new(:int)
-      check_result FFI::LGBM_BoosterNumModelPerIteration(handle_pointer, out)
+      check_result FFI.LGBM_BoosterNumModelPerIteration(handle_pointer, out)
       out.read_int
     end
 
     def num_trees
       out = ::FFI::MemoryPointer.new(:int)
-      check_result FFI::LGBM_BoosterNumberOfTotalModel(handle_pointer, out)
+      check_result FFI.LGBM_BoosterNumberOfTotalModel(handle_pointer, out)
       out.read_int
     end
 
@@ -168,7 +168,7 @@ module LightGBM
 
     def eval_counts
       out = ::FFI::MemoryPointer.new(:int)
-      check_result FFI::LGBM_BoosterGetEvalCounts(handle_pointer, out)
+      check_result FFI.LGBM_BoosterGetEvalCounts(handle_pointer, out)
       out.read_int
     end
 
@@ -198,7 +198,7 @@ module LightGBM
 
     def num_class
       out = ::FFI::MemoryPointer.new(:int)
-      check_result FFI::LGBM_BoosterGetNumClasses(handle_pointer, out)
+      check_result FFI.LGBM_BoosterGetNumClasses(handle_pointer, out)
       out.read_int
     end
 
