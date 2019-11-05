@@ -67,7 +67,7 @@ module LightGBM
       # must preallocate space
       num_feature_names = ::FFI::MemoryPointer.new(:int)
       out_strs = ::FFI::MemoryPointer.new(:pointer, 1000)
-      str_ptrs = 1000.times.map { ::FFI::MemoryPointer.new(:string, 255) }
+      str_ptrs = 1000.times.map { ::FFI::MemoryPointer.new(:char, 255) }
       out_strs.write_array_of_pointer(str_ptrs)
       check_result FFI.LGBM_DatasetGetFeatureNames(handle_pointer, out_strs, num_feature_names)
       str_ptrs[0, num_feature_names.read_int].map(&:read_string)

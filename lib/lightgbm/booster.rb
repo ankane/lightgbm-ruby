@@ -38,11 +38,11 @@ module LightGBM
       num_iteration ||= best_iteration
       buffer_len = 1 << 20
       out_len = ::FFI::MemoryPointer.new(:int64)
-      out_str = ::FFI::MemoryPointer.new(:string, buffer_len)
+      out_str = ::FFI::MemoryPointer.new(:char, buffer_len)
       check_result FFI.LGBM_BoosterDumpModel(handle_pointer, start_iteration, num_iteration, buffer_len, out_len, out_str)
       actual_len = read_int64(out_len)
       if actual_len > buffer_len
-        out_str = ::FFI::MemoryPointer.new(:string, actual_len)
+        out_str = ::FFI::MemoryPointer.new(:char, actual_len)
         check_result FFI.LGBM_BoosterDumpModel(handle_pointer, start_iteration, num_iteration, actual_len, out_len, out_str)
       end
       out_str.read_string
@@ -85,11 +85,11 @@ module LightGBM
       num_iteration ||= best_iteration
       buffer_len = 1 << 20
       out_len = ::FFI::MemoryPointer.new(:int64)
-      out_str = ::FFI::MemoryPointer.new(:string, buffer_len)
+      out_str = ::FFI::MemoryPointer.new(:char, buffer_len)
       check_result FFI.LGBM_BoosterSaveModelToString(handle_pointer, start_iteration, num_iteration, buffer_len, out_len, out_str)
       actual_len = read_int64(out_len)
       if actual_len > buffer_len
-        out_str = ::FFI::MemoryPointer.new(:string, actual_len)
+        out_str = ::FFI::MemoryPointer.new(:char, actual_len)
         check_result FFI.LGBM_BoosterSaveModelToString(handle_pointer, start_iteration, num_iteration, actual_len, out_len, out_str)
       end
       out_str.read_string
@@ -176,7 +176,7 @@ module LightGBM
       eval_counts ||= eval_counts()
       out_len = ::FFI::MemoryPointer.new(:int)
       out_strs = ::FFI::MemoryPointer.new(:pointer, eval_counts)
-      str_ptrs = eval_counts.times.map { ::FFI::MemoryPointer.new(:string, 255) }
+      str_ptrs = eval_counts.times.map { ::FFI::MemoryPointer.new(:char, 255) }
       out_strs.write_array_of_pointer(str_ptrs)
       check_result FFI.LGBM_BoosterGetEvalNames(handle_pointer, out_len, out_strs)
       str_ptrs.map(&:read_string)
