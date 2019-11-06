@@ -1,5 +1,5 @@
 # dependencies
-require "ffi"
+require "fiddle/import"
 
 # modules
 require "lightgbm/utils"
@@ -19,9 +19,9 @@ module LightGBM
   class << self
     attr_accessor :ffi_lib
   end
-  lib_name = "lib_lightgbm.#{::FFI::Platform::LIBSUFFIX}"
-  vendor_lib = File.expand_path("../vendor/#{lib_name}", __dir__)
-  self.ffi_lib = [lib_name, "lib_lightgbm.so", vendor_lib]
+  vendor_path = File.expand_path("../vendor", __dir__)
+  lib_names = ["lib_lightgbm.so", "lib_lightgbm.dylib", "lib_lightgbm.dll"]
+  self.ffi_lib = lib_names.map { |name| "#{vendor_path}/#{name}" }
 
   # friendlier error message
   autoload :FFI, "lightgbm/ffi"

@@ -3,7 +3,7 @@ module LightGBM
     private
 
     def check_result(err)
-      raise LightGBM::Error, FFI.LGBM_GetLastError if err != 0
+      raise LightGBM::Error, FFI.LGBM_GetLastError.to_s if err != 0
     end
 
     # remove spaces in keys and values to prevent injection

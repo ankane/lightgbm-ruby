@@ -12,11 +12,11 @@ module LightGBM
       end
       set_verbosity(params)
 
-      @handle = ::FFI::MemoryPointer.new(:pointer)
+      @handle = FFI::Pointer.new(:pointer)
       parameters = params_str(params)
       reference = reference.handle_pointer if reference
       if used_indices
-        used_row_indices = ::FFI::MemoryPointer.new(:int32, used_indices.count)
+        used_row_indices = FFI::Pointer.new(:int32, used_indices.count)
         used_row_indices.write_array_of_int32(used_indices)
         check_result FFI.LGBM_DatasetGetSubset(reference, used_row_indices, used_indices.count, parameters, @handle)
       elsif data.is_a?(String)
@@ -39,7 +39,7 @@ module LightGBM
         end
 
         handle_missing(flat_data)
-        c_data = ::FFI::MemoryPointer.new(:float, nrow * ncol)
+        c_data = FFI::Pointer.new(:float, nrow * ncol)
         c_data.write_array_of_float(flat_data)
         check_result FFI.LGBM_DatasetCreateFromMat(c_data, 0, nrow, ncol, 1, parameters, reference, @handle)
       end
@@ -65,9 +65,9 @@ module LightGBM
 
     def feature_names
       # must preallocate space
-      num_feature_names = ::FFI::MemoryPointer.new(:int)
-      out_strs = ::FFI::MemoryPointer.new(:pointer, 1000)
-      str_ptrs = 1000.times.map { ::FFI::MemoryPointer.new(:char, 255) }
+      num_feature_names = FFI::Pointer.new(:int)
+      out_strs = FFI::Pointer.new(:pointer, 1000)
+      str_ptrs = 1000.times.map { FFI::Pointer.new(:char, 255) }
       out_strs.write_array_of_pointer(str_ptrs)
       check_result FFI.LGBM_DatasetGetFeatureNames(handle_pointer, out_strs, num_feature_names)
       str_ptrs[0, num_feature_names.read_int].map(&:read_string)
@@ -82,19 +82,19 @@ module LightGBM
     end
 
     def feature_names=(feature_names)
-      c_feature_names = ::FFI::MemoryPointer.new(:pointer, feature_names.size)
-      c_feature_names.write_array_of_pointer(feature_names.map { |v| ::FFI::MemoryPointer.from_string(v) })
+      c_feature_names = FFI::Pointer.new(:pointer, feature_names.size)
+      c_feature_names.write_array_of_pointer(feature_names.map { |v| FFI::Pointer.from_string(v) })
       check_result FFI.LGBM_DatasetSetFeatureNames(handle_pointer, c_feature_names, feature_names.size)
     end
 
     def num_data
-      out = ::FFI::MemoryPointer.new(:int)
+      out = FFI::Pointer.new(:int)
       check_result FFI.LGBM_DatasetGetNumData(handle_pointer, out)
       out.read_int
     end
 
     def num_feature
-      out = ::FFI::MemoryPointer.new(:int)
+      out = FFI::Pointer.new(:int)
       check_result FFI.LGBM_DatasetGetNumFeature(handle_pointer, out)
       out.read_int
     end
@@ -130,9 +130,9 @@ module LightGBM
 
     def field(field_name)
       num_data = self.num_data
-      out_len = ::FFI::MemoryPointer.new(:int)
-      out_ptr = ::FFI::MemoryPointer.new(:float, num_data)
-      out_type = ::FFI::MemoryPointer.new(:int)
+      out_len = FFI::Pointer.new(:int)
+      out_ptr = FFI::Pointer.new(:float, num_data)
+      out_type = FFI::Pointer.new(:int)
       check_result FFI.LGBM_DatasetGetField(handle_pointer, field_name, out_len, out_ptr, out_type)
       out_ptr.read_pointer.read_array_of_float(num_data)
     end
@@ -140,11 +140,11 @@ module LightGBM
     def set_field(field_name, data, type: :float)
       data = data.to_a unless data.is_a?(Array)
       if type == :int32
-        c_data = ::FFI::MemoryPointer.new(:int32, data.count)
+        c_data = FFI::Pointer.new(:int32, data.count)
         c_data.write_array_of_int32(data)
         check_result FFI.LGBM_DatasetSetField(handle_pointer, field_name, c_data, data.count, 2)
       else
-        c_data = ::FFI::MemoryPointer.new(:float, data.count)
+        c_data = FFI::Pointer.new(:float, data.count)
         c_data.write_array_of_float(data)
         check_result FFI.LGBM_DatasetSetField(handle_pointer, field_name, c_data, data.count, 0)
       end
