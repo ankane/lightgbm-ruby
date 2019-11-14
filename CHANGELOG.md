@@ -1,16 +1,16 @@
-## 0.1.6
+## 0.1.6 (2019-09-29)
 
 - Updated LightGBM to 2.3.0
 - Fixed error with JRuby
 
-## 0.1.5
+## 0.1.5 (2019-09-03)
 
 - Packaged LightGBM with gem
 - Added support for missing values
 - Added `feature_names` to datasets
 - Fixed Daru training and prediction
 
-## 0.1.4
+## 0.1.4 (2019-08-19)
 
 - Friendlier message when LightGBM not found
 - Added `Ranker`
@@ -18,22 +18,22 @@
 - Free memory when objects are destroyed
 - Removed unreleased `dump_text` method
 
-## 0.1.3
+## 0.1.3 (2019-08-16)
 
 - Added Scikit-Learn API
 - Added support for Daru and Numo::NArray
 
-## 0.1.2
+## 0.1.2 (2019-08-15)
 
 - Added `cv` method
 - Added early stopping
 - Fixed multiclass classification
 
-## 0.1.1
+## 0.1.1 (2019-08-14)
 
 - Added training API
 - Added many methods
 
-## 0.1.0
+## 0.1.0 (2019-08-13)
 
 - First release
