@@ -131,12 +131,12 @@ module LightGBM
 
       flat_input = input.flatten
       handle_missing(flat_input)
-      data = ::FFI::MemoryPointer.new(:float, input.count * input.first.count)
-      data.write_array_of_float(flat_input)
+      data = ::FFI::MemoryPointer.new(:double, input.count * input.first.count)
+      data.write_array_of_double(flat_input)
 
       out_len = ::FFI::MemoryPointer.new(:int64)
       out_result = ::FFI::MemoryPointer.new(:double, num_class * input.count)
-      check_result FFI.LGBM_BoosterPredictForMat(handle_pointer, data, 0, input.count, input.first.count, 1, 0, num_iteration, params_str(params), out_len, out_result)
+      check_result FFI.LGBM_BoosterPredictForMat(handle_pointer, data, 1, input.count, input.first.count, 1, 0, num_iteration, params_str(params), out_len, out_result)
       out = out_result.read_array_of_double(read_int64(out_len))
       out = out.each_slice(num_class).to_a if num_class > 1
 
