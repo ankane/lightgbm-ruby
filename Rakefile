@@ -26,7 +26,9 @@ def download_file(file)
 
   url = "https://github.com/microsoft/LightGBM/releases/download/v#{version}/#{file}"
   puts "Downloading #{file}..."
-  File.binwrite("vendor/#{file}", open(url).read)
+  dest = "vendor/#{file}"
+  File.binwrite(dest, open(url).read)
+  puts "Saved #{dest}"
 end
 
 # https://github.com/microsoft/LightGBM/releases
