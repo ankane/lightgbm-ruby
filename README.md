@@ -186,5 +186,6 @@ To get started with development and testing:
 git clone https://github.com/ankane/lightgbm.git
 cd lightgbm
 bundle install
+bundle exec rake vendor:all
 bundle exec rake test
 ```
