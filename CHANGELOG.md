@@ -1,3 +1,8 @@
+## 0.1.7 (2019-12-05)
+
+- Updated LightGBM to 2.3.1
+- Switched to doubles for datasets and predictions
+
 ## 0.1.6 (2019-09-29)
 
 - Updated LightGBM to 2.3.0
