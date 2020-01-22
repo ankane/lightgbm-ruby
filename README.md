@@ -1,8 +1,6 @@
 # LightGBM
 
-[LightGBM](https://github.com/microsoft/LightGBM) - the high performance machine learning library - for Ruby
-
-:fire: Uses the C API for blazing performance
+[LightGBM](https://github.com/microsoft/LightGBM) - high performance gradient boosting - for Ruby
 
 [![Build Status](https://travis-ci.org/ankane/lightgbm.svg?branch=master)](https://travis-ci.org/ankane/lightgbm)
 
@@ -27,8 +25,6 @@ This library follows the [Python API](https://lightgbm.readthedocs.io/en/latest/
 - The `get_` and `set_` prefixes are removed from methods
 - The default verbosity is `-1`
 - With the `cv` method, `stratified` is set to `false`
-
-Some methods and options are also missing at the moment. PRs welcome!
 
 ## Training API
 
@@ -160,7 +156,7 @@ Numo::DFloat.new(3, 2).seq
 
 ## Related Projects
 
-- [Xgb](https://github.com/ankane/xgb) - XGBoost for Ruby
+- [XGBoost](https://github.com/ankane/xgboost) - XGBoost for Ruby
 - [Eps](https://github.com/ankane/eps) - Machine Learning for Ruby
 
 ## Credits
