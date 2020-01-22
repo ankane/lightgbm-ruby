@@ -156,7 +156,7 @@ Numo::DFloat.new(3, 2).seq
 
 ## Related Projects
 
-- [XGBoost](https://github.com/ankane/xgboost) - XGBoost for Ruby
+- [Xgb](https://github.com/ankane/xgb) - XGBoost for Ruby
 - [Eps](https://github.com/ankane/eps) - Machine Learning for Ruby
 
 ## Credits
