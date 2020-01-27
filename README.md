@@ -159,7 +159,7 @@ This library follows the [Python API](https://lightgbm.readthedocs.io/en/latest/
 - The default verbosity is `-1`
 - With the `cv` method, `stratified` is set to `false`
 
-Thanks to the [xgboost](https://github.com/PairOnAir/xgboost-ruby) gem for demonstrating how to use FFI.
+Thanks to the [xgboost](https://github.com/PairOnAir/xgboost-ruby) gem for showing how to use FFI.
 
 ## History
 
