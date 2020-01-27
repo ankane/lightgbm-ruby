@@ -18,14 +18,6 @@ On Mac, also install OpenMP:
 brew install libomp
 ```
 
-## Getting Started
-
-This library follows the [Python API](https://lightgbm.readthedocs.io/en/latest/Python-API.html). A few differences are:
-
-- The `get_` and `set_` prefixes are removed from methods
-- The default verbosity is `-1`
-- With the `cv` method, `stratified` is set to `false`
-
 ## Training API
 
 Prep your data
@@ -157,11 +149,17 @@ Numo::DFloat.new(3, 2).seq
 ## Related Projects
 
 - [XGBoost](https://github.com/ankane/xgboost) - XGBoost for Ruby
-- [Eps](https://github.com/ankane/eps) - Machine Learning for Ruby
+- [Eps](https://github.com/ankane/eps) - Machine learning for Ruby
 
 ## Credits
 
-Thanks to the [xgboost](https://github.com/PairOnAir/xgboost-ruby) gem for serving as an initial reference.
+This library follows the [Python API](https://lightgbm.readthedocs.io/en/latest/Python-API.html). A few differences are:
+
+- The `get_` and `set_` prefixes are removed from methods
+- The default verbosity is `-1`
+- With the `cv` method, `stratified` is set to `false`
+
+Thanks to the [xgboost](https://github.com/PairOnAir/xgboost-ruby) gem for demonstrating how to use FFI.
 
 ## History
 
