@@ -1,3 +1,7 @@
+## 0.1.8 (unreleased)
+
+- Improved error message when OpenMP not found on Mac
+
 ## 0.1.7 (2019-12-05)
 
 - Updated LightGBM to 2.3.1

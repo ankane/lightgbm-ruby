@@ -6,7 +6,10 @@ module LightGBM
       ffi_lib LightGBM.ffi_lib
     rescue LoadError => e
       raise e if ENV["LIGHTGBM_DEBUG"]
-      if e.message.include?("libomp")
+
+      if e.message.include?("Library not loaded: /usr/local/opt/libomp/lib/libomp.dylib") && e.message.include?("Reason: image not found")
+        raise LoadError, "OpenMP not found. Run `brew install libomp`"
+      elsif e.message.include?("libomp")
         raise LoadError, "Could not find OpenMP"
       end
       raise LoadError, "Could not find LightGBM"
