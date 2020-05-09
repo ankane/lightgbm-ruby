@@ -135,6 +135,7 @@ module LightGBM
       if early_stopping_rounds
         best_score = {}
         best_iter = {}
+        best_iteration = nil
       end
 
       num_boost_round.times do |iteration|
@@ -174,11 +175,21 @@ module LightGBM
               best_score[k] = score
               best_iter[k] = iteration
             elsif iteration - best_iter[k] >= early_stopping_rounds
+              best_iteration = best_iter[k]
               stop_early = true
               break
             end
           end
           break if stop_early
+        end
+      end
+
+      if early_stopping_rounds
+        # use best iteration from first metric if not stopped early
+        best_iteration ||= best_iter[best_iter.keys.first]
+        eval_hist.each_key do |k|
+          # TODO uncomment for 0.2.0
+          # eval_hist[k] = eval_hist[k].first(best_iteration + 1)
         end
       end
 

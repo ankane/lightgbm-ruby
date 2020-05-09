@@ -33,6 +33,7 @@ class CvTest < Minitest::Test
     stdout, _ = capture_io do
       eval_hist = LightGBM.cv(regression_params, regression_train, shuffle: false, verbose_eval: true, early_stopping_rounds: 5)
     end
+    # TODO replace with 36 for 0.2.0
     assert_equal 41, eval_hist["l2-mean"].size
     assert_includes stdout, "[41]\tcv_agg's l2: 0.0988604 + 0.0243197"
     refute_includes stdout, "[42]"
@@ -43,6 +44,7 @@ class CvTest < Minitest::Test
     stdout, _ = capture_io do
       eval_hist = LightGBM.cv(regression_params, regression_train, shuffle: false, verbose_eval: true, early_stopping_rounds: 500)
     end
+    # TODO replace with 36 for 0.2.0
     assert_equal 100, eval_hist["l2-mean"].size
     assert_includes stdout, "[100]\tcv_agg's l2: 0.102678 + 0.0197047"
   end
