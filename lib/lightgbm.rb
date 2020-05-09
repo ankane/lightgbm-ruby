@@ -36,6 +36,8 @@ module LightGBM
           booster.train_data_name = name || "training"
           valid_contain_train = true
         else
+          # ensure the validation set references the training set
+          data.reference = train_set
           booster.add_valid(data, name || "valid_#{i}")
         end
       end

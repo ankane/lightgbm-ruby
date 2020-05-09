@@ -24,7 +24,7 @@ class Minitest::Test
   end
 
   def regression_test
-    @regression_test ||= split_test(regression_data, regression_train)
+    @regression_test ||= split_test(regression_data)
   end
 
   def binary_data
@@ -38,7 +38,7 @@ class Minitest::Test
   end
 
   def binary_test
-    @binary_test ||= split_test(binary_data, binary_train)
+    @binary_test ||= split_test(binary_data)
   end
 
   def multiclass_data
@@ -50,7 +50,7 @@ class Minitest::Test
   end
 
   def multiclass_test
-    @multiclass_test ||= split_test(multiclass_data, multiclass_train)
+    @multiclass_test ||= split_test(multiclass_data)
   end
 
   def ranker_data
@@ -79,9 +79,9 @@ class Minitest::Test
     LightGBM::Dataset.new(x_train, label: y_train)
   end
 
-  def split_test(data, train_set)
+  def split_test(data)
     _, _, x_test, y_test = data
-    LightGBM::Dataset.new(x_test, label: y_test, reference: train_set)
+    LightGBM::Dataset.new(x_test, label: y_test)
   end
 
   def regression_params
