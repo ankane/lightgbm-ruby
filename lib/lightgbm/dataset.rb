@@ -12,6 +12,7 @@ module LightGBM
       @used_indices = used_indices
       @categorical_feature = categorical_feature
       @feature_names = feature_names
+
       construct
     end
 
