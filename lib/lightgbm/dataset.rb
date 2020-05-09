@@ -57,9 +57,11 @@ module LightGBM
 
     # TODO only update reference if not in chain
     def reference=(reference)
-      @reference = reference
-      free_handle
-      construct
+      if reference != @reference
+        @reference = reference
+        free_handle
+        construct
+      end
     end
 
     def num_data
