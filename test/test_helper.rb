@@ -8,8 +8,6 @@ require "matrix"
 require "daru"
 
 class Minitest::Test
-  private
-
   def assert_elements_in_delta(expected, actual)
     assert_equal expected.size, actual.size
     expected.zip(actual) do |exp, act|
@@ -17,66 +15,73 @@ class Minitest::Test
     end
   end
 
-  def boston
-    @boston ||= load_csv("boston/boston.csv")
+  def regression_data
+    @regression_data ||= split_data(*load_data)
   end
 
-  def boston_train
-    @boston_train ||= LightGBM::Dataset.new(boston.data[0...300], label: boston.label[0...300])
+  def regression_train
+    @regression_train ||= split_train(regression_data)
   end
 
-  def boston_test
-    @boston_test ||= LightGBM::Dataset.new(boston.data[300..-1], label: boston.label[300..-1], reference: boston_train)
+  def regression_test
+    @regression_test ||= split_test(regression_data, regression_train)
   end
 
-  def iris
-    @iris ||= load_csv("iris/iris.csv")
+  def binary_data
+    x, y = load_data
+    y.map! { |v| v > 1 ? 1 : v }
+    split_data(x, y)
   end
 
-  def iris_train
-    @iris_train ||= LightGBM::Dataset.new(iris.data[0...100], label: iris.label[0...100])
+  def binary_train
+    @binary_train ||= split_train(binary_data)
   end
 
-  def iris_test
-    @iris_test ||= LightGBM::Dataset.new(iris.data[100..-1], label: iris.label[100..-1], reference: iris_train)
+  def binary_test
+    @binary_test ||= split_test(binary_data, binary_train)
   end
 
-  def boston_data
-    @boston_data ||= begin
-      x, y = load_csv("boston/boston.csv", dataset: false)
-      [x[0...300], y[0...300], x[300..-1], y[300..-1]]
-    end
+  def multiclass_data
+    @multiclass_data ||= split_data(*load_data)
   end
 
-  def iris_data
-    @iris_data ||= begin
-      x, y = load_csv("iris/iris.csv", dataset: false)
-      [x[0...100], y[0...100], x[100..-1], y[100..-1]]
-    end
+  def multiclass_train
+    @multiclass_train ||= split_train(multiclass_data)
   end
 
-  def iris_data_binary
-    @iris_data_binary ||= begin
-      x, y = load_csv("iris/iris.csv", binary: true, dataset: false)
-      [x[0...100], y[0...100], x[100..-1], y[100..-1]]
-    end
+  def multiclass_test
+    @multiclass_test ||= split_test(multiclass_data, multiclass_train)
   end
 
-  def load_csv(filename, binary: false, dataset: true)
+  def ranker_data
+    @ranker_data ||= binary_data
+  end
+
+  def data_path
+    "test/support/data.csv"
+  end
+
+  def load_data
     x = []
-    y = []
-    CSV.foreach("test/data/#{filename}", headers: true).each do |row|
-      row = row.to_a.map { |_, v| v.nil? ? v : v.to_f }
-      x << row[0..-2]
-      y << row[-1]
+    CSV.foreach(data_path, headers: true, converters: :numeric) do |row|
+      x << row.to_h.values
     end
-    y = y.map { |v| v > 1 ? 1.0 : v } if binary
+    y = x.map(&:pop)
+    [x, y]
+  end
 
-    if dataset
-      LightGBM::Dataset.new(x, label: y)
-    else
-      [x, y]
-    end
+  def split_data(x, y)
+    [x[0...300], y[0...300], x[300..-1], y[300..-1]]
+  end
+
+  def split_train(data)
+    x_train, y_train, _, _ = data
+    LightGBM::Dataset.new(x_train, label: y_train)
+  end
+
+  def split_test(data, train_set)
+    _, _, x_test, y_test = data
+    LightGBM::Dataset.new(x_test, label: y_test, reference: train_set)
   end
 
   def regression_params

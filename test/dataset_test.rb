@@ -2,10 +2,10 @@ require_relative "test_helper"
 
 class DatasetTest < Minitest::Test
   def test_data_string
-    dataset = LightGBM::Dataset.new("test/data/boston/boston.csv", params: {header: true, label_column: "name:medv"})
-    assert_equal 506, dataset.num_data
-    assert_equal 13, dataset.num_feature
-    assert_equal 506, dataset.label.size
+    dataset = LightGBM::Dataset.new(data_path, params: {header: true, label_column: "name:y"})
+    assert_equal 500, dataset.num_data
+    assert_equal 4, dataset.num_feature
+    assert_equal 500, dataset.label.size
   end
 
   def test_label
@@ -29,23 +29,23 @@ class DatasetTest < Minitest::Test
   end
 
   def test_num_data
-    assert_equal 506, boston.num_data
+    assert_equal 300, regression_train.num_data
   end
 
   def test_num_feature
-    assert_equal 13, boston.num_feature
+    assert_equal 4, regression_train.num_feature
   end
 
   def test_save_binary
-    boston.save_binary(tempfile)
+    regression_train.save_binary(tempfile)
     assert File.exist?(tempfile)
   end
 
   def test_dump_text
     # method is private in Python library
     # https://github.com/microsoft/LightGBM/pull/2434
-    assert !boston.respond_to?(:dump_text)
-    boston.send(:dump_text, tempfile)
+    assert !regression_train.respond_to?(:dump_text)
+    regression_train.send(:dump_text, tempfile)
     assert File.exist?(tempfile)
   end
 
@@ -56,9 +56,9 @@ class DatasetTest < Minitest::Test
   end
 
   def test_daru_data_frame
-    data = Daru::DataFrame.from_csv("test/data/boston/boston.csv")
-    label = data["medv"]
-    data = data.delete_vector("medv")
+    data = Daru::DataFrame.from_csv(data_path)
+    label = data["y"]
+    data = data.delete_vector("y")
     LightGBM::Dataset.new(data, label: label)
   end
 

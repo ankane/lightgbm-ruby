@@ -2,76 +2,69 @@ require_relative "test_helper"
 
 class TrainTest < Minitest::Test
   def test_regression
-    x_test = boston_test.data
-    y_test = boston_test.label
-
-    model = LightGBM.train(regression_params, boston_train, valid_sets: [boston_train, boston_test], verbose_eval: false)
-    y_pred = model.predict(x_test)
-    assert_operator rsme(y_test, y_pred), :<=, 6
+    model = LightGBM.train(regression_params, regression_train, valid_sets: [regression_train, regression_test], verbose_eval: false)
+    y_pred = model.predict(regression_test.data)
+    assert_operator rsme(regression_test.label, y_pred), :<=, 0.3
 
     model.save_model(tempfile)
     model = LightGBM::Booster.new(model_file: tempfile)
-    y_pred = model.predict(x_test)
-    assert_operator rsme(y_test, y_pred), :<=, 6
+    y_pred = model.predict(regression_test.data)
+    assert_operator rsme(regression_test.label, y_pred), :<=, 0.3
   end
 
   def test_binary
-    model = LightGBM.train(binary_params, iris_train, valid_sets: [iris_train, iris_test], verbose_eval: false)
-    y_pred = model.predict(iris_test.data)
-    assert_in_delta 0.99998366, y_pred[0]
-
-    y_pred = model.predict(iris_test.data)
-    assert_equal 50, y_pred.size
+    model = LightGBM.train(binary_params, binary_train, valid_sets: [binary_train, binary_test], verbose_eval: false)
+    y_pred = model.predict(binary_test.data)
+    assert_in_delta 0.9999896702079722, y_pred.first
 
     model.save_model(tempfile)
     model = LightGBM::Booster.new(model_file: tempfile)
-    y_pred2 = model.predict(iris_test.data)
+    y_pred2 = model.predict(binary_test.data)
     assert_equal y_pred, y_pred2
   end
 
   def test_multiclass
-    model = LightGBM.train(multiclass_params, iris_train, valid_sets: [iris_train, iris_test], verbose_eval: false)
-    y_pred = model.predict([6.3, 2.7, 4.9, 1.8])
-    expected = [3.91608299e-04, 3.81933551e-01, 6.17674841e-01]
-    assert_elements_in_delta expected, y_pred
+    model = LightGBM.train(multiclass_params, multiclass_train, valid_sets: [multiclass_train, multiclass_test], verbose_eval: false)
 
-    y_pred = model.predict(iris_test.data)
+    y_pred = model.predict(multiclass_test.data)
+    expected = [0.0004993587611819779, 0.9439989811698228, 0.05550166006899516]
+    assert_elements_in_delta expected, y_pred.first
     # ensure reshaped
-    assert_equal 50, y_pred.size
+    assert_equal 200, y_pred.size
     assert_equal 3, y_pred.first.size
 
     model.save_model(tempfile)
     model = LightGBM::Booster.new(model_file: tempfile)
-    y_pred2 = model.predict(iris_test.data)
+    y_pred2 = model.predict(multiclass_test.data)
     assert_equal y_pred, y_pred2
   end
 
   def test_early_stopping_early
     model = nil
     stdout, _ = capture_io do
-      model = LightGBM.train(regression_params, boston_train, valid_sets: [boston_train, boston_test], early_stopping_rounds: 5)
+      model = LightGBM.train(regression_params, regression_train, valid_sets: [regression_train, regression_test], early_stopping_rounds: 5)
     end
-    assert_equal 55, model.best_iteration
-    assert_includes stdout, "Early stopping, best iteration is:\n[55]\ttraining's l2: 2.18872\tvalid_1's l2: 35.6151"
+    assert_equal 69, model.best_iteration
+    assert_includes stdout, "Early stopping, best iteration is:\n[69]\ttraining's l2: 0.0312266\tvalid_1's l2: 0.0843578"
   end
 
   def test_early_stopping_not_early
     model = nil
     stdout, _ = capture_io do
-      model = LightGBM.train(regression_params, boston_train, valid_sets: [boston_train, boston_test], early_stopping_rounds: 500)
+      model = LightGBM.train(regression_params, regression_train, valid_sets: [regression_train, regression_test], early_stopping_rounds: 500)
     end
-    assert_equal 71, model.best_iteration
-    assert_includes stdout, "Best iteration is: [71]\ttraining's l2: 1.69138\tvalid_1's l2: 35.2563"
+    assert_equal 94, model.best_iteration
+    assert_includes stdout, "Best iteration is: [94]\ttraining's l2: 0.0255849\tvalid_1's l2: 0.0838007"
   end
 
   def test_early_stopping_early_higher_better
-    model = LightGBM.train(binary_params.merge(metric: "auc"), iris_train, valid_sets: [iris_train, iris_test], early_stopping_rounds: 5, verbose_eval: false)
-    assert_equal 6, model.best_iteration
+    model = LightGBM.train(binary_params.merge(metric: "auc"), binary_train, valid_sets: [binary_train, binary_test], early_stopping_rounds: 5, verbose_eval: false)
+    assert_equal 8, model.best_iteration
   end
 
   def test_verbose_eval_false
     stdout, _ = capture_io do
-      LightGBM.train(regression_params, boston_train, valid_sets: [boston_train, boston_test], early_stopping_rounds: 5, verbose_eval: false)
+      LightGBM.train(regression_params, regression_train, valid_sets: [regression_train, regression_test], early_stopping_rounds: 5, verbose_eval: false)
     end
     assert_empty stdout
   end
@@ -79,34 +72,33 @@ class TrainTest < Minitest::Test
   def test_bad_params
     params = {objective: "regression verbosity=1"}
     assert_raises ArgumentError do
-      LightGBM.train(params, boston_train)
+      LightGBM.train(params, regression_train)
     end
   end
 
   def test_early_stopping_no_valid_set
     error = assert_raises ArgumentError do
-      LightGBM.train(regression_params, boston_train, valid_sets: [], early_stopping_rounds: 5)
+      LightGBM.train(regression_params, regression_train, valid_sets: [], early_stopping_rounds: 5)
     end
     assert_includes error.message, "at least one validation set is required"
   end
 
   def test_early_stopping_valid_set_training
     error = assert_raises ArgumentError do
-      LightGBM.train(regression_params, boston_train, valid_sets: [boston_train], early_stopping_rounds: 5)
+      LightGBM.train(regression_params, regression_train, valid_sets: [regression_train], early_stopping_rounds: 5)
     end
     assert_includes error.message, "at least one validation set is required"
   end
 
   def test_categorical_feature
-    train_set = LightGBM::Dataset.new(boston_train.data, label: boston_train.label, categorical_feature: [5])
+    train_set = LightGBM::Dataset.new(regression_train.data, label: regression_train.label, categorical_feature: [3])
     model = LightGBM.train(regression_params, train_set)
-    assert_in_delta 22.33155937, model.predict(boston_test.data[0])
+    assert_in_delta 1.2914367038779377, model.predict(regression_test.data).first
   end
 
   def test_multiple_metrics
-    params = regression_params.dup
-    params[:metric] = ["l1", "l2", "rmse"]
-    LightGBM.train(params, boston_train, valid_sets: [boston_train, boston_test], verbose_eval: false, early_stopping_rounds: 5)
+    params = regression_params.merge(metric: ["l1", "l2", "rmse"])
+    LightGBM.train(params, regression_train, valid_sets: [regression_train, regression_test], verbose_eval: false, early_stopping_rounds: 5)
   end
 
   private

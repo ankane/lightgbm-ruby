@@ -1,21 +1,19 @@
 import lightgbm as lgb
 import pandas as pd
 
-df = pd.read_csv('test/data/iris/iris.csv')
+df = pd.read_csv('test/support/data.csv')
 
-X = df.drop(columns=['Species'])
-y = df['Species']
-# y = y.replace(2, 1)
+X = df.drop(columns=['y'])
+y = df['y'].replace(2, 1)
 
-X_train = X[:100]
-y_train = y[:100]
-X_test = X[100:]
-y_test = y[100:]
+X_train = X[:300]
+y_train = y[:300]
+X_test = X[300:]
+y_test = y[300:]
 
-group = [20, 80]
+group = [100, 200]
 
 model = lgb.LGBMRanker()
 model.fit(X_train, y_train, group=group)
-# print(model.predict(X_test))
-# print(model.predict_proba(X_test))
-print(model.feature_importances_)
+print(model.predict(X_test)[0:6].tolist())
+print(model.feature_importances_.tolist())
