@@ -1,4 +1,4 @@
-## 0.1.8 (unreleased)
+## 0.1.8 (2020-05-09)
 
 - Improved error message when OpenMP not found on Mac
 - Fixed `Cannot add validation data` error
