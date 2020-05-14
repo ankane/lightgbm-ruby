@@ -1,3 +1,8 @@
+## 0.1.9 (unreleased)
+
+- Added support for Rover
+- Improved performance of Numo datasets
+
 ## 0.1.8 (2020-05-09)
 
 - Improved error message when OpenMP not found on Mac

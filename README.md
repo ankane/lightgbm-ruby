@@ -129,10 +129,10 @@ Data can be an array of arrays
 [[1, 2, 3], [4, 5, 6]]
 ```
 
-Or a Daru data frame
+Or a Rover data frame [master]
 
 ```ruby
-Daru::DataFrame.from_csv("houses.csv")
+Rover.read_csv("houses.csv")
 ```
 
 Or a Numo NArray

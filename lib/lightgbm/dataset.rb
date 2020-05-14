@@ -130,18 +130,23 @@ module LightGBM
         elsif daru?(data)
           nrow, ncol = data.shape
           flat_data = data.map_rows(&:to_a).flatten
-        elsif narray?(data)
+        elsif numo?(data) || rover?(data)
+          data = data.to_numo if rover?(data)
           nrow, ncol = data.shape
-          flat_data = data.flatten.to_a
         else
           nrow = data.count
           ncol = data.first.count
           flat_data = data.flatten
         end
 
-        handle_missing(flat_data)
         c_data = ::FFI::MemoryPointer.new(:double, nrow * ncol)
-        c_data.write_array_of_double(flat_data)
+        if numo?(data)
+          c_data.write_bytes(data.to_string)
+        else
+          handle_missing(flat_data)
+          c_data.write_array_of_double(flat_data)
+        end
+
         check_result FFI.LGBM_DatasetCreateFromMat(c_data, 1, nrow, ncol, 1, parameters, reference, @handle)
       end
       ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer)) unless used_indices

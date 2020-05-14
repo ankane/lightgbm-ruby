@@ -37,8 +37,12 @@ module LightGBM
       defined?(Daru::DataFrame) && data.is_a?(Daru::DataFrame)
     end
 
-    def narray?(data)
+    def numo?(data)
       defined?(Numo::NArray) && data.is_a?(Numo::NArray)
+    end
+
+    def rover?(data)
+      defined?(Rover::DataFrame) && data.is_a?(Rover::DataFrame)
     end
   end
 end
