@@ -141,7 +141,7 @@ module LightGBM
 
         c_data = ::FFI::MemoryPointer.new(:double, nrow * ncol)
         if numo?(data)
-          c_data.write_bytes(data.to_string)
+          c_data.write_bytes(data.cast_to(Numo::DFloat).to_string)
         else
           handle_missing(flat_data)
           c_data.write_array_of_double(flat_data)
