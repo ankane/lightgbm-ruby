@@ -132,10 +132,10 @@ Data can be an array of arrays
 Or a Numo NArray
 
 ```ruby
-Numo::DFloat.new(3, 2).seq
+Numo::NArray.cast([[1, 2, 3], [4, 5, 6]])
 ```
 
-Or a Rover data frame [master]
+Or a Rover data frame
 
 ```ruby
 Rover.read_csv("houses.csv")

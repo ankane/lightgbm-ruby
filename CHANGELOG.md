@@ -1,4 +1,4 @@
-## 0.1.9 (unreleased)
+## 0.1.9 (2020-06-10)
 
 - Added support for Rover
 - Improved performance of Numo datasets
