@@ -4,12 +4,12 @@ class TrainTest < Minitest::Test
   def test_regression
     model = LightGBM.train(regression_params, regression_train, valid_sets: [regression_train, regression_test], verbose_eval: false)
     y_pred = model.predict(regression_test.data)
-    assert_operator rsme(regression_test.label, y_pred), :<=, 0.3
+    assert_in_delta 0.2900400590132747, rsme(regression_test.label, y_pred)
 
     model.save_model(tempfile)
     model = LightGBM::Booster.new(model_file: tempfile)
     y_pred = model.predict(regression_test.data)
-    assert_operator rsme(regression_test.label, y_pred), :<=, 0.3
+    assert_in_delta 0.2900400590132747, rsme(regression_test.label, y_pred)
   end
 
   def test_binary
