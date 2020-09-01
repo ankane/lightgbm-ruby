@@ -1,6 +1,7 @@
 ## 0.2.0 (2020-08-31)
 
 - Updated LightGBM to 3.0.0
+- Made `best_iteration` and `eval_hist` consistent with Python
 
 ## 0.1.9 (2020-06-10)
 
