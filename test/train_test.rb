@@ -53,8 +53,8 @@ class TrainTest < Minitest::Test
     stdout, _ = capture_io do
       model = LightGBM.train(regression_params, regression_train, valid_sets: [regression_train, regression_test], early_stopping_rounds: 500)
     end
-    assert_equal 94, model.best_iteration
-    assert_includes stdout, "Best iteration is: [94]\ttraining's l2: 0.0255849\tvalid_1's l2: 0.0838007"
+    assert_equal 100, model.best_iteration
+    assert_includes stdout, "Best iteration is: [100]\ttraining's l2: 0.024524\tvalid_1's l2: 0.0841232"
   end
 
   def test_early_stopping_early_higher_better
