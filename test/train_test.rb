@@ -15,7 +15,7 @@ class TrainTest < Minitest::Test
   def test_binary
     model = LightGBM.train(binary_params, binary_train, valid_sets: [binary_train, binary_test], verbose_eval: false)
     y_pred = model.predict(binary_test.data)
-    assert_in_delta 0.9999896702079722, y_pred.first
+    assert_in_delta 0.9999907566825113, y_pred.first
 
     model.save_model(tempfile)
     model = LightGBM::Booster.new(model_file: tempfile)
