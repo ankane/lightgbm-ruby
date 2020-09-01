@@ -27,7 +27,7 @@ class TrainTest < Minitest::Test
     model = LightGBM.train(multiclass_params, multiclass_train, valid_sets: [multiclass_train, multiclass_test], verbose_eval: false)
 
     y_pred = model.predict(multiclass_test.data)
-    expected = [0.0004993587611819779, 0.9439989811698228, 0.05550166006899516]
+    expected = [0.00036627031584163575, 0.9456350323547973, 0.053998697329361176]
     assert_elements_in_delta expected, y_pred.first
     # ensure reshaped
     assert_equal 200, y_pred.size

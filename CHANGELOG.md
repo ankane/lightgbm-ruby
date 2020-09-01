@@ -1,3 +1,7 @@
+## 0.2.0 (unreleased)
+
+- Updated LightGBM to 3.0.0
+
 ## 0.1.9 (2020-06-10)
 
 - Added support for Rover

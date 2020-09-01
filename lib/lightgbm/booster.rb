@@ -39,11 +39,12 @@ module LightGBM
       buffer_len = 1 << 20
       out_len = ::FFI::MemoryPointer.new(:int64)
       out_str = ::FFI::MemoryPointer.new(:char, buffer_len)
-      check_result FFI.LGBM_BoosterDumpModel(handle_pointer, start_iteration, num_iteration, buffer_len, out_len, out_str)
+      feature_importance_type = 0 # TODO add option
+      check_result FFI.LGBM_BoosterDumpModel(handle_pointer, start_iteration, num_iteration, feature_importance_type, buffer_len, out_len, out_str)
       actual_len = read_int64(out_len)
       if actual_len > buffer_len
         out_str = ::FFI::MemoryPointer.new(:char, actual_len)
-        check_result FFI.LGBM_BoosterDumpModel(handle_pointer, start_iteration, num_iteration, actual_len, out_len, out_str)
+        check_result FFI.LGBM_BoosterDumpModel(handle_pointer, start_iteration, num_iteration, feature_importance_type, actual_len, out_len, out_str)
       end
       out_str.read_string
     end
@@ -86,11 +87,12 @@ module LightGBM
       buffer_len = 1 << 20
       out_len = ::FFI::MemoryPointer.new(:int64)
       out_str = ::FFI::MemoryPointer.new(:char, buffer_len)
-      check_result FFI.LGBM_BoosterSaveModelToString(handle_pointer, start_iteration, num_iteration, buffer_len, out_len, out_str)
+      feature_importance_type = 0 # TODO add option
+      check_result FFI.LGBM_BoosterSaveModelToString(handle_pointer, start_iteration, num_iteration, feature_importance_type, buffer_len, out_len, out_str)
       actual_len = read_int64(out_len)
       if actual_len > buffer_len
         out_str = ::FFI::MemoryPointer.new(:char, actual_len)
-        check_result FFI.LGBM_BoosterSaveModelToString(handle_pointer, start_iteration, num_iteration, actual_len, out_len, out_str)
+        check_result FFI.LGBM_BoosterSaveModelToString(handle_pointer, start_iteration, num_iteration, feature_importance_type, actual_len, out_len, out_str)
       end
       out_str.read_string
     end
@@ -115,7 +117,7 @@ module LightGBM
     end
 
     # TODO support different prediction types
-    def predict(input, num_iteration: nil, **params)
+    def predict(input, start_iteration: nil, num_iteration: nil, **params)
       input =
         if daru?(input)
           input.map_rows(&:to_a)
@@ -126,6 +128,7 @@ module LightGBM
       singular = !input.first.is_a?(Array)
       input = [input] if singular
 
+      start_iteration ||= 0
       num_iteration ||= best_iteration
       num_class ||= num_class()
 
@@ -136,7 +139,7 @@ module LightGBM
 
       out_len = ::FFI::MemoryPointer.new(:int64)
       out_result = ::FFI::MemoryPointer.new(:double, num_class * input.count)
-      check_result FFI.LGBM_BoosterPredictForMat(handle_pointer, data, 1, input.count, input.first.count, 1, 0, num_iteration, params_str(params), out_len, out_result)
+      check_result FFI.LGBM_BoosterPredictForMat(handle_pointer, data, 1, input.count, input.first.count, 1, 0, start_iteration, num_iteration, params_str(params), out_len, out_result)
       out = out_result.read_array_of_double(read_int64(out_len))
       out = out.each_slice(num_class).to_a if num_class > 1
 
@@ -145,7 +148,8 @@ module LightGBM
 
     def save_model(filename, num_iteration: nil, start_iteration: 0)
       num_iteration ||= best_iteration
-      check_result FFI.LGBM_BoosterSaveModel(handle_pointer, start_iteration, num_iteration, filename)
+      feature_importance_type = 0 # TODO add
+      check_result FFI.LGBM_BoosterSaveModel(handle_pointer, start_iteration, num_iteration, feature_importance_type, filename)
       self # consistent with Python API
     end
 
@@ -175,10 +179,12 @@ module LightGBM
     def eval_names
       eval_counts ||= eval_counts()
       out_len = ::FFI::MemoryPointer.new(:int)
+      out_buffer_len = ::FFI::MemoryPointer.new(:size_t)
       out_strs = ::FFI::MemoryPointer.new(:pointer, eval_counts)
-      str_ptrs = eval_counts.times.map { ::FFI::MemoryPointer.new(:char, 255) }
+      buffer_len = 255
+      str_ptrs = eval_counts.times.map { ::FFI::MemoryPointer.new(:char, buffer_len) }
       out_strs.write_array_of_pointer(str_ptrs)
-      check_result FFI.LGBM_BoosterGetEvalNames(handle_pointer, out_len, out_strs)
+      check_result FFI.LGBM_BoosterGetEvalNames(handle_pointer, eval_counts, out_len, buffer_len, out_buffer_len, out_strs)
       str_ptrs.map(&:read_string)
     end
 

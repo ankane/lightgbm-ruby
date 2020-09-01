@@ -188,8 +188,7 @@ module LightGBM
         # use best iteration from first metric if not stopped early
         best_iteration ||= best_iter[best_iter.keys.first]
         eval_hist.each_key do |k|
-          # TODO uncomment for 0.2.0
-          # eval_hist[k] = eval_hist[k].first(best_iteration + 1)
+          eval_hist[k] = eval_hist[k].first(best_iteration + 1)
         end
       end
 

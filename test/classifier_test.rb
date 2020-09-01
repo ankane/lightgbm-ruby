@@ -7,14 +7,14 @@ class ClassifierTest < Minitest::Test
     model = LightGBM::Classifier.new
     model.fit(x_train, y_train)
     y_pred = model.predict(x_test)
-    expected = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+    expected = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]
     assert_equal expected, y_pred.first(100)
 
     y_pred_proba = model.predict_proba(x_test)
-    expected = [1.0329792027752305e-05, 0.9999896702079722]
+    expected = [9.243317488749625e-06, 0.9999907566825113]
     assert_elements_in_delta expected, y_pred_proba.first
 
-    expected = [338, 281, 241, 174]
+    expected = [399, 367, 419, 140]
     assert_equal expected, model.feature_importances
 
     model.save_model(tempfile)
@@ -30,14 +30,14 @@ class ClassifierTest < Minitest::Test
     model = LightGBM::Classifier.new
     model.fit(x_train, y_train)
     y_pred = model.predict(x_test)
-    expected = [1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 2, 1, 2, 1, 1, 1, 1, 0, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 2, 0, 1, 1, 1, 1, 1, 1]
+    expected = [1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1]
     assert_equal expected, y_pred.first(100)
 
     y_pred_proba = model.predict_proba(x_test)
-    expected = [0.0004993587611819779, 0.9439989811698228, 0.05550166006899516]
+    expected = [0.00036627031584163575, 0.9456350323547973, 0.053998697329361176]
     assert_elements_in_delta expected, y_pred_proba.first
 
-    expected = [826, 912, 1093, 398]
+    expected = [1118, 1060, 1272, 441]
     assert_equal expected, model.feature_importances
 
     model.save_model(tempfile)
@@ -52,7 +52,7 @@ class ClassifierTest < Minitest::Test
 
     model = LightGBM::Classifier.new
     model.fit(x_train, y_train, early_stopping_rounds: 5, eval_set: [[x_test, y_test]], verbose: false)
-    assert_equal 78, model.best_iteration
+    assert_equal 54, model.best_iteration
   end
 
   def test_missing_numeric
@@ -70,10 +70,10 @@ class ClassifierTest < Minitest::Test
     model.fit(x_train, y_train)
 
     y_pred = model.predict(x_test)
-    expected = [1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 2, 1, 2, 1, 1, 1, 1, 0, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 2, 0, 1, 1, 1, 1, 1, 1]
+    expected = [1, 2, 2, 1, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 1, 2, 1, 1, 1, 1, 0, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1]
     assert_equal expected, y_pred.first(100)
 
-    expected = [834, 945, 1069, 389]
+    expected = [1140, 1046, 1309, 427]
     assert_equal expected, model.feature_importances
   end
 
@@ -90,10 +90,10 @@ class ClassifierTest < Minitest::Test
     model.fit(x_train, y_train, categorical_feature: [3])
 
     y_pred = model.predict(x_test)
-    expected = [1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 1, 2, 1, 1, 1, 1, 0, 1, 1, 1, 2, 2, 1, 1, 1, 0, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 2, 0, 1, 1, 1, 1, 1, 1]
+    expected = [1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1]
     assert_equal expected, y_pred.first(100)
 
-    expected = [1002, 1025, 1126, 80]
+    expected = [1228, 1265, 1446, 30]
     assert_equal expected, model.feature_importances
   end
 end

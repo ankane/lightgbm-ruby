@@ -13,19 +13,19 @@ class CvTest < Minitest::Test
   def test_binary
     # need to set stratified=False in Python
     eval_hist = LightGBM.cv(binary_params, binary_train, shuffle: false)
-    assert_in_delta 0.3859417693900616, eval_hist["binary_logloss-mean"].first
-    assert_in_delta 0.14801378716350452, eval_hist["binary_logloss-mean"].last
+    assert_in_delta 0.38594176939006153, eval_hist["binary_logloss-mean"].first
+    assert_in_delta 0.13445744661816397, eval_hist["binary_logloss-mean"].last
     assert_in_delta 0.09986377563273867, eval_hist["binary_logloss-stdv"].first
-    assert_in_delta 0.06617990351806904, eval_hist["binary_logloss-stdv"].last
+    assert_in_delta 0.0463093558415842, eval_hist["binary_logloss-stdv"].last
   end
 
   def test_multiclass
     # need to set stratified=False in Python
     eval_hist = LightGBM.cv(multiclass_params, multiclass_train, shuffle: false)
-    assert_in_delta 0.7539432513169948, eval_hist["multi_logloss-mean"].first
-    assert_in_delta 0.3505812110913844, eval_hist["multi_logloss-mean"].last
-    assert_in_delta 0.11333478721691993, eval_hist["multi_logloss-stdv"].first
-    assert_in_delta 0.14174196252890728, eval_hist["multi_logloss-stdv"].last
+    assert_in_delta 0.7352745822291095, eval_hist["multi_logloss-mean"].first
+    assert_in_delta 0.40375560053885506, eval_hist["multi_logloss-mean"].last
+    assert_in_delta 0.11256739058587856, eval_hist["multi_logloss-stdv"].first
+    assert_in_delta 0.1779828373201067, eval_hist["multi_logloss-stdv"].last
   end
 
   def test_early_stopping_early
@@ -33,8 +33,7 @@ class CvTest < Minitest::Test
     stdout, _ = capture_io do
       eval_hist = LightGBM.cv(regression_params, regression_train, shuffle: false, verbose_eval: true, early_stopping_rounds: 5)
     end
-    # TODO replace with 36 for 0.2.0
-    assert_equal 41, eval_hist["l2-mean"].size
+    assert_equal 36, eval_hist["l2-mean"].size
     assert_includes stdout, "[41]\tcv_agg's l2: 0.0988604 + 0.0243197"
     refute_includes stdout, "[42]"
   end
@@ -44,8 +43,7 @@ class CvTest < Minitest::Test
     stdout, _ = capture_io do
       eval_hist = LightGBM.cv(regression_params, regression_train, shuffle: false, verbose_eval: true, early_stopping_rounds: 500)
     end
-    # TODO replace with 36 for 0.2.0
-    assert_equal 100, eval_hist["l2-mean"].size
+    assert_equal 36, eval_hist["l2-mean"].size
     assert_includes stdout, "[100]\tcv_agg's l2: 0.102678 + 0.0197047"
   end
 
