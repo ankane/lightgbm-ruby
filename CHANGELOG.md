@@ -1,3 +1,7 @@
+## 0.2.1 (unreleased)
+
+- Updated LightGBM to 3.1.0
+
 ## 0.2.0 (2020-08-31)
 
 - Updated LightGBM to 3.0.0
