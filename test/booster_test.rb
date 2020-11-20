@@ -9,6 +9,9 @@ class BoosterTest < Minitest::Test
   end
 
   def test_model_str
+    $stderr.sync = true
+    $stdout.sync = true
+    puts "test model str"
     x_test = [[3.7, 1.2, 7.2, 9.0], [7.5, 0.5, 7.9, 0.0]]
     booster = LightGBM::Booster.new(model_str: File.binread("test/support/model.txt"))
     y_pred = booster.predict(x_test)
