@@ -46,7 +46,7 @@ module LightGBM
         out_str = ::FFI::MemoryPointer.new(:char, actual_len)
         check_result FFI.LGBM_BoosterDumpModel(handle_pointer, start_iteration, num_iteration, feature_importance_type, actual_len, out_len, out_str)
       end
-      out_str.read_string
+      out_str.read_bytes(actual_len - 1)
     end
     alias_method :to_json, :dump_model
 
@@ -94,7 +94,7 @@ module LightGBM
         out_str = ::FFI::MemoryPointer.new(:char, actual_len)
         check_result FFI.LGBM_BoosterSaveModelToString(handle_pointer, start_iteration, num_iteration, feature_importance_type, actual_len, out_len, out_str)
       end
-      out_str.read_string
+      out_str.read_bytes(actual_len - 1)
     end
 
     def num_feature
