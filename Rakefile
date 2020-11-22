@@ -24,7 +24,12 @@ def download_file(file)
 
   version = "3.1.0"
 
-  url = "https://github.com/microsoft/LightGBM/releases/download/v#{version}/#{file}"
+  url =
+    if file.end_with?(".dll")
+      "https://github.com/ankane/ml-builds/releases/download/lightgbm-#{version}/#{file}"
+    else
+      "https://github.com/microsoft/LightGBM/releases/download/v#{version}/#{file}"
+    end
   puts "Downloading #{file}..."
   dest = "vendor/#{file}"
   File.binwrite(dest, URI.open(url).read)
