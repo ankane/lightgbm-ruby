@@ -1,6 +1,12 @@
 require_relative "test_helper"
 
 class BoosterTest < Minitest::Test
+  def setup
+    $stdout.sync = true
+    $stderr.sync = true
+    puts name
+  end
+
   def test_model_file
     skip
 
