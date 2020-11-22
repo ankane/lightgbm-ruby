@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - if: ${{ startsWith(matrix.os, 'windows') }}
-      uses: git config --global core.autocrlf false
+      run: git config --global core.autocrlf false
     - uses: actions/checkout@v2
     - uses: ruby/setup-ruby@v1
       with:
