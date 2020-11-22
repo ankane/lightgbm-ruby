@@ -2,6 +2,8 @@ require_relative "test_helper"
 
 class BoosterTest < Minitest::Test
   def test_model_file
+    skip
+
     x_test = [[3.7, 1.2, 7.2, 9.0], [7.5, 0.5, 7.9, 0.0]]
     booster = LightGBM::Booster.new(model_file: "test/support/model.txt")
     y_pred = booster.predict(x_test)
