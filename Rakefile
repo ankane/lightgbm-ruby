@@ -34,11 +34,11 @@ end
 # https://github.com/microsoft/LightGBM/releases
 namespace :vendor do
   task :linux do
-    download_file("lib_lightgbm.so")
+    # download_file("lib_lightgbm.so")
   end
 
   task :mac do
-    download_file("lib_lightgbm.dylib")
+    # download_file("lib_lightgbm.dylib")
   end
 
   task :windows do
