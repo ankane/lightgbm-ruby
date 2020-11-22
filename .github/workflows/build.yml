@@ -8,8 +8,9 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.os == 'windows-latest' }}
     steps:
+    - if: ${{ startsWith(matrix.os, 'windows') }}
+      uses: git config --global core.autocrlf false
     - uses: actions/checkout@v2
     - uses: ruby/setup-ruby@v1
       with:
