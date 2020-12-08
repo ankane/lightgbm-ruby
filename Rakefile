@@ -22,7 +22,7 @@ Rake::Task["build"].enhance [:ensure_vendor]
 def download_file(file)
   require "open-uri"
 
-  version = "3.1.0"
+  version = "3.1.1"
 
   url = "https://github.com/microsoft/LightGBM/releases/download/v#{version}/#{file}"
   puts "Downloading #{file}..."
