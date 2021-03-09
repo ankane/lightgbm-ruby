@@ -1,3 +1,7 @@
+## 0.2.3 (unreleased)
+
+- Added ARM shared library for Mac
+
 ## 0.2.2 (2020-12-07)
 
 - Updated LightGBM to 3.1.1

@@ -24,7 +24,13 @@ def download_file(file)
 
   version = "3.1.1"
 
-  url = "https://github.com/microsoft/LightGBM/releases/download/v#{version}/#{file}"
+  url =
+    if file == "lib_lightgbm.arm64.dylib"
+      "https://github.com/ankane/ml-builds/releases/download/lightgbm-#{version}/#{file}"
+    else
+      "https://github.com/microsoft/LightGBM/releases/download/v#{version}/#{file}"
+    end
+
   puts "Downloading #{file}..."
   dest = "vendor/#{file}"
   File.binwrite(dest, URI.open(url).read)
@@ -39,6 +45,7 @@ namespace :vendor do
 
   task :mac do
     download_file("lib_lightgbm.dylib")
+    download_file("lib_lightgbm.arm64.dylib")
   end
 
   task :windows do

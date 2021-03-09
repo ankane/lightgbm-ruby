@@ -19,7 +19,12 @@ module LightGBM
   class << self
     attr_accessor :ffi_lib
   end
-  lib_name = "lib_lightgbm.#{::FFI::Platform::LIBSUFFIX}"
+  lib_name =
+    if RbConfig::CONFIG["host_os"] =~ /darwin/i && RbConfig::CONFIG["host_cpu"] =~ /arm/i
+      "lib_lightgbm.arm64.#{::FFI::Platform::LIBSUFFIX}"
+    else
+      "lib_lightgbm.#{::FFI::Platform::LIBSUFFIX}"
+    end
   vendor_lib = File.expand_path("../vendor/#{lib_name}", __dir__)
   self.ffi_lib = [lib_name, "lib_lightgbm.so", vendor_lib]
 
