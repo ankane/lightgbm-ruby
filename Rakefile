@@ -22,7 +22,7 @@ Rake::Task["build"].enhance [:ensure_vendor]
 def download_file(file, sha256)
   require "open-uri"
 
-  version = "3.1.1"
+  version = "3.2.0"
 
   url =
     if file == "lib_lightgbm.arm64.dylib"
@@ -44,16 +44,16 @@ end
 # https://github.com/microsoft/LightGBM/releases
 namespace :vendor do
   task :linux do
-    download_file("lib_lightgbm.so", "35798e5dfca44228ace87b2309a56921d9d86a2697b3fe68ed103a8f88260db8")
+    download_file("lib_lightgbm.so", "f46ba293e4312f65282509267f7374736e5134dd5f0ef6692359a98d273d6b55")
   end
 
   task :mac do
-    download_file("lib_lightgbm.dylib", "f133547611bd56d64eb3fcd558afc2df7a4a42c3ccc24ef87436287cb489f6ec")
-    download_file("lib_lightgbm.arm64.dylib", "886710be05adfd038026f52ea03049d2eb7cb3c06a93b41c198797328a70a291")
+    download_file("lib_lightgbm.dylib", "d959c65218851252ec5a0aa89c031cc7e94600e95c88f7b1a4392a1c38f3b18a")
+    download_file("lib_lightgbm.arm64.dylib", "e3aeac2c66cbc5d5870ca4c02c5468e055f0a36fae5eeec95ecffb57be81cea0")
   end
 
   task :windows do
-    download_file("lib_lightgbm.dll", "31d50b397fdd2ecedd94fc1f415ca2369311dd4a01dde7adaa0e0d029b2a6de4")
+    download_file("lib_lightgbm.dll", "746f641504e6d8f165568d70d85a659b2411294f18e86f22ca4c3db64357432f")
   end
 
   task all: [:linux, :mac, :windows]
