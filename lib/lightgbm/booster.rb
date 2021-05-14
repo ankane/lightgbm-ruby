@@ -76,6 +76,18 @@ module LightGBM
       out_result.read_array_of_double(num_feature).map(&:to_i)
     end
 
+    def feature_name
+      len = self.num_feature
+      out_len = ::FFI::MemoryPointer.new(:size_t)
+      buffer_len = 255
+      out_buffer_len = ::FFI::MemoryPointer.new(:size_t)
+      out_strs = ::FFI::MemoryPointer.new(:pointer, num_feature)
+      str_ptrs = len.times.map { ::FFI::MemoryPointer.new(:char, buffer_len) }
+      out_strs.write_array_of_pointer(str_ptrs)
+      check_result FFI.LGBM_BoosterGetFeatureNames(handle_pointer, len, out_len, buffer_len, out_buffer_len, out_strs)
+      str_ptrs[0, out_len.read(:size_t)].map(&:read_string)
+    end
+
     def model_from_string(model_str)
       out_num_iterations = ::FFI::MemoryPointer.new(:int)
       check_result FFI.LGBM_BoosterLoadModelFromString(model_str, out_num_iterations, @handle)

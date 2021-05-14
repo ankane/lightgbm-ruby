@@ -20,6 +20,10 @@ class BoosterTest < Minitest::Test
     assert_equal expected, booster.feature_importance
   end
 
+  def test_feature_name
+    assert_equal ["x0", "x1", "x2", "x3"], booster.feature_name
+  end
+
   def test_feature_importance_bad_importance_type
     error = assert_raises(LightGBM::Error) do
       booster.feature_importance(importance_type: "bad")

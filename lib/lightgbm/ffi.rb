@@ -45,6 +45,7 @@ module LightGBM
     attach_function :LGBM_BoosterNumberOfTotalModel, %i[pointer pointer], :int
     attach_function :LGBM_BoosterGetEvalCounts, %i[pointer pointer], :int
     attach_function :LGBM_BoosterGetEvalNames, %i[pointer int pointer size_t pointer pointer], :int
+    attach_function :LGBM_BoosterGetFeatureNames, %i[pointer int pointer size_t pointer pointer], :int
     attach_function :LGBM_BoosterGetNumFeature, %i[pointer pointer], :int
     attach_function :LGBM_BoosterGetEval, %i[pointer int pointer pointer], :int
     attach_function :LGBM_BoosterPredictForMat, %i[pointer pointer int int32 int32 int int int int string pointer pointer], :int
