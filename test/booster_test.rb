@@ -16,8 +16,7 @@ class BoosterTest < Minitest::Test
   end
 
   def test_feature_importance
-    expected = [280, 285, 335, 148]
-    assert_equal expected, booster.feature_importance
+    assert_equal [280, 285, 335, 148], booster.feature_importance
   end
 
   def test_feature_name
