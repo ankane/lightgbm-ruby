@@ -44,7 +44,9 @@ module LightGBM
         check_result FFI.LGBM_DatasetGetFeatureNames(handle_pointer, num_features, num_feature_names, actual_len, out_buffer_len, out_strs)
       end
 
-      str_ptrs[0, num_features].map(&:read_string)
+      # should be the same, but get number of features
+      # from most recent call (instead of num_features)
+      str_ptrs[0, num_feature_names.read_int].map(&:read_string)
     end
 
     def label=(label)
