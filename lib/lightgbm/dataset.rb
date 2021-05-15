@@ -34,7 +34,17 @@ module LightGBM
       str_ptrs = len.times.map { ::FFI::MemoryPointer.new(:char, buffer_len) }
       out_strs.write_array_of_pointer(str_ptrs)
       check_result FFI.LGBM_DatasetGetFeatureNames(handle_pointer, len, num_feature_names, buffer_len, out_buffer_len, out_strs)
-      str_ptrs[0, num_feature_names.read_int].map(&:read_string)
+
+      num_features = num_feature_names.read_int
+      actual_len = out_buffer_len.read(:size_t)
+      if num_features > len || actual_len > buffer_len
+        out_strs = ::FFI::MemoryPointer.new(:pointer, num_features) if num_features > len
+        str_ptrs = num_features.times.map { ::FFI::MemoryPointer.new(:char, actual_len) }
+        out_strs.write_array_of_pointer(str_ptrs)
+        check_result FFI.LGBM_DatasetGetFeatureNames(handle_pointer, num_features, num_feature_names, actual_len, out_buffer_len, out_strs)
+      end
+
+      str_ptrs[0, num_features].map(&:read_string)
     end
 
     def label=(label)

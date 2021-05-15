@@ -85,6 +85,14 @@ module LightGBM
       str_ptrs = len.times.map { ::FFI::MemoryPointer.new(:char, buffer_len) }
       out_strs.write_array_of_pointer(str_ptrs)
       check_result FFI.LGBM_BoosterGetFeatureNames(handle_pointer, len, out_len, buffer_len, out_buffer_len, out_strs)
+
+      actual_len = out_buffer_len.read(:size_t)
+      if actual_len > buffer_len
+        str_ptrs = len.times.map { ::FFI::MemoryPointer.new(:char, actual_len) }
+        out_strs.write_array_of_pointer(str_ptrs)
+        check_result FFI.LGBM_BoosterGetFeatureNames(handle_pointer, len, out_len, actual_len, out_buffer_len, out_strs)
+      end
+
       str_ptrs[0, out_len.read(:size_t)].map(&:read_string)
     end
 
