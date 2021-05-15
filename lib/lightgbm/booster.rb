@@ -205,6 +205,14 @@ module LightGBM
       str_ptrs = eval_counts.times.map { ::FFI::MemoryPointer.new(:char, buffer_len) }
       out_strs.write_array_of_pointer(str_ptrs)
       check_result FFI.LGBM_BoosterGetEvalNames(handle_pointer, eval_counts, out_len, buffer_len, out_buffer_len, out_strs)
+
+      actual_len = out_buffer_len.read(:size_t)
+      if actual_len > buffer_len
+        str_ptrs = eval_counts.times.map { ::FFI::MemoryPointer.new(:char, actual_len) }
+        out_strs.write_array_of_pointer(str_ptrs)
+        check_result FFI.LGBM_BoosterGetEvalNames(handle_pointer, eval_counts, out_len, actual_len, out_buffer_len, out_strs)
+      end
+
       str_ptrs.map(&:read_string)
     end
 
