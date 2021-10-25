@@ -1,3 +1,7 @@
+## 0.2.6 (unreleased)
+
+- Updated LightGBM to 3.3.0
+
 ## 0.2.5 (2021-07-07)
 
 - Added `feature_name` method to boosters
