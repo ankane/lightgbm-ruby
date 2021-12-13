@@ -20,7 +20,7 @@ module LightGBM
     attr_accessor :ffi_lib
   end
   lib_name =
-    if RbConfig::CONFIG["host_os"] =~ /darwin/i && RbConfig::CONFIG["host_cpu"] =~ /arm/i
+    if RbConfig::CONFIG["host_os"] =~ /darwin/i && RbConfig::CONFIG["host_cpu"] =~ /arm|aarch64/i
       "lib_lightgbm.arm64.#{::FFI::Platform::LIBSUFFIX}"
     else
       "lib_lightgbm.#{::FFI::Platform::LIBSUFFIX}"
