@@ -9,7 +9,7 @@
 Add this line to your application’s Gemfile:
 
 ```ruby
-gem 'lightgbm'
+gem "lightgbm"
 ```
 
 On Mac, also install OpenMP:
