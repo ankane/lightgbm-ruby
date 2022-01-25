@@ -2,7 +2,7 @@
 
 [LightGBM](https://github.com/microsoft/LightGBM) - high performance gradient boosting - for Ruby
 
-[![Build Status](https://github.com/ankane/lightgbm-ruby/workflows/build/badge.svg?branch=master)](https://github.com/ankane/lightgbm-ruby/actions)
+[![Build Status](https://github.com/ruby-ml/lightgbm-ruby/workflows/build/badge.svg?branch=master)](https://github.com/ruby-ml/lightgbm-ruby/actions)
 
 ## Installation
 
@@ -154,7 +154,7 @@ Daru::DataFrame.from_csv("houses.csv")
 
 ## Related Projects
 
-- [XGBoost](https://github.com/ankane/xgboost) - XGBoost for Ruby
+- [XGBoost](https://github.com/ruby-ml/xgboost-ruby) - XGBoost for Ruby
 - [Eps](https://github.com/ankane/eps) - Machine learning for Ruby
 
 ## Credits
@@ -169,21 +169,21 @@ Thanks to the [xgboost](https://github.com/PairOnAir/xgboost-ruby) gem for showi
 
 ## History
 
-View the [changelog](https://github.com/ankane/lightgbm-ruby/blob/master/CHANGELOG.md)
+View the [changelog](https://github.com/ruby-ml/lightgbm-ruby/blob/master/CHANGELOG.md)
 
 ## Contributing
 
 Everyone is encouraged to help improve this project. Here are a few ways you can help:
 
-- [Report bugs](https://github.com/ankane/lightgbm-ruby/issues)
-- Fix bugs and [submit pull requests](https://github.com/ankane/lightgbm-ruby/pulls)
+- [Report bugs](https://github.com/ruby-ml/lightgbm-ruby/issues)
+- Fix bugs and [submit pull requests](https://github.com/ruby-ml/lightgbm-ruby/pulls)
 - Write, clarify, or fix documentation
 - Suggest or add new features
 
 To get started with development:
 
 ```sh
-git clone https://github.com/ankane/lightgbm-ruby.git
+git clone https://github.com/ruby-ml/lightgbm-ruby.git
 cd lightgbm-ruby
 bundle install
 bundle exec rake vendor:all
