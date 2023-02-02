@@ -22,6 +22,7 @@ Rake::Task["build"].enhance [:ensure_vendor]
 def download_file(file, sha256)
   require "open-uri"
 
+  # also update licenses in vendor/
   version = "3.3.5"
 
   url =
