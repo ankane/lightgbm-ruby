@@ -1,4 +1,4 @@
-## 0.2.7 (unreleased)
+## 0.2.7 (2023-02-01)
 
 - Updated LightGBM to 3.3.5
 - Improved ARM detection
