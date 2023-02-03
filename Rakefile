@@ -32,7 +32,7 @@ def download_file(file, sha256)
       "https://github.com/microsoft/LightGBM/releases/download/v#{version}/#{file}"
     end
   puts "Downloading #{file}..."
-  contents = URI.open(url).read
+  contents = URI.parse(url).read
 
   computed_sha256 = Digest::SHA256.hexdigest(contents)
   raise "Bad hash: #{computed_sha256}" if computed_sha256 != sha256
