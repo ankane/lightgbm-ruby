@@ -1,3 +1,7 @@
+## 0.3.0 (unreleased)
+
+- Dropped support for Ruby < 3
+
 ## 0.2.7 (2023-02-01)
 
 - Updated LightGBM to 3.3.5
