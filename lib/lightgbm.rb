@@ -2,16 +2,16 @@
 require "ffi"
 
 # modules
-require "lightgbm/utils"
-require "lightgbm/booster"
-require "lightgbm/dataset"
-require "lightgbm/version"
+require_relative "lightgbm/utils"
+require_relative "lightgbm/booster"
+require_relative "lightgbm/dataset"
+require_relative "lightgbm/version"
 
 # scikit-learn API
-require "lightgbm/model"
-require "lightgbm/classifier"
-require "lightgbm/ranker"
-require "lightgbm/regressor"
+require_relative "lightgbm/model"
+require_relative "lightgbm/classifier"
+require_relative "lightgbm/ranker"
+require_relative "lightgbm/regressor"
 
 module LightGBM
   class Error < StandardError; end
