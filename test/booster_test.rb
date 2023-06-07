@@ -54,6 +54,11 @@ class BoosterTest < Minitest::Test
     assert_equal 100, booster.num_trees
   end
 
+  def test_copy
+    booster.dup
+    booster.clone
+  end
+
   private
 
   def booster

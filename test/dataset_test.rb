@@ -79,4 +79,9 @@ class DatasetTest < Minitest::Test
     label = data.delete("y")
     LightGBM::Dataset.new(data, label: label)
   end
+
+  def test_copy
+    regression_train.dup
+    regression_train.clone
+  end
 end

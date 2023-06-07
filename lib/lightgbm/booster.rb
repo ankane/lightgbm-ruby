@@ -14,7 +14,7 @@ module LightGBM
         set_verbosity(params)
         check_result FFI.LGBM_BoosterCreate(train_set.handle_pointer, params_str(params), @handle)
       end
-      ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer))
+      ObjectSpace.define_finalizer(@handle, self.class.finalize(handle_pointer.to_i))
 
       self.best_iteration = -1
 
@@ -179,9 +179,9 @@ module LightGBM
       finished.read_int == 1
     end
 
-    def self.finalize(pointer)
+    def self.finalize(addr)
       # must use proc instead of stabby lambda
-      proc { FFI.LGBM_BoosterFree(pointer) }
+      proc { FFI.LGBM_BoosterFree(::FFI::Pointer.new(:pointer, addr)) }
     end
 
     private

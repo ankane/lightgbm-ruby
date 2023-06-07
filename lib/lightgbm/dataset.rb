@@ -75,7 +75,6 @@ module LightGBM
     def reference=(reference)
       if reference != @reference
         @reference = reference
-        free_handle
         construct
       end
     end
@@ -110,9 +109,9 @@ module LightGBM
       @handle.read_pointer
     end
 
-    def self.finalize(pointer)
+    def self.finalize(addr)
       # must use proc instead of stabby lambda
-      proc { FFI.LGBM_DatasetFree(pointer) }
+      proc { FFI.LGBM_DatasetFree(::FFI::Pointer.new(:pointer, addr)) }
     end
 
     private
@@ -164,17 +163,12 @@ module LightGBM
 
         check_result FFI.LGBM_DatasetCreateFromMat(c_data, 1, nrow, ncol, 1, parameters, reference, @handle)
       end
-      ObjectSpace.define_finalizer(self, self.class.finalize(handle_pointer)) unless used_indices
+      ObjectSpace.define_finalizer(@handle, self.class.finalize(handle_pointer.to_i)) unless used_indices
 
       self.label = @label if @label
       self.weight = @weight if @weight
       self.group = @group if @group
       self.feature_names = @feature_names if @feature_names
-    end
-
-    def free_handle
-      FFI.LGBM_DatasetFree(handle_pointer)
-      ObjectSpace.undefine_finalizer(self)
     end
 
     def dump_text(filename)
