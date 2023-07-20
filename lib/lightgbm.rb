@@ -26,7 +26,7 @@ module LightGBM
       "lib_lightgbm.#{::FFI::Platform::LIBSUFFIX}"
     end
   vendor_lib = File.expand_path("../vendor/#{lib_name}", __dir__)
-  self.ffi_lib = [lib_name, "lib_lightgbm.so", vendor_lib]
+  self.ffi_lib = [vendor_lib]
 
   # friendlier error message
   autoload :FFI, "lightgbm/ffi"

@@ -1,5 +1,6 @@
 ## 0.3.0 (unreleased)
 
+- Updated LightGBM to 4.0.0
 - Fixed error with `dup` and `clone`
 - Dropped support for Ruby < 3
 

@@ -1,5 +1,5 @@
 ================================================================================
-Boost.Compute 1.70.0
+Boost.Compute 1.78.0
 ================================================================================
 
 Boost Software License - Version 1.0 - August 17th, 2003
@@ -27,7 +27,7 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
 ================================================================================
-Eigen 8ba1b0f41
+Eigen 3.4.0
 ================================================================================
 
 Source code available at https://gitlab.com/libeigen/eigen
@@ -466,7 +466,7 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
 ================================================================================
-fmt 7.1.2
+fmt 8.1.1
 ================================================================================
 
 Copyright (c) 2012 - present, Victor Zverovich
