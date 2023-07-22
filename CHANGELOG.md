@@ -1,4 +1,4 @@
-## 0.3.0 (unreleased)
+## 0.3.0 (2023-07-22)
 
 - Updated LightGBM to 4.0.0
 - Fixed error with `dup` and `clone`
