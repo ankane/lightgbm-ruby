@@ -4,7 +4,7 @@ Gem::Specification.new do |spec|
   spec.name          = "lightgbm"
   spec.version       = LightGBM::VERSION
   spec.summary       = "High performance gradient boosting for Ruby"
-  spec.homepage      = "https://github.com/ruby-ml/lightgbm-ruby"
+  spec.homepage      = "https://github.com/ankane/lightgbm-ruby"
   spec.license       = "MIT"
 
   spec.author        = "Andrew Kane"
