@@ -436,7 +436,7 @@ and
 */
 
 ================================================================================
-fast_double_parser 0.3.0
+fast_double_parser 0.7.0
 ================================================================================
 
 Copyright (c) Daniel Lemire
@@ -466,10 +466,10 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
 ================================================================================
-fmt 8.1.1
+fmt 10.1.1
 ================================================================================
 
-Copyright (c) 2012 - present, Victor Zverovich
+Copyright (c) 2012 - present, Victor Zverovich and {fmt} contributors
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
