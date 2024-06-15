@@ -5,7 +5,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-14, macos-13]
+        os: [windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - if: ${{ startsWith(matrix.os, 'windows') }}
