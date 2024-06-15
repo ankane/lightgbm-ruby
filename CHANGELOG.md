@@ -1,3 +1,7 @@
+## 0.3.3 (unreleased)
+
+- Updated LightGBM to 4.4.0
+
 ## 0.3.2 (2024-01-25)
 
 - Updated LightGBM to 4.3.0
