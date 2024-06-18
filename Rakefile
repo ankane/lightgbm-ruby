@@ -62,7 +62,7 @@ namespace :vendor do
   task :platform do
     if Gem.win_platform?
       Rake::Task["vendor:windows"].invoke
-    elsif RbConfig::CONFIG["host_os"] =~ /darwin/i
+    elsif RbConfig::CONFIG["host_os"].match?(/darwin/i)
       Rake::Task["vendor:mac"].invoke
     else
       Rake::Task["vendor:linux"].invoke
