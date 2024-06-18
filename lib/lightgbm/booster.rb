@@ -51,7 +51,7 @@ module LightGBM
     alias_method :to_json, :dump_model
 
     def eval_valid
-      @name_valid_sets.each_with_index.map { |n, i| inner_eval(n, i + 1) }.flatten(1)
+      @name_valid_sets.each_with_index.flat_map { |n, i| inner_eval(n, i + 1) }
     end
 
     def eval_train
