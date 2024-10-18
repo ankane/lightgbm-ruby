@@ -1,3 +1,5 @@
+require_relative "categorical_feature_encoder"
+
 module LightGBM
   class Booster
     attr_accessor :best_iteration, :train_data_name
@@ -5,11 +7,13 @@ module LightGBM
     def initialize(params: nil, train_set: nil, model_file: nil, model_str: nil)
       if model_str
         model_from_string(model_str)
+        @categorical_feature_encoder = CategoricalFeatureEncoder.new(model_str.each_line)
       elsif model_file
         out_num_iterations = ::FFI::MemoryPointer.new(:int)
         create_handle do |handle|
           check_result FFI.LGBM_BoosterCreateFromModelfile(model_file, out_num_iterations, handle)
         end
+        @categorical_feature_encoder = CategoricalFeatureEncoder.new(File.foreach(model_file))
       else
         params ||= {}
         set_verbosity(params)
@@ -164,7 +168,12 @@ module LightGBM
       num_iteration ||= best_iteration
       num_class = self.num_class
 
-      flat_input = input.flatten
+      flat_input = if @categorical_feature_encoder
+        input.flat_map { |row| @categorical_feature_encoder.apply(row) }
+      else
+        input.flatten
+      end
+
       handle_missing(flat_input)
       data = ::FFI::MemoryPointer.new(:double, input.count * input.first.count)
       data.write_array_of_double(flat_input)

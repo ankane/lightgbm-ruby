@@ -9,3 +9,4 @@ gem "matrix"
 gem "numo-narray", platform: [:ruby, :x64_mingw]
 gem "rover-df", platform: [:ruby, :x64_mingw]
 gem "csv"
+gem "debug"
