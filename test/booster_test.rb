@@ -15,6 +15,14 @@ class BoosterTest < Minitest::Test
     assert_elements_in_delta [0.9823112229173586, 0.9583143724610858], y_pred.first(2)
   end
 
+  def test_model_from_string
+    x_test = [[3.7, 1.2, 7.2, 9.0], [7.5, 0.5, 7.9, 0.0]]
+    booster = LightGBM.train(binary_params, binary_train)
+    booster.model_from_string(File.read("test/support/model.txt"))
+    y_pred = booster.predict(x_test)
+    assert_elements_in_delta [0.9823112229173586, 0.9583143724610858], y_pred.first(2)
+  end
+
   def test_feature_importance
     assert_equal [280, 285, 335, 148], booster.feature_importance
   end
