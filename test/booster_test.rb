@@ -37,12 +37,11 @@ class BoosterTest < Minitest::Test
     pred = booster.predict({"x3" => 9.0, "x2" => 7.2, "x1" => 1.2, "x0" => 3.7})
     assert_in_delta 0.9823112229173586, pred
 
-    pred = booster.predict(
-      [
+    pred =
+      booster.predict([
         {"x3" => 9.0, "x2" => 7.2, "x1" => 1.2, "x0" => 3.7},
-        {"x3" => 0.0, "x2" => 7.9, "x1" => 0.5, "x0" => 7.5},
-      ]
-    )
+        {"x3" => 0.0, "x2" => 7.9, "x1" => 0.5, "x0" => 7.5}
+      ])
     assert_elements_in_delta [0.9823112229173586, 0.9583143724610858], pred.first(2)
 
     assert_raises(KeyError) do
@@ -54,7 +53,7 @@ class BoosterTest < Minitest::Test
     x_test =
       Daru::DataFrame.new([
         {"x3" => 9.0, "x2" => 7.2, "x1" => 1.2, "x0" => 3.7},
-        {"x3" => 0.0, "x2" => 7.9, "x1" => 0.5, "x0" => 7.5},
+        {"x3" => 0.0, "x2" => 7.9, "x1" => 0.5, "x0" => 7.5}
       ])
     pred = booster.predict(x_test)
     assert_elements_in_delta [0.9823112229173586, 0.9583143724610858], pred.first(2)
@@ -65,7 +64,7 @@ class BoosterTest < Minitest::Test
     x_test =
       Rover::DataFrame.new([
         {"x3" => 9.0, "x2" => 7.2, "x1" => 1.2, "x0" => 3.7},
-        {"x3" => 0.0, "x2" => 7.9, "x1" => 0.5, "x0" => 7.5},
+        {"x3" => 0.0, "x2" => 7.9, "x1" => 0.5, "x0" => 7.5}
       ])
     pred = booster.predict(x_test)
     assert_elements_in_delta [0.9823112229173586, 0.9583143724610858], pred.first(2)
