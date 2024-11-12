@@ -1,3 +1,7 @@
+## 0.4.0 (unreleased)
+
+- Added support for hashes to `predict` method
+
 ## 0.3.4 (2024-07-28)
 
 - Updated LightGBM to 4.5.0
