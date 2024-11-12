@@ -2,6 +2,7 @@
 
 - Added support for hashes and Rover data frames to `predict` method
 - Changed `Dataset` to use column names for feature names with Rover and Daru
+- Changed `predict` method to match feature names with Daru
 - Dropped support for Ruby < 3.1
 
 ## 0.3.4 (2024-07-28)
