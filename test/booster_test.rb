@@ -8,11 +8,25 @@ class BoosterTest < Minitest::Test
     assert_elements_in_delta [0.9823112229173586, 0.9583143724610858], y_pred.first(2)
   end
 
+  def test_model_file_with_categorical_features
+    x_test = [[false, "green", 7.2, 9.0], [true, "blue", 7.9, 0.0]]
+    booster = LightGBM::Booster.new(model_file: "test/support/model_with_categorical_features.txt")
+    y_pred = booster.predict(x_test)
+    assert_elements_in_delta [0.9948804305465, 0.792909968121466], y_pred.first(2)
+  end
+
   def test_model_str
     x_test = [[3.7, 1.2, 7.2, 9.0], [7.5, 0.5, 7.9, 0.0]]
     booster = LightGBM::Booster.new(model_str: File.read("test/support/model.txt"))
     y_pred = booster.predict(x_test)
     assert_elements_in_delta [0.9823112229173586, 0.9583143724610858], y_pred.first(2)
+  end
+
+  def test_model_str_with_categorical_features
+    x_test = [[false, "green", 7.2, 9.0], [true, "blue", 7.9, 0.0]]
+    booster = LightGBM::Booster.new(model_str: File.read("test/support/model_with_categorical_features.txt"))
+    y_pred = booster.predict(x_test)
+    assert_elements_in_delta [0.9948804305465, 0.792909968121466], y_pred.first(2)
   end
 
   def test_feature_importance
