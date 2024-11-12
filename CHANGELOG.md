@@ -1,6 +1,7 @@
 ## 0.4.0 (unreleased)
 
 - Added support for hashes to `predict` method
+- Dropped support for Ruby < 3.1
 
 ## 0.3.4 (2024-07-28)
 
