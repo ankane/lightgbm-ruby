@@ -57,6 +57,10 @@ class BoosterTest < Minitest::Test
       ])
     pred = booster.predict(x_test)
     assert_elements_in_delta [0.9823112229173586, 0.9583143724610858], pred.first(2)
+
+    assert_raises(IndexError) do
+      booster.predict(Daru::DataFrame.new([{"x0" => 3.7}]))
+    end
   end
 
   def test_predict_rover
@@ -68,6 +72,10 @@ class BoosterTest < Minitest::Test
       ])
     pred = booster.predict(x_test)
     assert_elements_in_delta [0.9823112229173586, 0.9583143724610858], pred.first(2)
+
+    assert_raises(KeyError) do
+      booster.predict(Rover::DataFrame.new([{"x0" => 3.7}]))
+    end
   end
 
   def test_model_to_string
