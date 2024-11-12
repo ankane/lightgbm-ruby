@@ -141,7 +141,7 @@ module LightGBM
     def predict(input, start_iteration: nil, num_iteration: nil, **params)
       input =
         if daru?(input)
-          input.map_rows(&:to_a)
+          input[*cached_feature_name].map_rows(&:to_a)
         elsif input.is_a?(Hash) # sort feature.values to match the order of model.feature_name
           sorted_feature_values(input)
         elsif input.is_a?(Array) && input.first.is_a?(Hash) # on multiple elems, if 1st is hash, assume they all are

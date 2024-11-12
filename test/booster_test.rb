@@ -50,6 +50,16 @@ class BoosterTest < Minitest::Test
     end
   end
 
+  def test_predict_daru
+    x_test =
+      Daru::DataFrame.new([
+        {"x3" => 9.0, "x2" => 7.2, "x1" => 1.2, "x0" => 3.7},
+        {"x3" => 0.0, "x2" => 7.9, "x1" => 0.5, "x0" => 7.5},
+      ])
+    pred = booster.predict(x_test)
+    assert_elements_in_delta [0.9823112229173586, 0.9583143724610858], pred.first(2)
+  end
+
   def test_predict_rover
     require "rover"
     x_test =
