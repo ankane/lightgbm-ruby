@@ -108,12 +108,7 @@ module LightGBM
     end
 
     def handle_pointer
-      @handle.read_pointer
-    end
-
-    def self.finalize(addr)
-      # must use proc instead of stabby lambda
-      proc { FFI.LGBM_DatasetFree(::FFI::Pointer.new(:pointer, addr)) }
+      @handle
     end
 
     private
@@ -129,15 +124,15 @@ module LightGBM
       end
       set_verbosity(params)
 
-      @handle = ::FFI::MemoryPointer.new(:pointer)
+      handle = ::FFI::MemoryPointer.new(:pointer)
       parameters = params_str(params)
       reference = @reference.handle_pointer if @reference
       if used_indices
         used_row_indices = ::FFI::MemoryPointer.new(:int32, used_indices.count)
         used_row_indices.write_array_of_int32(used_indices)
-        check_result FFI.LGBM_DatasetGetSubset(reference, used_row_indices, used_indices.count, parameters, @handle)
+        check_result FFI.LGBM_DatasetGetSubset(reference, used_row_indices, used_indices.count, parameters, handle)
       elsif data.is_a?(String)
-        check_result FFI.LGBM_DatasetCreateFromFile(data, parameters, reference, @handle)
+        check_result FFI.LGBM_DatasetCreateFromFile(data, parameters, reference, handle)
       else
         if matrix?(data)
           nrow = data.row_count
@@ -171,9 +166,13 @@ module LightGBM
           c_data.write_array_of_double(flat_data)
         end
 
-        check_result FFI.LGBM_DatasetCreateFromMat(c_data, 1, nrow, ncol, 1, parameters, reference, @handle)
+        check_result FFI.LGBM_DatasetCreateFromMat(c_data, 1, nrow, ncol, 1, parameters, reference, handle)
       end
-      ObjectSpace.define_finalizer(@handle, self.class.finalize(handle_pointer.to_i)) unless used_indices
+      if used_indices
+        @handle = handle.read_pointer
+      else
+        @handle = ::FFI::AutoPointer.new(handle.read_pointer, FFI.method(:LGBM_DatasetFree))
+      end
 
       self.label = @label if @label
       self.weight = @weight if @weight
