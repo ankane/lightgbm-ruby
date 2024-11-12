@@ -52,14 +52,19 @@ class DatasetTest < Minitest::Test
   def test_matrix
     data = Matrix.build(3, 3) { |row, col| row + col }
     label = Vector.elements([4, 5, 6])
-    LightGBM::Dataset.new(data, label: label)
+    dataset = LightGBM::Dataset.new(data, label: label)
+    assert_equal ["Column_0", "Column_1", "Column_2"], dataset.feature_names
   end
 
   def test_daru
     data = Daru::DataFrame.from_csv(data_path)
     label = data["y"]
     data = data.delete_vector("y")
-    LightGBM::Dataset.new(data, label: label)
+    dataset = LightGBM::Dataset.new(data, label: label)
+    assert_equal ["Column_0", "Column_1", "Column_2", "Column_3"], dataset.feature_names
+
+    dataset = LightGBM::Dataset.new(data, label: label, feature_names: "auto")
+    assert_equal ["x0", "x1", "x2", "x3"], dataset.feature_names
   end
 
   def test_numo
@@ -68,7 +73,8 @@ class DatasetTest < Minitest::Test
     require "numo/narray"
     data = Numo::DFloat.new(3, 5).seq
     label = Numo::DFloat.new(3).seq
-    LightGBM::Dataset.new(data, label: label)
+    dataset = LightGBM::Dataset.new(data, label: label)
+    assert_equal ["Column_0", "Column_1", "Column_2", "Column_3", "Column_4"], dataset.feature_names
   end
 
   def test_rover
@@ -77,7 +83,11 @@ class DatasetTest < Minitest::Test
     require "rover"
     data = Rover.read_csv(data_path)
     label = data.delete("y")
-    LightGBM::Dataset.new(data, label: label)
+    dataset = LightGBM::Dataset.new(data, label: label)
+    assert_equal ["Column_0", "Column_1", "Column_2", "Column_3"], dataset.feature_names
+
+    dataset = LightGBM::Dataset.new(data, label: label, feature_names: "auto")
+    assert_equal ["x0", "x1", "x2", "x3"], dataset.feature_names
   end
 
   def test_copy
