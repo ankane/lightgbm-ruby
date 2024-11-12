@@ -1,7 +1,7 @@
 ## 0.4.0 (unreleased)
 
 - Added support for hashes to `predict` method
-- Added support for `feature_names: "auto"` to `Dataset`
+- Changed `Dataset` to use column names for feature names with Rover and Daru
 - Dropped support for Ruby < 3.1
 
 ## 0.3.4 (2024-07-28)

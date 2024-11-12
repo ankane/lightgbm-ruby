@@ -61,10 +61,7 @@ class DatasetTest < Minitest::Test
     label = data["y"]
     data = data.delete_vector("y")
     dataset = LightGBM::Dataset.new(data, label: label)
-    assert_equal ["Column_0", "Column_1", "Column_2", "Column_3"], dataset.feature_name
-
-    dataset = LightGBM::Dataset.new(data, label: label, feature_name: "auto")
-    assert_equal ["x0", "x1", "x2", "x3"], dataset.feature_names
+    assert_equal ["x0", "x1", "x2", "x3"], dataset.feature_name
   end
 
   def test_numo
@@ -84,9 +81,6 @@ class DatasetTest < Minitest::Test
     data = Rover.read_csv(data_path)
     label = data.delete("y")
     dataset = LightGBM::Dataset.new(data, label: label)
-    assert_equal ["Column_0", "Column_1", "Column_2", "Column_3"], dataset.feature_name
-
-    dataset = LightGBM::Dataset.new(data, label: label, feature_name: "auto")
     assert_equal ["x0", "x1", "x2", "x3"], dataset.feature_name
   end
 

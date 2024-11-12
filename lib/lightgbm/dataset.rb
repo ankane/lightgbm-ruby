@@ -11,7 +11,7 @@ module LightGBM
       @reference = reference
       @used_indices = used_indices
       @categorical_feature = categorical_feature
-      @feature_name = feature_name || feature_names
+      @feature_name = feature_name || feature_names || "auto"
 
       construct
     end
@@ -178,7 +178,7 @@ module LightGBM
       self.label = @label if @label
       self.weight = @weight if @weight
       self.group = @group if @group
-      self.feature_name = @feature_name if @feature_name
+      self.feature_name = @feature_name if @feature_name && @feature_name != "auto"
     end
 
     def dump_text(filename)
