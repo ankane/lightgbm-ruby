@@ -30,6 +30,22 @@ class BoosterTest < Minitest::Test
     assert_includes error.message, "Unknown importance type"
   end
 
+  def test_predict_with_hash_builds_sorted_input
+    pred = booster.predict({x0: 3.7, x1: 1.2, x2: 7.2, x3: 9.0})
+    assert_in_delta 0.9823112229173586, pred
+
+    pred = booster.predict({"x3" => 9.0, "x2" => 7.2, "x1" => 1.2, "x0" => 3.7})
+    assert_in_delta 0.9823112229173586, pred
+
+    pred = booster.predict(
+      [
+        {"x3" => 9.0, "x2" => 7.2, "x1" => 1.2, "x0" => 3.7},
+        {"x3" => 0.0, "x2" => 7.9, "x1" => 0.5, "x0" => 7.5},
+      ]
+    )
+    assert_elements_in_delta [0.9823112229173586, 0.9583143724610858], pred.first(2)
+  end
+
   def test_model_to_string
     assert booster.model_to_string
   end

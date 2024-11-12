@@ -141,6 +141,10 @@ module LightGBM
       input =
         if daru?(input)
           input.map_rows(&:to_a)
+        elsif input.is_a?(Hash) # sort feature.values to match the order of model.feature_name
+          sorted_feature_values(input)
+        elsif input.is_a?(Array) && input.first.is_a?(Hash) # on multiple elems, if 1st is hash, assume they all are
+          input.map(&method(:sorted_feature_values))
         else
           input.to_a
         end
@@ -239,6 +243,11 @@ module LightGBM
     # read_int64 not available on JRuby
     def read_int64(ptr)
       ptr.read_array_of_int64(1).first
+    end
+
+    def sorted_feature_values(input_hash)
+      @cached_feature_names ||= feature_name
+      input_hash.transform_keys(&:to_s).fetch_values(*@cached_feature_names)
     end
 
     include Utils
