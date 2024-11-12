@@ -99,7 +99,7 @@ module LightGBM
     def model_from_string(model_str)
       out_num_iterations = ::FFI::MemoryPointer.new(:int)
       check_result FFI.LGBM_BoosterLoadModelFromString(model_str, out_num_iterations, @handle)
-      @cached_feature_names = nil
+      @cached_feature_name = nil
       self
     end
 
@@ -148,7 +148,7 @@ module LightGBM
           input.map(&method(:sorted_feature_values))
         elsif rover?(input)
           # TODO improve performance
-          input[feature_name()].to_numo.to_a
+          input[cached_feature_name].to_numo.to_a
         else
           input.to_a
         end
@@ -250,8 +250,11 @@ module LightGBM
     end
 
     def sorted_feature_values(input_hash)
-      @cached_feature_names ||= feature_name
-      input_hash.transform_keys(&:to_s).fetch_values(*@cached_feature_names)
+      input_hash.transform_keys(&:to_s).fetch_values(*cached_feature_name)
+    end
+
+    def cached_feature_name
+      @cached_feature_name ||= feature_name
     end
 
     include Utils
