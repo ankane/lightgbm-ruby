@@ -64,6 +64,8 @@ class BoosterTest < Minitest::Test
   end
 
   def test_predict_rover
+    skip if jruby?
+
     require "rover"
     x_test =
       Rover::DataFrame.new([

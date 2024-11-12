@@ -65,7 +65,7 @@ class DatasetTest < Minitest::Test
   end
 
   def test_numo
-    skip if RUBY_PLATFORM == "java"
+    skip if jruby?
 
     require "numo/narray"
     data = Numo::DFloat.new(3, 5).seq
@@ -75,7 +75,7 @@ class DatasetTest < Minitest::Test
   end
 
   def test_rover
-    skip if RUBY_PLATFORM == "java"
+    skip if jruby?
 
     require "rover"
     data = Rover.read_csv(data_path)
