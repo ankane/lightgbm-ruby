@@ -2,7 +2,7 @@ module LightGBM
   class Dataset
     attr_reader :data, :params
 
-    def initialize(data, label: nil, weight: nil, group: nil, params: nil, reference: nil, used_indices: nil, categorical_feature: "auto", feature_names: nil)
+    def initialize(data, label: nil, weight: nil, group: nil, params: nil, reference: nil, used_indices: nil, categorical_feature: "auto", feature_name: nil, feature_names: nil)
       @data = data
       @label = label
       @weight = weight
@@ -11,7 +11,7 @@ module LightGBM
       @reference = reference
       @used_indices = used_indices
       @categorical_feature = categorical_feature
-      @feature_names = feature_names
+      @feature_name = feature_name || feature_names
 
       construct
     end
@@ -24,7 +24,7 @@ module LightGBM
       field("weight")
     end
 
-    def feature_names
+    def feature_name
       # must preallocate space
       num_feature_names = ::FFI::MemoryPointer.new(:int)
       out_buffer_len = ::FFI::MemoryPointer.new(:size_t)
@@ -48,6 +48,7 @@ module LightGBM
       # from most recent call (instead of num_features)
       str_ptrs[0, num_feature_names.read_int].map(&:read_string)
     end
+    alias_method :feature_names, :feature_name
 
     def label=(label)
       @label = label
@@ -64,12 +65,13 @@ module LightGBM
       set_field("group", group, type: :int32)
     end
 
-    def feature_names=(feature_names)
+    def feature_name=(feature_names)
       @feature_names = feature_names
       c_feature_names = ::FFI::MemoryPointer.new(:pointer, feature_names.size)
       c_feature_names.write_array_of_pointer(feature_names.map { |v| ::FFI::MemoryPointer.from_string(v) })
       check_result FFI.LGBM_DatasetSetFeatureNames(handle_pointer, c_feature_names, feature_names.size)
     end
+    alias_method :feature_names=, :feature_name=
 
     # TODO only update reference if not in chain
     def reference=(reference)
@@ -142,16 +144,16 @@ module LightGBM
           ncol = data.column_count
           flat_data = data.to_a.flatten
         elsif daru?(data)
-          if @feature_names == "auto"
-            @feature_names = data.vectors.to_a
+          if @feature_name == "auto"
+            @feature_name = data.vectors.to_a
           end
           nrow, ncol = data.shape
           flat_data = data.map_rows(&:to_a).flatten
         elsif numo?(data)
           nrow, ncol = data.shape
         elsif rover?(data)
-          if @feature_names == "auto"
-            @feature_names = data.keys
+          if @feature_name == "auto"
+            @feature_name = data.keys
           end
           data = data.to_numo
           nrow, ncol = data.shape
@@ -176,7 +178,7 @@ module LightGBM
       self.label = @label if @label
       self.weight = @weight if @weight
       self.group = @group if @group
-      self.feature_names = @feature_names if @feature_names
+      self.feature_name = @feature_name if @feature_name
     end
 
     def dump_text(filename)

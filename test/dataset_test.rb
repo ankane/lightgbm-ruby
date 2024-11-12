@@ -22,10 +22,10 @@ class DatasetTest < Minitest::Test
     assert weight, dataset.weight
   end
 
-  def test_feature_names
+  def test_feature_name
     data = [[1, 2], [3, 4]]
-    dataset = LightGBM::Dataset.new(data, feature_names: ["a", "b"])
-    assert_equal ["a", "b"], dataset.feature_names
+    dataset = LightGBM::Dataset.new(data, feature_name: ["a", "b"])
+    assert_equal ["a", "b"], dataset.feature_name
   end
 
   def test_num_data
@@ -61,9 +61,9 @@ class DatasetTest < Minitest::Test
     label = data["y"]
     data = data.delete_vector("y")
     dataset = LightGBM::Dataset.new(data, label: label)
-    assert_equal ["Column_0", "Column_1", "Column_2", "Column_3"], dataset.feature_names
+    assert_equal ["Column_0", "Column_1", "Column_2", "Column_3"], dataset.feature_name
 
-    dataset = LightGBM::Dataset.new(data, label: label, feature_names: "auto")
+    dataset = LightGBM::Dataset.new(data, label: label, feature_name: "auto")
     assert_equal ["x0", "x1", "x2", "x3"], dataset.feature_names
   end
 
@@ -74,7 +74,7 @@ class DatasetTest < Minitest::Test
     data = Numo::DFloat.new(3, 5).seq
     label = Numo::DFloat.new(3).seq
     dataset = LightGBM::Dataset.new(data, label: label)
-    assert_equal ["Column_0", "Column_1", "Column_2", "Column_3", "Column_4"], dataset.feature_names
+    assert_equal ["Column_0", "Column_1", "Column_2", "Column_3", "Column_4"], dataset.feature_name
   end
 
   def test_rover
@@ -84,10 +84,10 @@ class DatasetTest < Minitest::Test
     data = Rover.read_csv(data_path)
     label = data.delete("y")
     dataset = LightGBM::Dataset.new(data, label: label)
-    assert_equal ["Column_0", "Column_1", "Column_2", "Column_3"], dataset.feature_names
+    assert_equal ["Column_0", "Column_1", "Column_2", "Column_3"], dataset.feature_name
 
-    dataset = LightGBM::Dataset.new(data, label: label, feature_names: "auto")
-    assert_equal ["x0", "x1", "x2", "x3"], dataset.feature_names
+    dataset = LightGBM::Dataset.new(data, label: label, feature_name: "auto")
+    assert_equal ["x0", "x1", "x2", "x3"], dataset.feature_name
   end
 
   def test_copy
