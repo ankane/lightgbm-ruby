@@ -99,6 +99,7 @@ module LightGBM
     def model_from_string(model_str)
       out_num_iterations = ::FFI::MemoryPointer.new(:int)
       check_result FFI.LGBM_BoosterLoadModelFromString(model_str, out_num_iterations, @handle)
+      @cached_feature_names = nil
       self
     end
 
