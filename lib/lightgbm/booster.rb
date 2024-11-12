@@ -146,6 +146,9 @@ module LightGBM
           sorted_feature_values(input)
         elsif input.is_a?(Array) && input.first.is_a?(Hash) # on multiple elems, if 1st is hash, assume they all are
           input.map(&method(:sorted_feature_values))
+        elsif rover?(input)
+          # TODO improve performance
+          input[feature_name()].to_numo.to_a
         else
           input.to_a
         end
