@@ -160,9 +160,9 @@ module LightGBM
       singular = !input.first.is_a?(Array)
       input = [input] if singular
 
-      start_iteration ||= 0
+      start_iteration = 0
       num_iteration ||= best_iteration
-      num_class ||= num_class()
+      num_class = num_class()
 
       flat_input = input.flatten
       handle_missing(flat_input)
