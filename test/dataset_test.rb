@@ -6,6 +6,7 @@ class DatasetTest < Minitest::Test
     assert_equal 500, dataset.num_data
     assert_equal 4, dataset.num_feature
     assert_equal 500, dataset.label.size
+    assert_equal ["x0", "x1", "x2", "x3"], dataset.feature_name
   end
 
   def test_label
@@ -53,7 +54,7 @@ class DatasetTest < Minitest::Test
     data = Matrix.build(3, 3) { |row, col| row + col }
     label = Vector.elements([4, 5, 6])
     dataset = LightGBM::Dataset.new(data, label: label)
-    assert_equal ["Column_0", "Column_1", "Column_2"], dataset.feature_names
+    assert_equal ["Column_0", "Column_1", "Column_2"], dataset.feature_name
   end
 
   def test_daru
