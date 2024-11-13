@@ -68,7 +68,9 @@ module LightGBM
     def feature_name=(feature_names)
       @feature_names = feature_names
       c_feature_names = ::FFI::MemoryPointer.new(:pointer, feature_names.size)
-      c_feature_names.write_array_of_pointer(feature_names.map { |v| ::FFI::MemoryPointer.from_string(v) })
+      # keep reference to string pointers
+      str_ptrs = feature_names.map { |v| ::FFI::MemoryPointer.from_string(v) }
+      c_feature_names.write_array_of_pointer(str_ptrs)
       check_result FFI.LGBM_DatasetSetFeatureNames(handle_pointer, c_feature_names, feature_names.size)
     end
     alias_method :feature_names=, :feature_name=
