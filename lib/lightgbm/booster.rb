@@ -41,7 +41,7 @@ module LightGBM
       out_str = ::FFI::MemoryPointer.new(:char, buffer_len)
       feature_importance_type = 0 # TODO add option
       check_result FFI.LGBM_BoosterDumpModel(handle_pointer, start_iteration, num_iteration, feature_importance_type, buffer_len, out_len, out_str)
-      actual_len = read_int64(out_len)
+      actual_len = out_len.read_int64
       if actual_len > buffer_len
         out_str = ::FFI::MemoryPointer.new(:char, actual_len)
         check_result FFI.LGBM_BoosterDumpModel(handle_pointer, start_iteration, num_iteration, feature_importance_type, actual_len, out_len, out_str)
@@ -110,7 +110,7 @@ module LightGBM
       out_str = ::FFI::MemoryPointer.new(:char, buffer_len)
       feature_importance_type = 0 # TODO add option
       check_result FFI.LGBM_BoosterSaveModelToString(handle_pointer, start_iteration, num_iteration, feature_importance_type, buffer_len, out_len, out_str)
-      actual_len = read_int64(out_len)
+      actual_len = out_len.read_int64
       if actual_len > buffer_len
         out_str = ::FFI::MemoryPointer.new(:char, actual_len)
         check_result FFI.LGBM_BoosterSaveModelToString(handle_pointer, start_iteration, num_iteration, feature_importance_type, actual_len, out_len, out_str)
@@ -168,7 +168,7 @@ module LightGBM
       out_len = ::FFI::MemoryPointer.new(:int64)
       out_result = ::FFI::MemoryPointer.new(:double, num_class * input.count)
       check_result FFI.LGBM_BoosterPredictForMat(handle_pointer, data, 1, input.count, input.first.count, 1, 0, start_iteration, num_iteration, params_str(params), out_len, out_result)
-      out = out_result.read_array_of_double(read_int64(out_len))
+      out = out_result.read_array_of_double(out_len.read_int64)
       out = out.each_slice(num_class).to_a if num_class > 1
 
       singular ? out.first : out
@@ -242,11 +242,6 @@ module LightGBM
       out = ::FFI::MemoryPointer.new(:int)
       check_result FFI.LGBM_BoosterGetNumClasses(handle_pointer, out)
       out.read_int
-    end
-
-    # read_int64 not available on JRuby
-    def read_int64(ptr)
-      ptr.read_array_of_int64(1).first
     end
 
     def sorted_feature_values(input_hash)
