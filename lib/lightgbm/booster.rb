@@ -3,18 +3,22 @@ module LightGBM
     attr_accessor :best_iteration, :train_data_name
 
     def initialize(params: nil, train_set: nil, model_file: nil, model_str: nil)
-      @handle = ::FFI::MemoryPointer.new(:pointer)
       if model_str
         model_from_string(model_str)
       elsif model_file
         out_num_iterations = ::FFI::MemoryPointer.new(:int)
-        check_result FFI.LGBM_BoosterCreateFromModelfile(model_file, out_num_iterations, @handle)
+        ::FFI::MemoryPointer.new(:pointer) do |handle|
+          check_result FFI.LGBM_BoosterCreateFromModelfile(model_file, out_num_iterations, handle)
+          @handle = ::FFI::AutoPointer.new(handle.read_pointer, FFI.method(:LGBM_BoosterFree))
+        end
       else
         params ||= {}
         set_verbosity(params)
-        check_result FFI.LGBM_BoosterCreate(train_set.handle_pointer, params_str(params), @handle)
+        ::FFI::MemoryPointer.new(:pointer) do |handle|
+          check_result FFI.LGBM_BoosterCreate(train_set.handle_pointer, params_str(params), handle)
+          @handle = ::FFI::AutoPointer.new(handle.read_pointer, FFI.method(:LGBM_BoosterFree))
+        end
       end
-      ObjectSpace.define_finalizer(@handle, self.class.finalize(handle_pointer.to_i))
 
       self.best_iteration = -1
 
@@ -98,7 +102,10 @@ module LightGBM
 
     def model_from_string(model_str)
       out_num_iterations = ::FFI::MemoryPointer.new(:int)
-      check_result FFI.LGBM_BoosterLoadModelFromString(model_str, out_num_iterations, @handle)
+      ::FFI::MemoryPointer.new(:pointer) do |handle|
+        check_result FFI.LGBM_BoosterLoadModelFromString(model_str, out_num_iterations, handle)
+        @handle = ::FFI::AutoPointer.new(handle.read_pointer, FFI.method(:LGBM_BoosterFree))
+      end
       @cached_feature_name = nil
       self
     end
@@ -187,15 +194,10 @@ module LightGBM
       finished.read_int == 1
     end
 
-    def self.finalize(addr)
-      # must use proc instead of stabby lambda
-      proc { FFI.LGBM_BoosterFree(::FFI::Pointer.new(:pointer, addr)) }
-    end
-
     private
 
     def handle_pointer
-      @handle.read_pointer
+      @handle
     end
 
     def eval_counts
