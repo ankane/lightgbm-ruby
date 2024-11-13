@@ -7,16 +7,14 @@ module LightGBM
         model_from_string(model_str)
       elsif model_file
         out_num_iterations = ::FFI::MemoryPointer.new(:int)
-        ::FFI::MemoryPointer.new(:pointer) do |handle|
+        create_handle do |handle|
           check_result FFI.LGBM_BoosterCreateFromModelfile(model_file, out_num_iterations, handle)
-          @handle = ::FFI::AutoPointer.new(handle.read_pointer, FFI.method(:LGBM_BoosterFree))
         end
       else
         params ||= {}
         set_verbosity(params)
-        ::FFI::MemoryPointer.new(:pointer) do |handle|
+        create_handle do |handle|
           check_result FFI.LGBM_BoosterCreate(train_set.handle_pointer, params_str(params), handle)
-          @handle = ::FFI::AutoPointer.new(handle.read_pointer, FFI.method(:LGBM_BoosterFree))
         end
       end
 
@@ -102,9 +100,8 @@ module LightGBM
 
     def model_from_string(model_str)
       out_num_iterations = ::FFI::MemoryPointer.new(:int)
-      ::FFI::MemoryPointer.new(:pointer) do |handle|
+      create_handle do |handle|
         check_result FFI.LGBM_BoosterLoadModelFromString(model_str, out_num_iterations, handle)
-        @handle = ::FFI::AutoPointer.new(handle.read_pointer, FFI.method(:LGBM_BoosterFree))
       end
       @cached_feature_name = nil
       self
@@ -198,6 +195,13 @@ module LightGBM
 
     def handle_pointer
       @handle
+    end
+
+    def create_handle
+      ::FFI::MemoryPointer.new(:pointer) do |handle|
+        yield handle
+        @handle = ::FFI::AutoPointer.new(handle.read_pointer, FFI.method(:LGBM_BoosterFree))
+      end
     end
 
     def eval_counts
