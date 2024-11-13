@@ -50,6 +50,22 @@ class DatasetTest < Minitest::Test
     assert File.exist?(tempfile)
   end
 
+  def test_hashes_string_keys
+    data = [{"x0" => 1, "x1" => 2}, {"x0" => 3, "x1" => 4}, {"x0" => 5, "x1" => 6}]
+    dataset = LightGBM::Dataset.new(data)
+    assert_equal 3, dataset.num_data
+    assert_equal 2, dataset.num_feature
+    assert_equal ["x0", "x1"], dataset.feature_name
+  end
+
+  def test_hashes_symbol_keys
+    data = [{x0: 1, x1: 2}, {x0: 3, x1: 4}, {x0: 5, x1: 6}]
+    dataset = LightGBM::Dataset.new(data)
+    assert_equal 3, dataset.num_data
+    assert_equal 2, dataset.num_feature
+    assert_equal ["x0", "x1"], dataset.feature_name
+  end
+
   def test_matrix
     data = Matrix.build(3, 3) { |row, col| row + col }
     label = Vector.elements([4, 5, 6])

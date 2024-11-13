@@ -66,6 +66,7 @@ module LightGBM
     end
 
     def feature_name=(feature_names)
+      feature_names = feature_names.map(&:to_s)
       @feature_names = feature_names
       c_feature_names = ::FFI::MemoryPointer.new(:pointer, feature_names.size)
       # keep reference to string pointers
@@ -154,6 +155,14 @@ module LightGBM
           end
           data = data.to_numo
           nrow, ncol = data.shape
+        elsif data.is_a?(Array) && data.first.is_a?(Hash)
+          keys = data.first.keys
+          if @feature_name == "auto"
+            @feature_name = keys
+          end
+          nrow = data.count
+          ncol = data.first.count
+          flat_data = data.flat_map { |v| v.fetch_values(*keys) }
         else
           nrow = data.count
           ncol = data.first.count

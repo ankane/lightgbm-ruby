@@ -1,6 +1,7 @@
 ## 0.4.0 (unreleased)
 
 - Added support for hashes and Rover data frames to `predict` method
+- Added support for hashes to `Dataset`
 - Changed `Dataset` to use column names for feature names with Rover and Daru
 - Changed `predict` method to match feature names with Daru
 - Dropped support for Ruby < 3.1
