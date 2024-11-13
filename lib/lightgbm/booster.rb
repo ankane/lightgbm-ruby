@@ -162,7 +162,7 @@ module LightGBM
 
       start_iteration = 0
       num_iteration ||= best_iteration
-      num_class = num_class()
+      num_class = self.num_class
 
       flat_input = input.flatten
       handle_missing(flat_input)
@@ -211,7 +211,7 @@ module LightGBM
     end
 
     def eval_names
-      eval_counts = eval_counts()
+      eval_counts = self.eval_counts
       out_len = ::FFI::MemoryPointer.new(:int)
       out_buffer_len = ::FFI::MemoryPointer.new(:size_t)
       out_strs = ::FFI::MemoryPointer.new(:pointer, eval_counts)
@@ -231,7 +231,7 @@ module LightGBM
     end
 
     def inner_eval(name, i)
-      eval_names = eval_names()
+      eval_names = self.eval_names
 
       out_len = ::FFI::MemoryPointer.new(:int)
       out_results = ::FFI::MemoryPointer.new(:double, eval_names.count)
