@@ -160,7 +160,7 @@ module LightGBM
       singular = !input.first.is_a?(Array)
       input = [input] if singular
 
-      start_iteration = 0
+      start_iteration ||= 0
       num_iteration ||= best_iteration
       num_class = self.num_class
 
