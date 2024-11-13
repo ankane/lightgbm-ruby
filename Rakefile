@@ -23,7 +23,7 @@ def download_file(file, sha256)
   require "open-uri"
 
   # also update licenses in vendor/
-  version = "4.4.0"
+  version = "4.5.0"
 
   url =
     if file == "lib_lightgbm.arm64.dylib"
@@ -45,16 +45,16 @@ end
 # https://github.com/microsoft/LightGBM/releases
 namespace :vendor do
   task :linux do
-    download_file("lib_lightgbm.so", "fdbb5b5786d4a99f661d453a62cc07c6607b780a1e4e774443df67aded6bb8b3")
+    download_file("lib_lightgbm.so", "4b2b68c4d0fa99bace6cc540224b457ff899ccee0fdc8875e4625a38b00fc5e5")
   end
 
   task :mac do
-    download_file("lib_lightgbm.dylib", "c5824d085fd342c58f92291f40f02554f13ca1504fa26f1b2aef3151e8a70fdc")
-    download_file("lib_lightgbm.arm64.dylib", "58b7d2c1e04c8af20c9558582e07957e3e227ef6bb31a10644b92cc93610a1fc")
+    download_file("lib_lightgbm.dylib", "b02d48071ba4ae1e13e336a902dc5f82a5732de4448d47a20d8e9d94d5d3db2a")
+    download_file("lib_lightgbm.arm64.dylib", "840e16754db0d3e4852bdfdecc1ee08bc367b138e0bf18fabb4ce3d9b39c936a")
   end
 
   task :windows do
-    download_file("lib_lightgbm.dll", "922c627c23e065f85d8e5e975be4ec78c65a424bdf12253f3168110cc2391185")
+    download_file("lib_lightgbm.dll", "1d281ec96684806d83468469fb6052880308f39bf03a34d85ee9aa38195d260c")
   end
 
   task all: [:linux, :mac, :windows]
@@ -62,7 +62,7 @@ namespace :vendor do
   task :platform do
     if Gem.win_platform?
       Rake::Task["vendor:windows"].invoke
-    elsif RbConfig::CONFIG["host_os"] =~ /darwin/i
+    elsif RbConfig::CONFIG["host_os"].match?(/darwin/i)
       Rake::Task["vendor:mac"].invoke
     else
       Rake::Task["vendor:linux"].invoke

@@ -145,7 +145,7 @@ module LightGBM
         boosters.each(&:update)
 
         scores = {}
-        boosters.map(&:eval_valid).map(&:reverse).flatten(1).each do |r|
+        boosters.map(&:eval_valid).flat_map(&:reverse).each do |r|
           (scores[r[1]] ||= []) << r[2]
         end
 

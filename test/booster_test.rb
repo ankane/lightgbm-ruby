@@ -15,6 +15,14 @@ class BoosterTest < Minitest::Test
     assert_elements_in_delta [0.9823112229173586, 0.9583143724610858], y_pred.first(2)
   end
 
+  def test_model_from_string
+    x_test = [[3.7, 1.2, 7.2, 9.0], [7.5, 0.5, 7.9, 0.0]]
+    booster = LightGBM.train(binary_params, binary_train)
+    booster.model_from_string(File.read("test/support/model.txt"))
+    y_pred = booster.predict(x_test)
+    assert_elements_in_delta [0.9823112229173586, 0.9583143724610858], y_pred.first(2)
+  end
+
   def test_feature_importance
     assert_equal [280, 285, 335, 148], booster.feature_importance
   end
@@ -28,6 +36,56 @@ class BoosterTest < Minitest::Test
       booster.feature_importance(importance_type: "bad")
     end
     assert_includes error.message, "Unknown importance type"
+  end
+
+  def test_predict_hash
+    pred = booster.predict({x0: 3.7, x1: 1.2, x2: 7.2, x3: 9.0})
+    assert_in_delta 0.9823112229173586, pred
+
+    pred = booster.predict({"x3" => 9.0, "x2" => 7.2, "x1" => 1.2, "x0" => 3.7})
+    assert_in_delta 0.9823112229173586, pred
+
+    pred =
+      booster.predict([
+        {"x3" => 9.0, "x2" => 7.2, "x1" => 1.2, "x0" => 3.7},
+        {"x3" => 0.0, "x2" => 7.9, "x1" => 0.5, "x0" => 7.5}
+      ])
+    assert_elements_in_delta [0.9823112229173586, 0.9583143724610858], pred.first(2)
+
+    assert_raises(KeyError) do
+      booster.predict({"x0" => 3.7})
+    end
+  end
+
+  def test_predict_daru
+    x_test =
+      Daru::DataFrame.new([
+        {"x3" => 9.0, "x2" => 7.2, "x1" => 1.2, "x0" => 3.7},
+        {"x3" => 0.0, "x2" => 7.9, "x1" => 0.5, "x0" => 7.5}
+      ])
+    pred = booster.predict(x_test)
+    assert_elements_in_delta [0.9823112229173586, 0.9583143724610858], pred.first(2)
+
+    assert_raises(IndexError) do
+      booster.predict(Daru::DataFrame.new([{"x0" => 3.7}]))
+    end
+  end
+
+  def test_predict_rover
+    skip if jruby?
+
+    require "rover"
+    x_test =
+      Rover::DataFrame.new([
+        {"x3" => 9.0, "x2" => 7.2, "x1" => 1.2, "x0" => 3.7},
+        {"x3" => 0.0, "x2" => 7.9, "x1" => 0.5, "x0" => 7.5}
+      ])
+    pred = booster.predict(x_test)
+    assert_elements_in_delta [0.9823112229173586, 0.9583143724610858], pred.first(2)
+
+    assert_raises(KeyError) do
+      booster.predict(Rover::DataFrame.new([{"x0" => 3.7}]))
+    end
   end
 
   def test_model_to_string

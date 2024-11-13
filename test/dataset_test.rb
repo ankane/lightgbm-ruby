@@ -22,10 +22,10 @@ class DatasetTest < Minitest::Test
     assert weight, dataset.weight
   end
 
-  def test_feature_names
+  def test_feature_name
     data = [[1, 2], [3, 4]]
-    dataset = LightGBM::Dataset.new(data, feature_names: ["a", "b"])
-    assert_equal ["a", "b"], dataset.feature_names
+    dataset = LightGBM::Dataset.new(data, feature_name: ["a", "b"])
+    assert_equal ["a", "b"], dataset.feature_name
   end
 
   def test_num_data
@@ -52,32 +52,36 @@ class DatasetTest < Minitest::Test
   def test_matrix
     data = Matrix.build(3, 3) { |row, col| row + col }
     label = Vector.elements([4, 5, 6])
-    LightGBM::Dataset.new(data, label: label)
+    dataset = LightGBM::Dataset.new(data, label: label)
+    assert_equal ["Column_0", "Column_1", "Column_2"], dataset.feature_names
   end
 
   def test_daru
     data = Daru::DataFrame.from_csv(data_path)
     label = data["y"]
     data = data.delete_vector("y")
-    LightGBM::Dataset.new(data, label: label)
+    dataset = LightGBM::Dataset.new(data, label: label)
+    assert_equal ["x0", "x1", "x2", "x3"], dataset.feature_name
   end
 
   def test_numo
-    skip if RUBY_PLATFORM == "java"
+    skip if jruby?
 
     require "numo/narray"
     data = Numo::DFloat.new(3, 5).seq
     label = Numo::DFloat.new(3).seq
-    LightGBM::Dataset.new(data, label: label)
+    dataset = LightGBM::Dataset.new(data, label: label)
+    assert_equal ["Column_0", "Column_1", "Column_2", "Column_3", "Column_4"], dataset.feature_name
   end
 
   def test_rover
-    skip if RUBY_PLATFORM == "java"
+    skip if jruby?
 
     require "rover"
     data = Rover.read_csv(data_path)
     label = data.delete("y")
-    LightGBM::Dataset.new(data, label: label)
+    dataset = LightGBM::Dataset.new(data, label: label)
+    assert_equal ["x0", "x1", "x2", "x3"], dataset.feature_name
   end
 
   def test_copy

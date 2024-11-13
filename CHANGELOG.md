@@ -1,4 +1,15 @@
-## 0.3.3 (unreleased)
+## 0.4.0 (unreleased)
+
+- Added support for hashes and Rover data frames to `predict` method
+- Changed `Dataset` to use column names for feature names with Rover and Daru
+- Changed `predict` method to match feature names with Daru
+- Dropped support for Ruby < 3.1
+
+## 0.3.4 (2024-07-28)
+
+- Updated LightGBM to 4.5.0
+
+## 0.3.3 (2024-06-15)
 
 - Updated LightGBM to 4.4.0
 

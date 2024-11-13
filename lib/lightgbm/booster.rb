@@ -41,7 +41,7 @@ module LightGBM
       out_str = ::FFI::MemoryPointer.new(:char, buffer_len)
       feature_importance_type = 0 # TODO add option
       check_result FFI.LGBM_BoosterDumpModel(handle_pointer, start_iteration, num_iteration, feature_importance_type, buffer_len, out_len, out_str)
-      actual_len = read_int64(out_len)
+      actual_len = out_len.read_int64
       if actual_len > buffer_len
         out_str = ::FFI::MemoryPointer.new(:char, actual_len)
         check_result FFI.LGBM_BoosterDumpModel(handle_pointer, start_iteration, num_iteration, feature_importance_type, actual_len, out_len, out_str)
@@ -51,7 +51,7 @@ module LightGBM
     alias_method :to_json, :dump_model
 
     def eval_valid
-      @name_valid_sets.each_with_index.map { |n, i| inner_eval(n, i + 1) }.flatten(1)
+      @name_valid_sets.each_with_index.flat_map { |n, i| inner_eval(n, i + 1) }
     end
 
     def eval_train
@@ -99,6 +99,7 @@ module LightGBM
     def model_from_string(model_str)
       out_num_iterations = ::FFI::MemoryPointer.new(:int)
       check_result FFI.LGBM_BoosterLoadModelFromString(model_str, out_num_iterations, @handle)
+      @cached_feature_name = nil
       self
     end
 
@@ -109,7 +110,7 @@ module LightGBM
       out_str = ::FFI::MemoryPointer.new(:char, buffer_len)
       feature_importance_type = 0 # TODO add option
       check_result FFI.LGBM_BoosterSaveModelToString(handle_pointer, start_iteration, num_iteration, feature_importance_type, buffer_len, out_len, out_str)
-      actual_len = read_int64(out_len)
+      actual_len = out_len.read_int64
       if actual_len > buffer_len
         out_str = ::FFI::MemoryPointer.new(:char, actual_len)
         check_result FFI.LGBM_BoosterSaveModelToString(handle_pointer, start_iteration, num_iteration, feature_importance_type, actual_len, out_len, out_str)
@@ -140,7 +141,14 @@ module LightGBM
     def predict(input, start_iteration: nil, num_iteration: nil, **params)
       input =
         if daru?(input)
-          input.map_rows(&:to_a)
+          input[*cached_feature_name].map_rows(&:to_a)
+        elsif input.is_a?(Hash) # sort feature.values to match the order of model.feature_name
+          sorted_feature_values(input)
+        elsif input.is_a?(Array) && input.first.is_a?(Hash) # on multiple elems, if 1st is hash, assume they all are
+          input.map(&method(:sorted_feature_values))
+        elsif rover?(input)
+          # TODO improve performance
+          input[cached_feature_name].to_numo.to_a
         else
           input.to_a
         end
@@ -160,7 +168,7 @@ module LightGBM
       out_len = ::FFI::MemoryPointer.new(:int64)
       out_result = ::FFI::MemoryPointer.new(:double, num_class * input.count)
       check_result FFI.LGBM_BoosterPredictForMat(handle_pointer, data, 1, input.count, input.first.count, 1, 0, start_iteration, num_iteration, params_str(params), out_len, out_result)
-      out = out_result.read_array_of_double(read_int64(out_len))
+      out = out_result.read_array_of_double(out_len.read_int64)
       out = out.each_slice(num_class).to_a if num_class > 1
 
       singular ? out.first : out
@@ -236,9 +244,12 @@ module LightGBM
       out.read_int
     end
 
-    # read_int64 not available on JRuby
-    def read_int64(ptr)
-      ptr.read_array_of_int64(1).first
+    def sorted_feature_values(input_hash)
+      input_hash.transform_keys(&:to_s).fetch_values(*cached_feature_name)
+    end
+
+    def cached_feature_name
+      @cached_feature_name ||= feature_name
     end
 
     include Utils

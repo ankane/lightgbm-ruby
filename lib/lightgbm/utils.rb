@@ -12,7 +12,7 @@ module LightGBM
     end
 
     def check_param(v)
-      raise ArgumentError, "Invalid parameter" if /[[:space:]]/.match(v)
+      raise ArgumentError, "Invalid parameter" if /[[:space:]]/.match?(v)
       v
     end
 

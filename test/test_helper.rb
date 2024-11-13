@@ -103,4 +103,8 @@ class Minitest::Test
   def tempfile
     @tempfile ||= "#{Dir.mktmpdir}/#{Time.now.to_f}"
   end
+
+  def jruby?
+    RUBY_PLATFORM == "java"
+  end
 end
