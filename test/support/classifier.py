@@ -25,7 +25,7 @@ print(model.feature_importances_.tolist())
 print()
 print('test_multiclass')
 
-model = lgb.LGBMClassifier()
+model = lgb.LGBMClassifier(verbosity=-1)
 model.fit(X_train, ym_train)
 print(model.predict(X_test)[0:100].tolist())
 print(model.predict_proba(X_test)[0].tolist())
@@ -33,7 +33,8 @@ print(model.feature_importances_.tolist())
 
 print()
 print('test_early_stopping')
-model.fit(X_train, ym_train, eval_set=[(X_test, ym_test)], early_stopping_rounds=5, verbose=True)
+model = lgb.LGBMClassifier(early_stopping_round=5, verbosity=1)
+model.fit(X_train, ym_train, eval_set=[(X_test, ym_test)])
 
 print()
 print('test_missing_numeric')

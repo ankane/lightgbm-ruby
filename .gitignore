@@ -8,3 +8,4 @@
 /tmp/
 *.lock
 /vendor/lib_lightgbm.*
+/.venv/
