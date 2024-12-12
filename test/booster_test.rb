@@ -9,10 +9,22 @@ class BoosterTest < Minitest::Test
   end
 
   def test_model_file_with_categorical_features
-    x_test = [[3.7, 1.2, 7.2, "9"], [7.5, 0.5, 7.9, "0"]]
     booster = LightGBM::Booster.new(model_file: "test/support/model_categorical.txt")
+
+    x_test = [[3.7, 1.2, 7.2, "9"], [7.5, 0.5, 7.9, "0"]]
     y_pred = booster.predict(x_test)
     assert_elements_in_delta [1.014580415457883, 0.9327349972866771], y_pred.first(2)
+
+    x_test = [
+      {"x0" => 3.7, "x1" => 1.2, "x2" => 7.2, "x3" => "9"},
+      {"x0" => 7.5, "x1" => 0.5, "x2" => 7.9, "x3" => "0"}
+    ]
+    y_pred = booster.predict(x_test)
+    assert_elements_in_delta [1.014580415457883, 0.9327349972866771], y_pred.first(2)
+
+    x_test = {"x0" => 3.7, "x1" => 1.2, "x2" => 7.2, "x3" => "9"}
+    y_pred = booster.predict(x_test)
+    assert_in_delta 1.014580415457883, y_pred
   end
 
   def test_model_str
@@ -31,10 +43,22 @@ class BoosterTest < Minitest::Test
   end
 
   def test_model_str_with_categorical_features
-    x_test = [[3.7, 1.2, 7.2, "9"], [7.5, 0.5, 7.9, "0"]]
     booster = LightGBM::Booster.new(model_str: File.read("test/support/model_categorical.txt"))
+
+    x_test = [[3.7, 1.2, 7.2, "9"], [7.5, 0.5, 7.9, "0"]]
     y_pred = booster.predict(x_test)
     assert_elements_in_delta [1.014580415457883, 0.9327349972866771], y_pred.first(2)
+
+    x_test = [
+      {"x0" => 3.7, "x1" => 1.2, "x2" => 7.2, "x3" => "9"},
+      {"x0" => 7.5, "x1" => 0.5, "x2" => 7.9, "x3" => "0"}
+    ]
+    y_pred = booster.predict(x_test)
+    assert_elements_in_delta [1.014580415457883, 0.9327349972866771], y_pred.first(2)
+
+    x_test = {"x0" => 3.7, "x1" => 1.2, "x2" => 7.2, "x3" => "9"}
+    y_pred = booster.predict(x_test)
+    assert_in_delta 1.014580415457883, y_pred
   end
 
   def test_feature_importance
