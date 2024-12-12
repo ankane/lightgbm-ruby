@@ -3,6 +3,7 @@ require "ffi"
 
 # modules
 require_relative "lightgbm/utils"
+require_relative "lightgbm/macros"
 require_relative "lightgbm/booster"
 require_relative "lightgbm/dataset"
 require_relative "lightgbm/version"

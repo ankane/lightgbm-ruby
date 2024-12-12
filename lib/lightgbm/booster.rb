@@ -141,8 +141,21 @@ module LightGBM
       out.read_int
     end
 
-    # TODO support different prediction types
-    def predict(input, start_iteration: nil, num_iteration: nil, **params)
+
+    # Make prediction for a new dataset.
+    # C-API: LGBM_BoosterPredictForMat.
+    #
+    # @param input [Array, Array<Array,Hash>, Hash{String => Numeric, String}, Daru::DataFrame, Rover::DataFrame] Input data
+    # @param start_iteration [Integer] Start index of the iteration to predict
+    # @param num_iteration [Integer] Number of iteration for prediction, <= 0 means no limit
+    # @param predict_type [Integer] What should be predicted
+    #     - C_API_PREDICT_NORMAL: normal prediction, with transform (if needed);
+    #     - C_API_PREDICT_RAW_SCORE: raw score;
+    #     - C_API_PREDICT_LEAF_INDEX: leaf index;
+    #     - C_API_PREDICT_CONTRIB: feature contributions (SHAP values)
+    # @param **params [Hash] Other parameters for prediction, e.g. early stopping for prediction
+    # @return [Float, Array<Float>] Prediction results
+    def predict(input, start_iteration: nil, num_iteration: nil, predict_type: C_API_PREDICT_NORMAL, **params)
       input =
         if daru?(input)
           input[*cached_feature_name].map_rows(&:to_a)
@@ -170,12 +183,49 @@ module LightGBM
       data.write_array_of_double(flat_input)
 
       out_len = ::FFI::MemoryPointer.new(:int64)
-      out_result = ::FFI::MemoryPointer.new(:double, num_class * input.count)
-      check_result FFI.LGBM_BoosterPredictForMat(handle_pointer, data, 1, input.count, input.first.count, 1, 0, start_iteration, num_iteration, params_str(params), out_len, out_result)
+      case predict_type
+      when C_API_PREDICT_NORMAL, C_API_PREDICT_RAW_SCORE
+        out_result = ::FFI::MemoryPointer.new(:double, num_class * input.count)
+      when C_API_PREDICT_LEAF_INDEX
+        num_predict = num_preds(start_iteration:, num_iteration:, nrow: input.count, predict_type:)
+        out_result = ::FFI::MemoryPointer.new(:double, num_class * input.count * num_predict)
+        singular = false
+      when C_API_PREDICT_CONTRIB
+        out_result = ::FFI::MemoryPointer.new(:double, num_class * input.count * (num_feature + 1))
+        singular = false
+      end
+
+      check_result FFI.LGBM_BoosterPredictForMat(
+        handle_pointer,
+        data,
+        1,
+        input.count,
+        input.first.count,
+        1,
+        predict_type,
+        start_iteration,
+        num_iteration,
+        params_str(params),
+        out_len,
+        out_result
+      )
       out = out_result.read_array_of_double(out_len.read_int64)
       out = out.each_slice(num_class).to_a if num_class > 1
 
       singular ? out.first : out
+    end
+
+    def num_preds(start_iteration: 0, num_iteration: best_iteration, nrow: nil, predict_type: C_API_PREDICT_NORMAL)
+      out_len = ::FFI::MemoryPointer.new(:int64)
+      check_result FFI.LGBM_BoosterCalcNumPredict(
+        handle_pointer,
+        nrow,
+        predict_type,
+        start_iteration,
+        num_iteration,
+        out_len
+      )
+      out_len.read_int64
     end
 
     def save_model(filename, num_iteration: nil, start_iteration: 0)
