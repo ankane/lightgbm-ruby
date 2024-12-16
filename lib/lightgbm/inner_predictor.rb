@@ -77,12 +77,20 @@ module LightGBM
       if nrow > MAX_INT32
         raise Error, "Not supported"
       end
+      inner_predict_data(
+        input,
+        start_iteration,
+        num_iteration,
+        predict_type
+      ) + [singular]
+    end
 
+    def inner_predict_data(input, start_iteration, num_iteration, predict_type)
       n_preds =
         num_preds(
           start_iteration,
           num_iteration,
-          nrow,
+          input.count,
           predict_type
         )
 
@@ -91,17 +99,14 @@ module LightGBM
       data = ::FFI::MemoryPointer.new(:double, input.count * input.first.count)
       data.write_array_of_double(flat_input)
 
-      out_len = ::FFI::MemoryPointer.new(:int64)
+      out_num_preds = ::FFI::MemoryPointer.new(:int64)
       out_result = ::FFI::MemoryPointer.new(:double, n_preds)
-      check_result FFI.LGBM_BoosterPredictForMat(@handle, data, 1, input.count, input.first.count, 1, predict_type, start_iteration, num_iteration, @pred_parameter, out_len, out_result)
-
-      if n_preds != out_len.read_int64
+      check_result FFI.LGBM_BoosterPredictForMat(@handle, data, 1, input.count, input.first.count, 1, predict_type, start_iteration, num_iteration, @pred_parameter, out_num_preds, out_result)
+      if n_preds != out_num_preds.read_int64
         raise Error, "Wrong length for predict results"
       end
-
-      preds = out_result.read_array_of_double(out_len.read_int64)
-
-      [preds, nrow, singular]
+      preds = out_result.read_array_of_double(out_num_preds.read_int64)
+      [preds, input.count]
     end
 
     def num_preds(start_iteration, num_iteration, nrow, predict_type)
