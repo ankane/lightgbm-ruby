@@ -2,7 +2,7 @@ module LightGBM
   module Utils
     private
 
-    def check_result(err)
+    def safe_call(err)
       raise LightGBM::Error, FFI.LGBM_GetLastError if err != 0
     end
 

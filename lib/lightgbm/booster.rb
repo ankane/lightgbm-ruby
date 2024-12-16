@@ -8,13 +8,13 @@ module LightGBM
       elsif model_file
         out_num_iterations = ::FFI::MemoryPointer.new(:int)
         create_handle do |handle|
-          check_result FFI.LGBM_BoosterCreateFromModelfile(model_file, out_num_iterations, handle)
+          safe_call FFI.LGBM_BoosterCreateFromModelfile(model_file, out_num_iterations, handle)
         end
       else
         params ||= {}
         set_verbosity(params)
         create_handle do |handle|
-          check_result FFI.LGBM_BoosterCreate(train_set.handle, params_str(params), handle)
+          safe_call FFI.LGBM_BoosterCreate(train_set.handle, params_str(params), handle)
         end
       end
 
@@ -25,14 +25,14 @@ module LightGBM
     end
 
     def add_valid(data, name)
-      check_result FFI.LGBM_BoosterAddValidData(@handle, data.handle)
+      safe_call FFI.LGBM_BoosterAddValidData(@handle, data.handle)
       @name_valid_sets << name
       self # consistent with Python API
     end
 
     def current_iteration
       out = ::FFI::MemoryPointer.new(:int)
-      check_result FFI.LGBM_BoosterGetCurrentIteration(@handle, out)
+      safe_call FFI.LGBM_BoosterGetCurrentIteration(@handle, out)
       out.read_int
     end
 
@@ -42,11 +42,11 @@ module LightGBM
       out_len = ::FFI::MemoryPointer.new(:int64)
       out_str = ::FFI::MemoryPointer.new(:char, buffer_len)
       feature_importance_type = 0 # TODO add option
-      check_result FFI.LGBM_BoosterDumpModel(@handle, start_iteration, num_iteration, feature_importance_type, buffer_len, out_len, out_str)
+      safe_call FFI.LGBM_BoosterDumpModel(@handle, start_iteration, num_iteration, feature_importance_type, buffer_len, out_len, out_str)
       actual_len = out_len.read_int64
       if actual_len > buffer_len
         out_str = ::FFI::MemoryPointer.new(:char, actual_len)
-        check_result FFI.LGBM_BoosterDumpModel(@handle, start_iteration, num_iteration, feature_importance_type, actual_len, out_len, out_str)
+        safe_call FFI.LGBM_BoosterDumpModel(@handle, start_iteration, num_iteration, feature_importance_type, actual_len, out_len, out_str)
       end
       out_str.read_string
     end
@@ -74,7 +74,7 @@ module LightGBM
 
       num_feature = self.num_feature
       out_result = ::FFI::MemoryPointer.new(:double, num_feature)
-      check_result FFI.LGBM_BoosterFeatureImportance(@handle, iteration, importance_type, out_result)
+      safe_call FFI.LGBM_BoosterFeatureImportance(@handle, iteration, importance_type, out_result)
       out_result.read_array_of_double(num_feature).map(&:to_i)
     end
 
@@ -86,13 +86,13 @@ module LightGBM
       out_strs = ::FFI::MemoryPointer.new(:pointer, num_feature)
       str_ptrs = len.times.map { ::FFI::MemoryPointer.new(:char, buffer_len) }
       out_strs.write_array_of_pointer(str_ptrs)
-      check_result FFI.LGBM_BoosterGetFeatureNames(@handle, len, out_len, buffer_len, out_buffer_len, out_strs)
+      safe_call FFI.LGBM_BoosterGetFeatureNames(@handle, len, out_len, buffer_len, out_buffer_len, out_strs)
 
       actual_len = out_buffer_len.read(:size_t)
       if actual_len > buffer_len
         str_ptrs = len.times.map { ::FFI::MemoryPointer.new(:char, actual_len) }
         out_strs.write_array_of_pointer(str_ptrs)
-        check_result FFI.LGBM_BoosterGetFeatureNames(@handle, len, out_len, actual_len, out_buffer_len, out_strs)
+        safe_call FFI.LGBM_BoosterGetFeatureNames(@handle, len, out_len, actual_len, out_buffer_len, out_strs)
       end
 
       str_ptrs[0, out_len.read(:size_t)].map(&:read_string)
@@ -101,7 +101,7 @@ module LightGBM
     def model_from_string(model_str)
       out_num_iterations = ::FFI::MemoryPointer.new(:int)
       create_handle do |handle|
-        check_result FFI.LGBM_BoosterLoadModelFromString(model_str, out_num_iterations, handle)
+        safe_call FFI.LGBM_BoosterLoadModelFromString(model_str, out_num_iterations, handle)
       end
       @cached_feature_name = nil
       self
@@ -113,31 +113,31 @@ module LightGBM
       out_len = ::FFI::MemoryPointer.new(:int64)
       out_str = ::FFI::MemoryPointer.new(:char, buffer_len)
       feature_importance_type = 0 # TODO add option
-      check_result FFI.LGBM_BoosterSaveModelToString(@handle, start_iteration, num_iteration, feature_importance_type, buffer_len, out_len, out_str)
+      safe_call FFI.LGBM_BoosterSaveModelToString(@handle, start_iteration, num_iteration, feature_importance_type, buffer_len, out_len, out_str)
       actual_len = out_len.read_int64
       if actual_len > buffer_len
         out_str = ::FFI::MemoryPointer.new(:char, actual_len)
-        check_result FFI.LGBM_BoosterSaveModelToString(@handle, start_iteration, num_iteration, feature_importance_type, actual_len, out_len, out_str)
+        safe_call FFI.LGBM_BoosterSaveModelToString(@handle, start_iteration, num_iteration, feature_importance_type, actual_len, out_len, out_str)
       end
       out_str.read_string
     end
 
     def num_feature
       out = ::FFI::MemoryPointer.new(:int)
-      check_result FFI.LGBM_BoosterGetNumFeature(@handle, out)
+      safe_call FFI.LGBM_BoosterGetNumFeature(@handle, out)
       out.read_int
     end
     alias_method :num_features, :num_feature # legacy typo
 
     def num_model_per_iteration
       out = ::FFI::MemoryPointer.new(:int)
-      check_result FFI.LGBM_BoosterNumModelPerIteration(@handle, out)
+      safe_call FFI.LGBM_BoosterNumModelPerIteration(@handle, out)
       out.read_int
     end
 
     def num_trees
       out = ::FFI::MemoryPointer.new(:int)
-      check_result FFI.LGBM_BoosterNumberOfTotalModel(@handle, out)
+      safe_call FFI.LGBM_BoosterNumberOfTotalModel(@handle, out)
       out.read_int
     end
 
@@ -163,13 +163,13 @@ module LightGBM
     def save_model(filename, num_iteration: nil, start_iteration: 0)
       num_iteration ||= best_iteration
       feature_importance_type = 0 # TODO add
-      check_result FFI.LGBM_BoosterSaveModel(@handle, start_iteration, num_iteration, feature_importance_type, filename)
+      safe_call FFI.LGBM_BoosterSaveModel(@handle, start_iteration, num_iteration, feature_importance_type, filename)
       self # consistent with Python API
     end
 
     def update
       finished = ::FFI::MemoryPointer.new(:int)
-      check_result FFI.LGBM_BoosterUpdateOneIter(@handle, finished)
+      safe_call FFI.LGBM_BoosterUpdateOneIter(@handle, finished)
       finished.read_int == 1
     end
 
@@ -188,7 +188,7 @@ module LightGBM
 
     def eval_counts
       out = ::FFI::MemoryPointer.new(:int)
-      check_result FFI.LGBM_BoosterGetEvalCounts(@handle, out)
+      safe_call FFI.LGBM_BoosterGetEvalCounts(@handle, out)
       out.read_int
     end
 
@@ -200,13 +200,13 @@ module LightGBM
       buffer_len = 255
       str_ptrs = eval_counts.times.map { ::FFI::MemoryPointer.new(:char, buffer_len) }
       out_strs.write_array_of_pointer(str_ptrs)
-      check_result FFI.LGBM_BoosterGetEvalNames(@handle, eval_counts, out_len, buffer_len, out_buffer_len, out_strs)
+      safe_call FFI.LGBM_BoosterGetEvalNames(@handle, eval_counts, out_len, buffer_len, out_buffer_len, out_strs)
 
       actual_len = out_buffer_len.read(:size_t)
       if actual_len > buffer_len
         str_ptrs = eval_counts.times.map { ::FFI::MemoryPointer.new(:char, actual_len) }
         out_strs.write_array_of_pointer(str_ptrs)
-        check_result FFI.LGBM_BoosterGetEvalNames(@handle, eval_counts, out_len, actual_len, out_buffer_len, out_strs)
+        safe_call FFI.LGBM_BoosterGetEvalNames(@handle, eval_counts, out_len, actual_len, out_buffer_len, out_strs)
       end
 
       str_ptrs.map(&:read_string)
@@ -217,7 +217,7 @@ module LightGBM
 
       out_len = ::FFI::MemoryPointer.new(:int)
       out_results = ::FFI::MemoryPointer.new(:double, eval_names.count)
-      check_result FFI.LGBM_BoosterGetEval(@handle, i, out_len, out_results)
+      safe_call FFI.LGBM_BoosterGetEval(@handle, i, out_len, out_results)
       vals = out_results.read_array_of_double(out_len.read_int)
 
       eval_names.zip(vals).map do |eval_name, val|
@@ -228,7 +228,7 @@ module LightGBM
 
     def num_class
       out = ::FFI::MemoryPointer.new(:int)
-      check_result FFI.LGBM_BoosterGetNumClasses(@handle, out)
+      safe_call FFI.LGBM_BoosterGetNumClasses(@handle, out)
       out.read_int
     end
 
