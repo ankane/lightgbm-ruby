@@ -14,7 +14,7 @@ module LightGBM
         end
         @pandas_categorical = load_pandas_categorical(file_name: model_file)
         if params
-          warn "[xgboost] Ignoring params argument, using parameters from model file."
+          warn "[lightgbm] Ignoring params argument, using parameters from model file."
         end
         @params = loaded_param
       else
