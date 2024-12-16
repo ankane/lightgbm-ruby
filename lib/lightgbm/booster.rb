@@ -254,7 +254,7 @@ module LightGBM
             offset = [offset, max_offset].max
             f.seek(offset, IO::SEEK_END)
             lines = f.readlines
-            if lines.length >= 2
+            if lines.length >= 2 || offset == max_offset
               break
             end
             offset *= 2
