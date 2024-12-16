@@ -30,7 +30,24 @@ module LightGBM
         predict_type = FFI::C_API_PREDICT_CONTRIB
       end
 
-      preds, nrow, singular =
+      data =
+        if daru?(data)
+          data[*cached_feature_name].map_rows(&:to_a)
+        elsif data.is_a?(Hash) # sort feature.values to match the order of model.feature_name
+          sorted_feature_values(data)
+        elsif data.is_a?(Array) && data.first.is_a?(Hash) # on multiple elems, if 1st is hash, assume they all are
+          data.map(&method(:sorted_feature_values))
+        elsif rover?(data)
+          # TODO improve performance
+          data[cached_feature_name].to_numo.to_a
+        else
+          data.to_a
+        end
+
+      singular = !data.first.is_a?(Array)
+      data = [data] if singular
+
+      preds, nrow =
         pred_for_data(
           data,
           start_iteration,
@@ -56,23 +73,6 @@ module LightGBM
     private
 
     def pred_for_data(input, start_iteration, num_iteration, predict_type)
-      input =
-        if daru?(input)
-          input[*cached_feature_name].map_rows(&:to_a)
-        elsif input.is_a?(Hash) # sort feature.values to match the order of model.feature_name
-          sorted_feature_values(input)
-        elsif input.is_a?(Array) && input.first.is_a?(Hash) # on multiple elems, if 1st is hash, assume they all are
-          input.map(&method(:sorted_feature_values))
-        elsif rover?(input)
-          # TODO improve performance
-          input[cached_feature_name].to_numo.to_a
-        else
-          input.to_a
-        end
-
-      singular = !input.first.is_a?(Array)
-      input = [input] if singular
-
       nrow = input.count
       if nrow > MAX_INT32
         raise Error, "Not supported"
@@ -82,7 +82,7 @@ module LightGBM
         start_iteration,
         num_iteration,
         predict_type
-      ) + [singular]
+      )
     end
 
     def inner_predict_data(input, start_iteration, num_iteration, predict_type)
