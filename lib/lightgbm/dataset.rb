@@ -177,7 +177,7 @@ module LightGBM
           c_data.write_array_of_double(flat_data)
         end
 
-        check_result FFI.LGBM_DatasetCreateFromMat(c_data, 1, nrow, ncol, 1, parameters, reference, handle)
+        check_result FFI.LGBM_DatasetCreateFromMat(c_data, FFI::C_API_DTYPE_FLOAT64, nrow, ncol, 1, parameters, reference, handle)
       end
       if used_indices
         @handle = handle.read_pointer

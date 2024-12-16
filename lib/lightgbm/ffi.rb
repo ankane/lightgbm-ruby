@@ -15,6 +15,11 @@ module LightGBM
     # https://github.com/microsoft/LightGBM/blob/master/include/LightGBM/c_api.h
     # keep same order
 
+    C_API_DTYPE_FLOAT32 = 0
+    C_API_DTYPE_FLOAT64 = 1
+    C_API_DTYPE_INT32 = 2
+    C_API_DTYPE_INT64 = 3
+
     C_API_PREDICT_NORMAL = 0
     C_API_PREDICT_RAW_SCORE = 1
     C_API_PREDICT_LEAF_INDEX = 2
