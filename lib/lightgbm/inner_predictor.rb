@@ -30,22 +30,24 @@ module LightGBM
         predict_type = FFI::C_API_PREDICT_CONTRIB
       end
 
-      data =
-        if daru?(data)
-          data[*cached_feature_name].map_rows(&:to_a)
-        elsif data.is_a?(Hash) # sort feature.values to match the order of model.feature_name
-          sorted_feature_values(data)
-        elsif data.is_a?(Array) && data.first.is_a?(Hash) # on multiple elems, if 1st is hash, assume they all are
-          data.map(&method(:sorted_feature_values))
-        elsif rover?(data)
-          # TODO improve performance
-          data[cached_feature_name].to_numo.to_a
-        else
-          data.to_a
-        end
-
-      singular = !data.first.is_a?(Array)
-      data = [data] if singular
+      if daru?(data)
+        data = data[*cached_feature_name].map_rows(&:to_a)
+        singular = false
+      elsif data.is_a?(Hash) # sort feature.values to match the order of model.feature_name
+        data = [sorted_feature_values(data)]
+        singular = true
+      elsif data.is_a?(Array) && data.first.is_a?(Hash) # on multiple elems, if 1st is hash, assume they all are
+        data = data.map(&method(:sorted_feature_values))
+        singular = false
+      elsif rover?(data)
+        # TODO improve performance
+        data = data[cached_feature_name].to_numo.to_a
+        singular = false
+      else
+        data = data.to_a
+        singular = !data.first.is_a?(Array)
+        data = [data] if singular
+      end
 
       preds, nrow =
         pred_for_data(
