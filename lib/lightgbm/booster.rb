@@ -38,17 +38,17 @@ module LightGBM
       out.read_int
     end
 
-    def dump_model(num_iteration: nil, start_iteration: 0)
+    def dump_model(num_iteration: nil, start_iteration: 0, importance_type: "split")
       num_iteration ||= best_iteration
+      importance_type_int = feature_importance_type_mapper(importance_type)
       buffer_len = 1 << 20
       out_len = ::FFI::MemoryPointer.new(:int64)
       out_str = ::FFI::MemoryPointer.new(:char, buffer_len)
-      feature_importance_type = 0 # TODO add option
-      safe_call FFI.LGBM_BoosterDumpModel(@handle, start_iteration, num_iteration, feature_importance_type, buffer_len, out_len, out_str)
+      safe_call FFI.LGBM_BoosterDumpModel(@handle, start_iteration, num_iteration, importance_type_int, buffer_len, out_len, out_str)
       actual_len = out_len.read_int64
       if actual_len > buffer_len
         out_str = ::FFI::MemoryPointer.new(:char, actual_len)
-        safe_call FFI.LGBM_BoosterDumpModel(@handle, start_iteration, num_iteration, feature_importance_type, actual_len, out_len, out_str)
+        safe_call FFI.LGBM_BoosterDumpModel(@handle, start_iteration, num_iteration, importance_type_int, actual_len, out_len, out_str)
       end
       out_str.read_string
     end
@@ -64,19 +64,10 @@ module LightGBM
 
     def feature_importance(iteration: nil, importance_type: "split")
       iteration ||= best_iteration
-      importance_type =
-        case importance_type
-        when "split"
-          FFI::C_API_FEATURE_IMPORTANCE_SPLIT
-        when "gain"
-          FFI::C_API_FEATURE_IMPORTANCE_GAIN
-        else
-          -1
-        end
-
+      importance_type_int = feature_importance_type_mapper(importance_type)
       num_feature = self.num_feature
       out_result = ::FFI::MemoryPointer.new(:double, num_feature)
-      safe_call FFI.LGBM_BoosterFeatureImportance(@handle, iteration, importance_type, out_result)
+      safe_call FFI.LGBM_BoosterFeatureImportance(@handle, iteration, importance_type_int, out_result)
       out_result.read_array_of_double(num_feature).map(&:to_i)
     end
 
@@ -109,17 +100,17 @@ module LightGBM
       self
     end
 
-    def model_to_string(num_iteration: nil, start_iteration: 0)
+    def model_to_string(num_iteration: nil, start_iteration: 0, importance_type: "split")
       num_iteration ||= best_iteration
+      importance_type_int = feature_importance_type_mapper(importance_type)
       buffer_len = 1 << 20
       out_len = ::FFI::MemoryPointer.new(:int64)
       out_str = ::FFI::MemoryPointer.new(:char, buffer_len)
-      feature_importance_type = 0 # TODO add option
-      safe_call FFI.LGBM_BoosterSaveModelToString(@handle, start_iteration, num_iteration, feature_importance_type, buffer_len, out_len, out_str)
+      safe_call FFI.LGBM_BoosterSaveModelToString(@handle, start_iteration, num_iteration, importance_type_int, buffer_len, out_len, out_str)
       actual_len = out_len.read_int64
       if actual_len > buffer_len
         out_str = ::FFI::MemoryPointer.new(:char, actual_len)
-        safe_call FFI.LGBM_BoosterSaveModelToString(@handle, start_iteration, num_iteration, feature_importance_type, actual_len, out_len, out_str)
+        safe_call FFI.LGBM_BoosterSaveModelToString(@handle, start_iteration, num_iteration, importance_type_int, actual_len, out_len, out_str)
       end
       out_str.read_string
     end
@@ -162,10 +153,10 @@ module LightGBM
       )
     end
 
-    def save_model(filename, num_iteration: nil, start_iteration: 0)
+    def save_model(filename, num_iteration: nil, start_iteration: 0, importance_type: "split")
       num_iteration ||= best_iteration
-      feature_importance_type = 0 # TODO add
-      safe_call FFI.LGBM_BoosterSaveModel(@handle, start_iteration, num_iteration, feature_importance_type, filename)
+      importance_type_int = feature_importance_type_mapper(importance_type)
+      safe_call FFI.LGBM_BoosterSaveModel(@handle, start_iteration, num_iteration, importance_type_int, filename)
       self # consistent with Python API
     end
 
@@ -232,6 +223,17 @@ module LightGBM
 
     def cached_feature_name
       @cached_feature_name ||= feature_name
+    end
+
+    def feature_importance_type_mapper(importance_type)
+      case importance_type
+      when "split"
+        FFI::C_API_FEATURE_IMPORTANCE_SPLIT
+      when "gain"
+        FFI::C_API_FEATURE_IMPORTANCE_GAIN
+      else
+        -1
+      end
     end
   end
 end
