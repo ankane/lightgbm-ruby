@@ -1,5 +1,7 @@
 module LightGBM
   class InnerPredictor
+    MAX_INT32 = (1 << 31) - 1
+
     def initialize(booster, pred_parameter)
       @handle = booster.send(:handle)
       @pred_parameter = params_str(pred_parameter)
@@ -29,7 +31,7 @@ module LightGBM
       end
 
       preds, nrow, singular =
-        preds_for_data(
+        pred_for_data(
           data,
           start_iteration,
           num_iteration,
@@ -53,7 +55,7 @@ module LightGBM
 
     private
 
-    def preds_for_data(input, start_iteration, num_iteration, predict_type)
+    def pred_for_data(input, start_iteration, num_iteration, predict_type)
       input =
         if daru?(input)
           input[*cached_feature_name].map_rows(&:to_a)
@@ -72,6 +74,10 @@ module LightGBM
       input = [input] if singular
 
       nrow = input.count
+      if nrow > MAX_INT32
+        raise Error, "Not supported"
+      end
+
       n_preds =
         num_preds(
           start_iteration,
