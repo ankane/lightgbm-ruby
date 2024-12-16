@@ -49,6 +49,7 @@ module LightGBM
         data = data.to_a
         singular = !data.first.is_a?(Array)
         data = [data] if singular
+        check_2d_array(data)
       end
 
       preds, nrow =

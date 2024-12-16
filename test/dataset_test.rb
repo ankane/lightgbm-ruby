@@ -113,6 +113,14 @@ class DatasetTest < Minitest::Test
     assert_equal ["x0", "x1", "x2", "x3"], dataset.feature_name
   end
 
+  def test_array_different_sizes
+    data = [[1, 2], [3, 4, 5]]
+    error = assert_raises(ArgumentError) do
+      LightGBM::Dataset.new(data)
+    end
+    assert_equal "Rows have different sizes", error.message
+  end
+
   def test_copy
     regression_train.dup
     regression_train.clone

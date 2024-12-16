@@ -166,6 +166,8 @@ module LightGBM
           ncol = data.first.count
           flat_data = data.flat_map { |v| v.fetch_values(*keys) }
         else
+          data = data.to_a
+          check_2d_array(data)
           nrow = data.count
           ncol = data.first.count
           flat_data = data.flatten

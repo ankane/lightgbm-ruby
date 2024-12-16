@@ -88,6 +88,14 @@ class BoosterTest < Minitest::Test
     end
   end
 
+  def test_predict_array_different_sizes
+    x_test = [[1, 2], [3, 4, 5]]
+    error = assert_raises(ArgumentError) do
+      booster.predict(x_test)
+    end
+    assert_equal "Rows have different sizes", error.message
+  end
+
   def test_predict_raw_score
     x_test = [[3.7, 1.2, 7.2, 9.0], [7.5, 0.5, 7.9, 0.0]]
     expected = [0.9823112229173586, 0.9583143724610858]

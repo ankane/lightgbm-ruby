@@ -24,6 +24,13 @@ module LightGBM
       end
     end
 
+    def check_2d_array(data)
+      ncol = data.first&.size || 0
+      if !data.all? { |r| r.size == ncol }
+        raise ArgumentError, "Rows have different sizes"
+      end
+    end
+
     # for categorical, NaN and negative value are the same
     def handle_missing(data)
       data.map! { |v| v.nil? ? Float::NAN : v }
