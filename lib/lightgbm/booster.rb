@@ -12,6 +12,7 @@ module LightGBM
         create_handle do |handle|
           safe_call FFI.LGBM_BoosterCreateFromModelfile(model_file, out_num_iterations, handle)
         end
+        @pandas_categorical = load_pandas_categorical(file_name: model_file)
       else
         params ||= {}
         set_verbosity(params)
@@ -96,6 +97,7 @@ module LightGBM
       create_handle do |handle|
         safe_call FFI.LGBM_BoosterLoadModelFromString(model_str, out_num_iterations, handle)
       end
+      @pandas_categorical = load_pandas_categorical(model_str: model_str)
       @cached_feature_name = nil
       self
     end
@@ -234,6 +236,49 @@ module LightGBM
       else
         -1
       end
+    end
+
+    def load_pandas_categorical(file_name: nil, model_str: nil)
+      pandas_key = "pandas_categorical:"
+      offset = -pandas_key.length
+      if !file_name.nil?
+        max_offset = -File.size(file_name)
+        lines = []
+        File.open(file_name, "rb") do |f|
+          loop do
+            offset = [offset, max_offset].max
+            f.seek(offset, IO::SEEK_END)
+            lines = f.readlines
+            if lines.length >= 2
+              break
+            end
+            offset *= 2
+          end
+        end
+        last_line = lines[-1].strip
+        if !last_line.start_with?(pandas_key)
+          last_line = lines[-2].strip
+        end
+      elsif !model_str.nil?
+        idx = model_str[..offset].rindex("\n")
+        last_line = model_str[idx..].strip
+      end
+      if last_line.start_with?(pandas_key)
+        JSON.parse(last_line[pandas_key.length..])
+      end
+    end
+
+    def loaded_param
+      buffer_len = 1 << 20
+      out_len = ::FFI::MemoryPointer.new(:int64)
+      out_str = ::FFI::MemoryPointer.new(:char, buffer_len)
+      safe_call FFI.LGBM_BoosterGetLoadedParam(@handle, buffer_len, out_len, out_str)
+      actual_len = out_len.read_int64
+      if actual_len > buffer_len
+        out_str = ::FFI::MemoryPointer.new(:char, actual_len)
+        safe_call FFI.LGBM_BoosterGetLoadedParam(@handle, actual_len, out_len, out_str)
+      end
+      JSON.parse(out_str.read_string)
     end
   end
 end

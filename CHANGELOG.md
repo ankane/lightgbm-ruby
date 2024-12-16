@@ -1,6 +1,7 @@
 ## 0.4.0 (unreleased)
 
 - Added support for different prediction types
+- Added support for `pandas_categorical` to `predict` method
 - Added support for hashes and Rover data frames to `predict` method
 - Added support for hashes to `Dataset`
 - Added `importance_type` option to `dump_model`, `model_to_string`, and `save_model` methods

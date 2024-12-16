@@ -130,6 +130,20 @@ class BoosterTest < Minitest::Test
     assert_elements_in_delta expected[0], y_pred
   end
 
+  def test_predict_pandas_categorical_model_file
+    x_test = [[3.7, 1.2, 7.2, "cat9"], [7.5, 0.5, 7.9, "cat0"]]
+    booster = LightGBM::Booster.new(model_file: "test/support/categorical.txt")
+    y_pred = booster.predict(x_test)
+    assert_elements_in_delta [0.996415541144579, 1.0809369939979934], y_pred.first(2)
+  end
+
+  def test_predict_pandas_categorical_model_str
+    x_test = [[3.7, 1.2, 7.2, "cat9"], [7.5, 0.5, 7.9, "cat0"]]
+    booster = LightGBM::Booster.new(model_str: File.read("test/support/categorical.txt"))
+    y_pred = booster.predict(x_test)
+    assert_elements_in_delta [0.996415541144579, 1.0809369939979934], y_pred.first(2)
+  end
+
   def test_model_to_string
     assert booster.model_to_string
   end

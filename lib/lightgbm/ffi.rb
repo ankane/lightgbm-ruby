@@ -49,6 +49,7 @@ module LightGBM
     attach_function :LGBM_BoosterCreate, %i[pointer string pointer], :int
     attach_function :LGBM_BoosterCreateFromModelfile, %i[string pointer pointer], :int
     attach_function :LGBM_BoosterLoadModelFromString, %i[string pointer pointer], :int
+    attach_function :LGBM_BoosterGetLoadedParam, %i[pointer int64 pointer pointer], :int
     attach_function :LGBM_BoosterFree, %i[pointer], :int
     attach_function :LGBM_BoosterAddValidData, %i[pointer pointer], :int
     attach_function :LGBM_BoosterGetNumClasses, %i[pointer pointer], :int

@@ -1,6 +1,9 @@
 # dependencies
 require "ffi"
 
+# stdlib
+require "json"
+
 # modules
 require_relative "lightgbm/utils"
 require_relative "lightgbm/booster"

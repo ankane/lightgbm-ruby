@@ -6,6 +6,7 @@ module LightGBM
 
     def initialize(booster, pred_parameter)
       @handle = booster.instance_variable_get(:@handle)
+      @pandas_categorical = booster.instance_variable_get(:@pandas_categorical)
       @pred_parameter = params_str(pred_parameter)
 
       # keep booster for cached_feature_name
@@ -50,6 +51,15 @@ module LightGBM
         singular = !data.first.is_a?(Array)
         data = [data] if singular
         check_2d_array(data)
+        data = data.map(&:dup) if @pandas_categorical&.any?
+      end
+
+      if @pandas_categorical&.any?
+        apply_pandas_categorical(
+          data,
+          @booster.send(:loaded_param)["categorical_feature"],
+          @pandas_categorical
+        )
       end
 
       preds, nrow =
@@ -126,6 +136,17 @@ module LightGBM
 
     def cached_feature_name
       @booster.send(:cached_feature_name)
+    end
+
+    def apply_pandas_categorical(data, categorical_feature, pandas_categorical)
+      (categorical_feature || []).each_with_index do |cf, i|
+        cat_codes = pandas_categorical[i].map.with_index.to_h
+        # TODO confirm column is categorical
+        data.each do |r|
+          # TODO decide how to handle missing values
+          r[cf] = cat_codes.fetch(r[cf])
+        end
+      end
     end
   end
 end
