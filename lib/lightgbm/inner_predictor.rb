@@ -5,7 +5,7 @@ module LightGBM
     MAX_INT32 = (1 << 31) - 1
 
     def initialize(booster, pred_parameter)
-      @handle = booster.send(:handle)
+      @handle = booster.instance_variable_get(:@handle)
       @pred_parameter = params_str(pred_parameter)
 
       # keep booster for cached_feature_name

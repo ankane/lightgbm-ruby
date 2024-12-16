@@ -177,10 +177,6 @@ module LightGBM
 
     private
 
-    def handle
-      @handle
-    end
-
     def create_handle
       ::FFI::MemoryPointer.new(:pointer) do |handle|
         yield handle
