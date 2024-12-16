@@ -33,7 +33,7 @@ print(model.feature_importances_.tolist())
 
 print()
 print('test_early_stopping')
-model.fit(X_train, ym_train, eval_set=[(X_test, ym_test)], early_stopping_rounds=5, verbose=True)
+model.fit(X_train, ym_train, eval_set=[(X_test, ym_test)], callbacks=[lgb.early_stopping(stopping_rounds=5), lgb.log_evaluation()])
 
 print()
 print('test_missing_numeric')
