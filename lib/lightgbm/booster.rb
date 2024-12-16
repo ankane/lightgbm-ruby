@@ -141,7 +141,24 @@ module LightGBM
       out.read_int
     end
 
-    def predict(input, start_iteration: nil, num_iteration: nil, raw_score: false, pred_leaf: false, pred_contrib: false, **params)
+    def predict(input, start_iteration: 0, num_iteration: nil, raw_score: false, pred_leaf: false, pred_contrib: false, **params)
+      num_iteration ||= best_iteration
+
+      if input.is_a?(Dataset)
+        raise TypeError, "Cannot use Dataset instance for prediction, please use raw data instead"
+      end
+
+      predict_type = FFI::C_API_PREDICT_NORMAL
+      if raw_score
+        predict_type = FFI::C_API_PREDICT_RAW_SCORE
+      end
+      if pred_leaf
+        predict_type = FFI::C_API_PREDICT_LEAF_INDEX
+      end
+      if pred_contrib
+        predict_type = FFI::C_API_PREDICT_CONTRIB
+      end
+
       input =
         if daru?(input)
           input[*cached_feature_name].map_rows(&:to_a)
@@ -156,23 +173,8 @@ module LightGBM
           input.to_a
         end
 
-      predict_type = FFI::C_API_PREDICT_NORMAL
-      if raw_score
-        predict_type = FFI::C_API_PREDICT_RAW_SCORE
-      end
-      if pred_leaf
-        predict_type = FFI::C_API_PREDICT_LEAF_INDEX
-      end
-      if pred_contrib
-        predict_type = FFI::C_API_PREDICT_CONTRIB
-      end
-
       singular = !input.first.is_a?(Array)
       input = [input] if singular
-
-      start_iteration ||= 0
-      num_iteration ||= best_iteration
-      num_class = self.num_class
 
       nrow = input.count
       n_preds =
