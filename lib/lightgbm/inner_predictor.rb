@@ -50,8 +50,8 @@ module LightGBM
 
     private
 
-    def handle_pointer
-      @booster.send(:handle_pointer)
+    def handle
+      @booster.send(:handle)
     end
 
     def preds_for_data(input, start_iteration, num_iteration, predict_type)
@@ -88,7 +88,7 @@ module LightGBM
 
       out_len = ::FFI::MemoryPointer.new(:int64)
       out_result = ::FFI::MemoryPointer.new(:double, n_preds)
-      check_result FFI.LGBM_BoosterPredictForMat(handle_pointer, data, 1, input.count, input.first.count, 1, predict_type, start_iteration, num_iteration, @pred_parameter, out_len, out_result)
+      check_result FFI.LGBM_BoosterPredictForMat(handle, data, 1, input.count, input.first.count, 1, predict_type, start_iteration, num_iteration, @pred_parameter, out_len, out_result)
 
       if n_preds != out_len.read_int64
         raise Error, "Wrong length for predict results"
@@ -101,7 +101,7 @@ module LightGBM
 
     def num_preds(start_iteration, num_iteration, nrow, predict_type)
       out = ::FFI::MemoryPointer.new(:int64)
-      check_result FFI.LGBM_BoosterCalcNumPredict(handle_pointer, nrow, predict_type, start_iteration, num_iteration, out)
+      check_result FFI.LGBM_BoosterCalcNumPredict(handle, nrow, predict_type, start_iteration, num_iteration, out)
       out.read_int64
     end
 
