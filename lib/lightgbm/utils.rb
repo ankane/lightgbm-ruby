@@ -3,7 +3,7 @@ module LightGBM
     private
 
     def safe_call(err)
-      raise LightGBM::Error, FFI.LGBM_GetLastError if err != 0
+      raise Error, FFI.LGBM_GetLastError if err != 0
     end
 
     # remove spaces in keys and values to prevent injection
