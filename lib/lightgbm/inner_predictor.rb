@@ -1,5 +1,7 @@
 module LightGBM
   class InnerPredictor
+    include Utils
+
     MAX_INT32 = (1 << 31) - 1
 
     def initialize(booster, pred_parameter)
@@ -124,7 +126,5 @@ module LightGBM
     def cached_feature_name
       @booster.send(:cached_feature_name)
     end
-
-    include Utils
   end
 end

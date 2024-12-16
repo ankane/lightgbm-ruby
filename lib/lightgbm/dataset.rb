@@ -1,5 +1,7 @@
 module LightGBM
   class Dataset
+    include Utils
+
     attr_reader :data, :params
 
     def initialize(data, label: nil, weight: nil, group: nil, params: nil, reference: nil, used_indices: nil, categorical_feature: "auto", feature_name: nil, feature_names: nil)
@@ -216,7 +218,5 @@ module LightGBM
         safe_call FFI.LGBM_DatasetSetField(@handle, field_name, c_data, data.count, 0)
       end
     end
-
-    include Utils
   end
 end

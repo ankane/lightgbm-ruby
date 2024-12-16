@@ -1,5 +1,7 @@
 module LightGBM
   class Booster
+    include Utils
+
     attr_accessor :best_iteration, :train_data_name
 
     def initialize(params: nil, train_set: nil, model_file: nil, model_str: nil)
@@ -235,7 +237,5 @@ module LightGBM
     def cached_feature_name
       @cached_feature_name ||= feature_name
     end
-
-    include Utils
   end
 end
