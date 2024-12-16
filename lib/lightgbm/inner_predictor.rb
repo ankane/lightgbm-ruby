@@ -63,7 +63,7 @@ module LightGBM
       end
 
       preds, nrow =
-        pred_for_array2d(
+        pred_for_array(
           data,
           start_iteration,
           num_iteration,
@@ -87,12 +87,12 @@ module LightGBM
 
     private
 
-    def pred_for_array2d(input, start_iteration, num_iteration, predict_type)
+    def pred_for_array(input, start_iteration, num_iteration, predict_type)
       nrow = input.count
       if nrow > MAX_INT32
         raise Error, "Not supported"
       end
-      inner_predict_array2d(
+      inner_predict_array(
         input,
         start_iteration,
         num_iteration,
@@ -100,7 +100,7 @@ module LightGBM
       )
     end
 
-    def inner_predict_array2d(input, start_iteration, num_iteration, predict_type)
+    def inner_predict_array(input, start_iteration, num_iteration, predict_type)
       n_preds =
         num_preds(
           start_iteration,
