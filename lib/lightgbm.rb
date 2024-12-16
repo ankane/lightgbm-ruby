@@ -5,6 +5,7 @@ require "ffi"
 require_relative "lightgbm/utils"
 require_relative "lightgbm/booster"
 require_relative "lightgbm/dataset"
+require_relative "lightgbm/inner_predictor"
 require_relative "lightgbm/version"
 
 # scikit-learn API

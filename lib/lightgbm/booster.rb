@@ -141,7 +141,8 @@ module LightGBM
       out.read_int
     end
 
-    def predict(data, start_iteration: 0, num_iteration: -1, raw_score: false, pred_leaf: false, pred_contrib: false, **kwargs)
+    def predict(data, start_iteration: 0, num_iteration: nil, raw_score: false, pred_leaf: false, pred_contrib: false, **kwargs)
+      predictor = InnerPredictor.from_booster(self, kwargs.transform_values(&:dup))
       if num_iteration.nil?
         if start_iteration <= 0
           num_iteration = best_iteration
@@ -149,44 +150,14 @@ module LightGBM
           num_iteration = -1
         end
       end
-
-      if data.is_a?(Dataset)
-        raise TypeError, "Cannot use Dataset instance for prediction, please use raw data instead"
-      end
-
-      predict_type = FFI::C_API_PREDICT_NORMAL
-      if raw_score
-        predict_type = FFI::C_API_PREDICT_RAW_SCORE
-      end
-      if pred_leaf
-        predict_type = FFI::C_API_PREDICT_LEAF_INDEX
-      end
-      if pred_contrib
-        predict_type = FFI::C_API_PREDICT_CONTRIB
-      end
-
-      preds, nrow, singular =
-        preds_for_data(
-          data,
-          start_iteration,
-          num_iteration,
-          predict_type,
-          **kwargs
-        )
-
-      if pred_leaf
-        preds = preds.map(&:to_i)
-      end
-
-      if preds.size != nrow
-        if preds.size % nrow == 0
-          preds = preds.each_slice(preds.size / nrow).to_a
-        else
-          raise Error, "Length of predict result (#{preds.size}) cannot be divide nrow (#{nrow})"
-        end
-      end
-
-      singular ? preds.first : preds
+      predictor.predict(
+        data,
+        start_iteration: start_iteration,
+        num_iteration: num_iteration,
+        raw_score: raw_score,
+        pred_leaf: pred_leaf,
+        pred_contrib: pred_contrib
+      )
     end
 
     def save_model(filename, num_iteration: nil, start_iteration: 0)
@@ -259,61 +230,6 @@ module LightGBM
       out = ::FFI::MemoryPointer.new(:int)
       check_result FFI.LGBM_BoosterGetNumClasses(handle_pointer, out)
       out.read_int
-    end
-
-    def preds_for_data(input, start_iteration, num_iteration, predict_type, **params)
-      input =
-        if daru?(input)
-          input[*cached_feature_name].map_rows(&:to_a)
-        elsif input.is_a?(Hash) # sort feature.values to match the order of model.feature_name
-          sorted_feature_values(input)
-        elsif input.is_a?(Array) && input.first.is_a?(Hash) # on multiple elems, if 1st is hash, assume they all are
-          input.map(&method(:sorted_feature_values))
-        elsif rover?(input)
-          # TODO improve performance
-          input[cached_feature_name].to_numo.to_a
-        else
-          input.to_a
-        end
-
-      singular = !input.first.is_a?(Array)
-      input = [input] if singular
-
-      nrow = input.count
-      n_preds =
-        num_preds(
-          start_iteration,
-          num_iteration,
-          nrow,
-          predict_type
-        )
-
-      flat_input = input.flatten
-      handle_missing(flat_input)
-      data = ::FFI::MemoryPointer.new(:double, input.count * input.first.count)
-      data.write_array_of_double(flat_input)
-
-      out_len = ::FFI::MemoryPointer.new(:int64)
-      out_result = ::FFI::MemoryPointer.new(:double, n_preds)
-      check_result FFI.LGBM_BoosterPredictForMat(handle_pointer, data, 1, input.count, input.first.count, 1, predict_type, start_iteration, num_iteration, params_str(params), out_len, out_result)
-
-      if n_preds != out_len.read_int64
-        raise Error, "Wrong length for predict results"
-      end
-
-      preds = out_result.read_array_of_double(out_len.read_int64)
-
-      [preds, nrow, singular]
-    end
-
-    def num_preds(start_iteration, num_iteration, nrow, predict_type)
-      out = ::FFI::MemoryPointer.new(:int64)
-      check_result FFI.LGBM_BoosterCalcNumPredict(handle_pointer, nrow, predict_type, start_iteration, num_iteration, out)
-      out.read_int64
-    end
-
-    def sorted_feature_values(input_hash)
-      input_hash.transform_keys(&:to_s).fetch_values(*cached_feature_name)
     end
 
     def cached_feature_name
