@@ -105,7 +105,7 @@ module LightGBM
 
       out_num_preds = ::FFI::MemoryPointer.new(:int64)
       out_result = ::FFI::MemoryPointer.new(:double, n_preds)
-      safe_call FFI.LGBM_BoosterPredictForMat(@handle, data, 1, input.count, input.first.count, 1, predict_type, start_iteration, num_iteration, @pred_parameter, out_num_preds, out_result)
+      safe_call FFI.LGBM_BoosterPredictForMat(@handle, data, FFI::C_API_DTYPE_FLOAT64, input.count, input.first.count, 1, predict_type, start_iteration, num_iteration, @pred_parameter, out_num_preds, out_result)
       if n_preds != out_num_preds.read_int64
         raise Error, "Wrong length for predict results"
       end
