@@ -2,7 +2,7 @@ module LightGBM
   class Booster
     include Utils
 
-    attr_accessor :best_iteration, :train_data_name
+    attr_accessor :best_iteration, :train_data_name, :params
 
     def initialize(params: nil, train_set: nil, model_file: nil, model_str: nil)
       if model_str
@@ -13,6 +13,10 @@ module LightGBM
           safe_call FFI.LGBM_BoosterCreateFromModelfile(model_file, out_num_iterations, handle)
         end
         @pandas_categorical = load_pandas_categorical(file_name: model_file)
+        if params
+          warn "[xgboost] Ignoring params argument, using parameters from model file."
+        end
+        @params = loaded_param
       else
         params ||= {}
         set_verbosity(params)
@@ -98,6 +102,7 @@ module LightGBM
         safe_call FFI.LGBM_BoosterLoadModelFromString(model_str, out_num_iterations, handle)
       end
       @pandas_categorical = load_pandas_categorical(model_str: model_str)
+      @params = loaded_param
       @cached_feature_name = nil
       self
     end

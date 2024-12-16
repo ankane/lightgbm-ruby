@@ -57,7 +57,7 @@ module LightGBM
       if @pandas_categorical&.any?
         apply_pandas_categorical(
           data,
-          @booster.send(:loaded_param)["categorical_feature"],
+          @booster.params["categorical_feature"],
           @pandas_categorical
         )
       end
