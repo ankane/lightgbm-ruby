@@ -174,11 +174,12 @@ module LightGBM
       num_iteration ||= best_iteration
       num_class = self.num_class
 
+      nrow = input.count
       n_preds =
         num_preds(
           start_iteration,
           num_iteration,
-          input.count,
+          nrow,
           predict_type
         )
 
@@ -195,22 +196,21 @@ module LightGBM
         raise Error, "Wrong length for predict results"
       end
 
-      out = out_result.read_array_of_double(out_len.read_int64)
+      preds = out_result.read_array_of_double(out_len.read_int64)
 
       if pred_leaf
-        out = out.map(&:to_i)
+        preds = preds.map(&:to_i)
       end
 
-      nrow = input.count
-      if out.size != nrow
-        if out.size % nrow == 0
-          out = out.each_slice(out.size / input.count).to_a
+      if preds.size != nrow
+        if preds.size % nrow == 0
+          preds = preds.each_slice(preds.size / input.count).to_a
         else
-          raise Error, "Length of predict result (#{out.size}) cannot be divide nrow (#{nrow})"
+          raise Error, "Length of predict result (#{preds.size}) cannot be divide nrow (#{nrow})"
         end
       end
 
-      singular ? out.first : out
+      singular ? preds.first : preds
     end
 
     def save_model(filename, num_iteration: nil, start_iteration: 0)
