@@ -1,5 +1,6 @@
 ## 0.4.0 (unreleased)
 
+- Added support for different prediction types
 - Added support for hashes and Rover data frames to `predict` method
 - Added support for hashes to `Dataset`
 - Changed `Dataset` to use column names for feature names with Rover and Daru

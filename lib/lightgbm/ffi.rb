@@ -15,6 +15,11 @@ module LightGBM
     # https://github.com/microsoft/LightGBM/blob/master/include/LightGBM/c_api.h
     # keep same order
 
+    C_API_PREDICT_NORMAL = 0
+    C_API_PREDICT_RAW_SCORE = 1
+    C_API_PREDICT_LEAF_INDEX = 2
+    C_API_PREDICT_CONTRIB = 3
+
     # error
     attach_function :LGBM_GetLastError, %i[], :string
 
@@ -48,6 +53,7 @@ module LightGBM
     attach_function :LGBM_BoosterGetFeatureNames, %i[pointer int pointer size_t pointer pointer], :int
     attach_function :LGBM_BoosterGetNumFeature, %i[pointer pointer], :int
     attach_function :LGBM_BoosterGetEval, %i[pointer int pointer pointer], :int
+    attach_function :LGBM_BoosterCalcNumPredict, %i[pointer int int int int pointer], :int
     attach_function :LGBM_BoosterPredictForMat, %i[pointer pointer int int32 int32 int int int int string pointer pointer], :int
     attach_function :LGBM_BoosterSaveModel, %i[pointer int int int string], :int
     attach_function :LGBM_BoosterSaveModelToString, %i[pointer int int int int64 pointer pointer], :int

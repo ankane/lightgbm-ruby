@@ -141,8 +141,7 @@ module LightGBM
       out.read_int
     end
 
-    # TODO support different prediction types
-    def predict(input, start_iteration: nil, num_iteration: nil, **params)
+    def predict(input, start_iteration: nil, num_iteration: nil, raw_score: false, pred_leaf: false, pred_contrib: false, **params)
       input =
         if daru?(input)
           input[*cached_feature_name].map_rows(&:to_a)
@@ -157,6 +156,17 @@ module LightGBM
           input.to_a
         end
 
+      predict_type = FFI::C_API_PREDICT_NORMAL
+      if raw_score
+        predict_type = FFI::C_API_PREDICT_RAW_SCORE
+      end
+      if pred_leaf
+        predict_type = FFI::C_API_PREDICT_LEAF_INDEX
+      end
+      if pred_contrib
+        predict_type = FFI::C_API_PREDICT_CONTRIB
+      end
+
       singular = !input.first.is_a?(Array)
       input = [input] if singular
 
@@ -164,16 +174,41 @@ module LightGBM
       num_iteration ||= best_iteration
       num_class = self.num_class
 
+      n_preds =
+        num_preds(
+          start_iteration,
+          num_iteration,
+          input.count,
+          predict_type
+        )
+
       flat_input = input.flatten
       handle_missing(flat_input)
       data = ::FFI::MemoryPointer.new(:double, input.count * input.first.count)
       data.write_array_of_double(flat_input)
 
       out_len = ::FFI::MemoryPointer.new(:int64)
-      out_result = ::FFI::MemoryPointer.new(:double, num_class * input.count)
-      check_result FFI.LGBM_BoosterPredictForMat(handle_pointer, data, 1, input.count, input.first.count, 1, 0, start_iteration, num_iteration, params_str(params), out_len, out_result)
+      out_result = ::FFI::MemoryPointer.new(:double, n_preds)
+      check_result FFI.LGBM_BoosterPredictForMat(handle_pointer, data, 1, input.count, input.first.count, 1, predict_type, start_iteration, num_iteration, params_str(params), out_len, out_result)
+
+      if n_preds != out_len.read_int64
+        raise Error, "Wrong length for predict results"
+      end
+
       out = out_result.read_array_of_double(out_len.read_int64)
-      out = out.each_slice(num_class).to_a if num_class > 1
+
+      if pred_leaf
+        out = out.map(&:to_i)
+      end
+
+      nrow = input.count
+      if out.size != nrow
+        if out.size % nrow == 0
+          out = out.each_slice(out.size / input.count).to_a
+        else
+          raise Error, "Length of predict result (#{out.size}) cannot be divide nrow (#{nrow})"
+        end
+      end
 
       singular ? out.first : out
     end
@@ -248,6 +283,12 @@ module LightGBM
       out = ::FFI::MemoryPointer.new(:int)
       check_result FFI.LGBM_BoosterGetNumClasses(handle_pointer, out)
       out.read_int
+    end
+
+    def num_preds(start_iteration, num_iteration, nrow, predict_type)
+      out = ::FFI::MemoryPointer.new(:int64)
+      check_result FFI.LGBM_BoosterCalcNumPredict(handle_pointer, nrow, predict_type, start_iteration, num_iteration, out)
+      out.read_int64
     end
 
     def sorted_feature_values(input_hash)
