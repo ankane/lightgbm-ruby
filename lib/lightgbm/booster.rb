@@ -65,9 +65,9 @@ module LightGBM
       importance_type =
         case importance_type
         when "split"
-          0
+          FFI::C_API_FEATURE_IMPORTANCE_SPLIT
         when "gain"
-          1
+          FFI::C_API_FEATURE_IMPORTANCE_GAIN
         else
           -1
         end

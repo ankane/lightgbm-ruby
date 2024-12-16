@@ -20,6 +20,9 @@ module LightGBM
     C_API_PREDICT_LEAF_INDEX = 2
     C_API_PREDICT_CONTRIB = 3
 
+    C_API_FEATURE_IMPORTANCE_SPLIT = 0
+    C_API_FEATURE_IMPORTANCE_GAIN = 1
+
     # error
     attach_function :LGBM_GetLastError, %i[], :string
 
