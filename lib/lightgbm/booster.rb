@@ -204,7 +204,7 @@ module LightGBM
 
       if preds.size != nrow
         if preds.size % nrow == 0
-          preds = preds.each_slice(preds.size / input.count).to_a
+          preds = preds.each_slice(preds.size / nrow).to_a
         else
           raise Error, "Length of predict result (#{preds.size}) cannot be divide nrow (#{nrow})"
         end
