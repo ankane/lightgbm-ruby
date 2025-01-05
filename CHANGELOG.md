@@ -1,4 +1,4 @@
-## 0.4.0 (unreleased)
+## 0.4.0 (2025-01-05)
 
 - Added support for different prediction types
 - Added support for `pandas_categorical` to `predict` method
