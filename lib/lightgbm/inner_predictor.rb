@@ -141,10 +141,17 @@ module LightGBM
     def apply_pandas_categorical(data, categorical_feature, pandas_categorical)
       (categorical_feature || []).each_with_index do |cf, i|
         cat_codes = pandas_categorical[i].map.with_index.to_h
-        # TODO confirm column is categorical
         data.each do |r|
-          # TODO decide how to handle missing values
-          r[cf] = cat_codes.fetch(r[cf])
+          cat = r[cf]
+          unless cat.nil?
+            r[cf] =
+              cat_codes.fetch(cat) do
+                unless cat.is_a?(String)
+                  raise ArgumentError, "expected categorical value"
+                end
+                nil
+              end
+          end
         end
       end
     end

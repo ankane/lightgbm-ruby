@@ -144,6 +144,24 @@ class BoosterTest < Minitest::Test
     assert_elements_in_delta [0.996415541144579, 1.0809369939979934], y_pred.first(2)
   end
 
+  def test_predict_pandas_categorical_missing_category
+    booster = LightGBM::Booster.new(model_file: "test/support/categorical.txt")
+    assert_in_delta 0.996415541144579, booster.predict([3.7, 1.2, 7.2, nil])
+  end
+
+  def test_predict_pandas_categorical_new_category
+    booster = LightGBM::Booster.new(model_file: "test/support/categorical.txt")
+    assert_in_delta 0.996415541144579, booster.predict([3.7, 1.2, 7.2, "cat10"])
+  end
+
+  def test_predict_pandas_categorical_invalid_category
+    booster = LightGBM::Booster.new(model_file: "test/support/categorical.txt")
+    error = assert_raises(ArgumentError) do
+      booster.predict([7.5, 0.5, 7.9, true])
+    end
+    assert_equal "expected categorical value", error.message
+  end
+
   def test_model_to_string
     assert booster.model_to_string
   end
