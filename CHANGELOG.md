@@ -1,3 +1,7 @@
+## 0.4.1 (unreleased)
+
+- Updated LightGBM to 4.6.0
+
 ## 0.4.0 (2025-01-05)
 
 - Added support for different prediction types
