@@ -3,6 +3,7 @@
 [LightGBM](https://github.com/microsoft/LightGBM) - high performance gradient boosting - for Ruby
 
 [![Build Status](https://github.com/ankane/lightgbm-ruby/actions/workflows/build.yml/badge.svg)](https://github.com/ankane/lightgbm-ruby/actions)
+[![libs.tech recommends](https://libs.tech/project/202269423/badge.svg)](https://libs.tech/project/202269423/lightgbm-ruby)
 
 ## Installation
 
