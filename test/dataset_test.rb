@@ -102,7 +102,6 @@ class DatasetTest < Minitest::Test
   def test_rover
     skip if jruby?
 
-    require "rover"
     data = Rover.read_csv(data_path)
     label = data.delete("y")
     dataset = LightGBM::Dataset.new(data, label: label)
