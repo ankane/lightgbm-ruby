@@ -90,7 +90,6 @@ class DatasetTest < Minitest::Test
   def test_numo
     skip if jruby?
 
-    require "numo/narray"
     data = Numo::DFloat.new(3, 5).seq
     label = Numo::DFloat.new(3).seq
     dataset = LightGBM::Dataset.new(data, label: label)
