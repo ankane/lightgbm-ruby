@@ -105,6 +105,10 @@ class Minitest::Test
   end
 
   def jruby?
-    RUBY_PLATFORM == "java"
+    RUBY_ENGINE == "jruby"
+  end
+
+  def numo?
+    !jruby? && RUBY_ENGINE != "truffleruby"
   end
 end

@@ -88,7 +88,7 @@ class DatasetTest < Minitest::Test
   end
 
   def test_numo
-    skip if jruby?
+    skip unless numo?
 
     data = Numo::DFloat.new(3, 5).seq
     label = Numo::DFloat.new(3).seq
@@ -100,7 +100,7 @@ class DatasetTest < Minitest::Test
   end
 
   def test_rover
-    skip if jruby?
+    skip unless numo?
 
     data = Rover.read_csv(data_path)
     label = data.delete("y")

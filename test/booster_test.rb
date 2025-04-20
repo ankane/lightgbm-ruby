@@ -72,7 +72,7 @@ class BoosterTest < Minitest::Test
   end
 
   def test_predict_rover
-    skip if jruby?
+    skip unless numo?
 
     require "rover"
     x_test =
