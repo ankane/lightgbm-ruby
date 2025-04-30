@@ -29,7 +29,7 @@ class Minitest::Test
 
   def binary_data
     x, y = load_data
-    y.map! { |v| v > 1 ? 1 : v }
+    y = y.map { |v| v > 1 ? 1 : v }
     split_data(x, y)
   end
 
@@ -62,12 +62,15 @@ class Minitest::Test
   end
 
   def load_data
-    x = []
-    CSV.foreach(data_path, headers: true, converters: :numeric) do |row|
-      x << row.to_h.values
+    @@load_data ||= begin
+      x = []
+      y = []
+      CSV.foreach(data_path, headers: true, converters: :numeric) do |row|
+        x << row.values_at("x0", "x1", "x2", "x3").freeze
+        y << row["y"]
+      end
+      [x.freeze, y.freeze]
     end
-    y = x.map(&:pop)
-    [x, y]
   end
 
   def split_data(x, y)
