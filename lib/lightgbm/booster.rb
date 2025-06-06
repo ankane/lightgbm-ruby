@@ -269,7 +269,8 @@ module LightGBM
         last_line = model_str[idx..].strip
       end
       if last_line.start_with?(pandas_key)
-        JSON.parse(last_line[pandas_key.length..])
+        pandas_categorical = JSON.parse(last_line[pandas_key.length..])
+        pandas_categorical.map { |cats| cats.each_with_index.to_h }
       end
     end
 

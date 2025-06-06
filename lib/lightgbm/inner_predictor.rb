@@ -140,7 +140,7 @@ module LightGBM
 
     def apply_pandas_categorical(data, categorical_feature, pandas_categorical)
       (categorical_feature || []).each_with_index do |cf, i|
-        cat_codes = pandas_categorical[i].map.with_index.to_h
+        cat_codes = pandas_categorical[i]
         data.each do |r|
           cat = r[cf]
           unless cat.nil?
