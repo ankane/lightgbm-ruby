@@ -1,3 +1,7 @@
+## 0.4.2 (unreleased)
+
+- Improved performance of `predict` method for `pandas_categorical`
+
 ## 0.4.1 (2025-02-17)
 
 - Updated LightGBM to 4.6.0
