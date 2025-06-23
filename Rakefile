@@ -8,7 +8,7 @@ Rake::TestTask.new do |t|
   t.warning = false # for daru
 end
 
-shared_libraries = %w(lib_lightgbm.dll lib_lightgbm.dylib lib_lightgbm.arm64.dylib lib_lightgbm.so)
+shared_libraries = %w(lib_lightgbm.dll lib_lightgbm.dylib lib_lightgbm.arm64.dylib lib_lightgbm.so lib_lightgbm.arm64.so)
 
 # ensure vendor files exist
 task :ensure_vendor do
@@ -26,7 +26,7 @@ def download_file(file, sha256)
   version = "4.6.0"
 
   url =
-    if file == "lib_lightgbm.arm64.dylib"
+    if ["lib_lightgbm.arm64.so", "lib_lightgbm.arm64.dylib"].include?(file)
       "https://github.com/ankane/ml-builds/releases/download/lightgbm-#{version}/#{file}"
     else
       "https://github.com/microsoft/LightGBM/releases/download/v#{version}/#{file}"
@@ -46,6 +46,7 @@ end
 namespace :vendor do
   task :linux do
     download_file("lib_lightgbm.so", "237f15e1362a5abab4be0fae14aebba7bb278763f3412a82c50ab9d1fc0dc8bd")
+    download_file("lib_lightgbm.arm64.so", "748e78afbb275d03b0de114d9d629e3b31e397f052c3fe9fe7d4e2fddc7e536e")
   end
 
   task :mac do
