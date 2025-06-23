@@ -1,4 +1,4 @@
-## 0.4.2 (unreleased)
+## 0.4.2 (2025-06-23)
 
 - Improved performance of `predict` method for `pandas_categorical`
 
