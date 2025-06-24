@@ -1,3 +1,7 @@
+## 0.4.3 (unreleased)
+
+- Added ARM shared library for Linux
+
 ## 0.4.2 (2025-06-23)
 
 - Improved performance of `predict` method for `pandas_categorical`
