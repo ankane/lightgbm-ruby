@@ -1,4 +1,4 @@
-## 0.4.3 (unreleased)
+## 0.4.3 (2025-06-26)
 
 - Added ARM shared library for Linux
 
