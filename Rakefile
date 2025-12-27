@@ -1,12 +1,12 @@
 require "bundler/gem_tasks"
 require "rake/testtask"
 
-task default: :test
 Rake::TestTask.new do |t|
-  t.libs << "test"
   t.pattern = "test/**/*_test.rb"
   t.warning = false # for daru
 end
+
+task default: :test
 
 shared_libraries = %w(lib_lightgbm.dll lib_lightgbm.dylib lib_lightgbm.arm64.dylib lib_lightgbm.so lib_lightgbm.arm64.so)
 

@@ -3,9 +3,9 @@ source "https://rubygems.org"
 gemspec
 
 gem "rake"
-gem "minitest", ">= 5"
+gem "minitest"
 gem "daru"
 gem "matrix"
-gem "numo-narray", platform: [:mri, :x64_mingw]
-gem "rover-df", platform: [:mri, :x64_mingw]
+gem "numo-narray", platform: [:mri, :windows]
+gem "rover-df", platform: [:mri, :windows]
 gem "csv"
