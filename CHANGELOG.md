@@ -1,7 +1,3 @@
-## 0.4.4 (unreleased)
-
-- Fixed memory leak with `cv` method
-
 ## 0.4.3 (2025-06-26)
 
 - Added ARM shared library for Linux
