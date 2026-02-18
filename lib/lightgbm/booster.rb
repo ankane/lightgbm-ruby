@@ -5,6 +5,8 @@ module LightGBM
     attr_accessor :best_iteration, :train_data_name, :params
 
     def initialize(params: nil, train_set: nil, model_file: nil, model_str: nil)
+      @refs = []
+
       if model_str
         model_from_string(model_str)
       elsif model_file
@@ -23,6 +25,7 @@ module LightGBM
         create_handle do |handle|
           safe_call FFI.LGBM_BoosterCreate(train_set.handle, params_str(params), handle)
         end
+        @refs << train_set
       end
 
       self.best_iteration = -1
@@ -33,6 +36,7 @@ module LightGBM
 
     def add_valid(data, name)
       safe_call FFI.LGBM_BoosterAddValidData(@handle, data.handle)
+      @refs << data
       @name_valid_sets << name
       self # consistent with Python API
     end

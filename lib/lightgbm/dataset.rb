@@ -183,11 +183,7 @@ module LightGBM
 
         safe_call FFI.LGBM_DatasetCreateFromMat(c_data, FFI::C_API_DTYPE_FLOAT64, nrow, ncol, 1, parameters, reference, handle)
       end
-      if used_indices
-        @handle = handle.read_pointer
-      else
-        @handle = ::FFI::AutoPointer.new(handle.read_pointer, FFI.method(:LGBM_DatasetFree))
-      end
+      @handle = ::FFI::AutoPointer.new(handle.read_pointer, FFI.method(:LGBM_DatasetFree))
 
       self.label = @label if @label
       self.weight = @weight if @weight
