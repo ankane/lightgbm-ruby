@@ -1,4 +1,4 @@
-## 0.4.4 (unreleased)
+## 0.4.4 (2026-02-27)
 
 - Fixed memory leak with `cv` method
 
