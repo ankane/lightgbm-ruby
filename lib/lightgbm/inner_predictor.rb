@@ -33,10 +33,7 @@ module LightGBM
         predict_type = FFI::C_API_PREDICT_CONTRIB
       end
 
-      if daru?(data)
-        data = data[*cached_feature_name].map_rows(&:to_a)
-        singular = false
-      elsif data.is_a?(Hash) # sort feature.values to match the order of model.feature_name
+      if data.is_a?(Hash) # sort feature.values to match the order of model.feature_name
         data = [sorted_feature_values(data)]
         singular = true
       elsif data.is_a?(Array) && data.first.is_a?(Hash) # on multiple elems, if 1st is hash, assume they all are

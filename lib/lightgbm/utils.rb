@@ -40,10 +40,6 @@ module LightGBM
       defined?(Matrix) && data.is_a?(Matrix)
     end
 
-    def daru?(data)
-      defined?(Daru::DataFrame) && data.is_a?(Daru::DataFrame)
-    end
-
     def numo?(data)
       defined?(Numo::NArray) && data.is_a?(Numo::NArray)
     end

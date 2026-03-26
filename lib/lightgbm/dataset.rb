@@ -143,12 +143,6 @@ module LightGBM
           nrow = data.row_count
           ncol = data.column_count
           flat_data = data.to_a.flatten
-        elsif daru?(data)
-          if @feature_name == "auto"
-            @feature_name = data.vectors.to_a
-          end
-          nrow, ncol = data.shape
-          flat_data = data.map_rows(&:to_a).flatten
         elsif numo?(data)
           nrow, ncol = data.shape
         elsif rover?(data)

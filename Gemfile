@@ -4,7 +4,6 @@ gemspec
 
 gem "rake"
 gem "minitest"
-gem "daru"
 gem "matrix"
 gem "numo-narray", platform: [:mri, :windows]
 gem "rover-df", platform: [:mri, :windows]
