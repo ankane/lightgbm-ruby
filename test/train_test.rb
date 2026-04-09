@@ -108,6 +108,6 @@ class TrainTest < Minitest::Test
   private
 
   def rsme(y_true, y_pred)
-    Math.sqrt(y_true.zip(y_pred).map { |a, b| (a - b)**2 }.sum / y_true.size.to_f)
+    Math.sqrt(y_true.zip(y_pred).sum { |a, b| (a - b)**2 } / y_true.size.to_f)
   end
 end

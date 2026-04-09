@@ -37,7 +37,7 @@ module LightGBM
         data = [sorted_feature_values(data)]
         singular = true
       elsif data.is_a?(Array) && data.first.is_a?(Hash) # on multiple elems, if 1st is hash, assume they all are
-        data = data.map(&method(:sorted_feature_values))
+        data = data.map { |v| sorted_feature_values(v) }
         singular = false
       elsif rover?(data)
         # TODO improve performance
