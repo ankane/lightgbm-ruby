@@ -5,6 +5,8 @@ require "json"
 
 class Minitest::Test
   def setup
+    puts "#{self.class.name}##{name}"
+
     if stress?
       # autoload before GC.stress
       LightGBM::FFI.ffi_libraries
