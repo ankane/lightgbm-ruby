@@ -12,7 +12,7 @@ module LightGBM
       end
     end
 
-    # https://github.com/microsoft/LightGBM/blob/master/include/LightGBM/c_api.h
+    # https://github.com/lightgbm-org/LightGBM/blob/master/include/LightGBM/c_api.h
     # keep same order
 
     C_API_DTYPE_FLOAT32 = 0

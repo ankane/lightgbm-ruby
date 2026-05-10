@@ -44,7 +44,7 @@ class DatasetTest < Minitest::Test
 
   def test_dump_text
     # method is private in Python library
-    # https://github.com/microsoft/LightGBM/pull/2434
+    # https://github.com/lightgbm-org/LightGBM/pull/2434
     assert !regression_train.respond_to?(:dump_text)
     regression_train.send(:dump_text, tempfile)
     assert File.exist?(tempfile)

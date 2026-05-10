@@ -34,7 +34,7 @@ def download_file(file, sha256)
     if ["lib_lightgbm.arm64.so", "lib_lightgbm.arm64.dylib"].include?(file)
       "https://github.com/ankane/ml-builds/releases/download/lightgbm-#{version}/#{file}"
     else
-      "https://github.com/microsoft/LightGBM/releases/download/v#{version}/#{file}"
+      "https://github.com/lightgbm-org/LightGBM/releases/download/v#{version}/#{file}"
     end
   puts "Downloading #{file}..."
   contents = URI.parse(url).read
@@ -47,7 +47,7 @@ def download_file(file, sha256)
   puts "Saved #{dest}"
 end
 
-# https://github.com/microsoft/LightGBM/releases
+# https://github.com/lightgbm-org/LightGBM/releases
 namespace :vendor do
   task :linux do
     download_file("lib_lightgbm.so", "237f15e1362a5abab4be0fae14aebba7bb278763f3412a82c50ab9d1fc0dc8bd")
