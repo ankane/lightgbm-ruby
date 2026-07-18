@@ -1,5 +1,6 @@
 ## 0.5.0 (unreleased)
 
+- Updated LightGBM to 4.7.0
 - Dropped support for Daru
 - Dropped support for Ruby < 3.3
 

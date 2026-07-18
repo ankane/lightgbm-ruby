@@ -28,7 +28,7 @@ def download_file(file, sha256)
   require "open-uri"
 
   # also update licenses in vendor/
-  version = "4.6.0"
+  version = "4.7.0"
 
   url =
     if ["lib_lightgbm.arm64.so", "lib_lightgbm.arm64.dylib"].include?(file)
@@ -50,17 +50,17 @@ end
 # https://github.com/lightgbm-org/LightGBM/releases
 namespace :vendor do
   task :linux do
-    download_file("lib_lightgbm.so", "237f15e1362a5abab4be0fae14aebba7bb278763f3412a82c50ab9d1fc0dc8bd")
-    download_file("lib_lightgbm.arm64.so", "748e78afbb275d03b0de114d9d629e3b31e397f052c3fe9fe7d4e2fddc7e536e")
+    download_file("lib_lightgbm.so", "38c642ab2ac37312e414ce4c723358ad48f0cd51703b5c7ca30f96bdd131e21d")
+    download_file("lib_lightgbm.arm64.so", "3b2e6a5cf8f71a428ca14122349a160c0cc087955d98affeaf28aea70858977f")
   end
 
   task :mac do
-    download_file("lib_lightgbm.dylib", "15c6678c60f1acf4a34f0784f799ee3ec7a48e25efa9be90e7415d54f9bed858")
-    download_file("lib_lightgbm.arm64.dylib", "df56dce6597389a749de75e46b5383f83c751f57da643232ef766f15aca10a0d")
+    download_file("lib_lightgbm.dylib", "e4b2225fa7a946894be28422d4f53cdc7d2e5f195ff236ea1b012a1db2949345")
+    download_file("lib_lightgbm.arm64.dylib", "8b2027a92000f8f92622259cd2dfe614cfb96561126fcdcf9636887ee64b0bbb")
   end
 
   task :windows do
-    download_file("lib_lightgbm.dll", "a5032c5278f3350ea9f7925b7b4d270b23af9a8e9639971cb025d615b45c39e7")
+    download_file("lib_lightgbm.dll", "c89524b9913016a2f07bcfd795ba931b93c2a97b2775aa903cc3ef8ae1571834")
   end
 
   task all: [:linux, :mac, :windows]
