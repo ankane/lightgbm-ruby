@@ -1,4 +1,4 @@
-## 0.5.0 (unreleased)
+## 0.5.0 (2026-07-18)
 
 - Updated LightGBM to 4.7.0
 - Dropped support for Daru
